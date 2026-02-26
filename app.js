@@ -669,56 +669,78 @@
   let lastSearch = null; // { legs, dateStr, startMin, mode, fromId, toId }
 
   function renderLegs(resolvedLegs) {
-    let html = '';
+    let html = '<div class="timeline">';
+    const lastLegIdx = resolvedLegs.length - 1;
+
     resolvedLegs.forEach((leg, i) => {
       const route = routeById[leg.route];
-
-      if (i > 0) {
-        const transferStop = stopById[leg.stops[0]].name;
-        if (leg.waitMin !== null && leg.waitMin >= 0) {
-          html += `<div class="leg-transfer">Transfer at ${transferStop} &middot; ${formatDuration(leg.waitMin)} wait</div>`;
-        } else {
-          html += `<div class="leg-transfer">Transfer at ${transferStop}</div>`;
-        }
-      }
-
       const boardStop = stopById[leg.stops[0]].name;
       const alightStop = stopById[leg.stops[leg.stops.length - 1]].name;
       const numStops = leg.stops.length - 1;
+      const isFirst = i === 0;
+      const isLast = i === lastLegIdx;
 
-      let timeHtml = '';
-      if (leg.depTime !== null) {
-        timeHtml = `<div class="leg-time">${formatTime(leg.depTime)} &rarr; ${formatTime(leg.arrTime)} (${formatDuration(leg.rideMin)})</div>`;
-      } else {
-        timeHtml = '<div class="leg-time" style="color:#c62828">No more trips today</div>';
+      // Transfer between legs
+      if (i > 0) {
+        let transferText = '\u23F1 Transfer';
+        if (leg.waitMin !== null && leg.waitMin >= 0) {
+          transferText += ` \u00B7 ${formatDuration(leg.waitMin)} wait`;
+        }
+        html += `<div class="tl-transfer"><div class="tl-transfer-info">${transferText}</div></div>`;
       }
 
-      html += `<div class="leg">
-        <div class="leg-color" style="background:${route.color}"></div>
-        <div class="leg-details">
-          <div class="leg-route" style="color:${route.color}">${route.name}${leg.toward ? ` <span style="font-weight:400;color:#888">toward ${leg.toward}</span>` : ''}</div>
-          <div class="leg-stops">
-            Board at <strong>${boardStop}</strong><br>
-            Ride ${numStops} stop${numStops !== 1 ? 's' : ''} to <strong>${alightStop}</strong>
-          </div>
-          ${timeHtml}
-        </div>
-      </div>`;
+      // Departure station
+      const originClass = isFirst ? ' tl-origin' : '';
+      const depTimeStr = leg.depTime !== null ? formatTime(leg.depTime) : '';
+      const depDotFill = isFirst ? route.color : '#fff';
+      html += `<div class="tl-station${originClass}">` +
+        `<div class="tl-dot" style="border-color:${route.color};background:${depDotFill}"></div>` +
+        `<div class="tl-station-name">${boardStop}</div>` +
+        (depTimeStr ? `<div class="tl-station-time">${depTimeStr}</div>` : '') +
+        `</div>`;
+
+      // Leg connector with route info
+      html += `<div class="tl-leg" style="color:${route.color}">`;
+      html += `<div class="tl-route">` +
+        `<span class="tl-route-badge" style="background:${route.color}">\u26F4 ${route.name}</span>` +
+        (leg.toward ? `<span class="tl-route-dir">\u2192 ${leg.toward}</span>` : '') +
+        `</div>`;
+      if (leg.depTime !== null) {
+        html += `<div class="tl-stops-row">` +
+          `<span class="tl-stops-count">${numStops} stop${numStops !== 1 ? 's' : ''}</span>` +
+          `<span class="tl-leg-dur">${formatDuration(leg.rideMin)}</span>` +
+          `</div>`;
+      } else {
+        html += `<div class="tl-no-trips">No more trips today</div>`;
+      }
+      html += `</div>`;
+
+      // Arrival station
+      const destClass = isLast ? ' tl-dest' : '';
+      const arrTimeStr = leg.arrTime !== null ? formatTime(leg.arrTime) : '';
+      const arrDotFill = isLast ? route.color : '#fff';
+      html += `<div class="tl-station${destClass}">` +
+        `<div class="tl-dot" style="border-color:${route.color};background:${arrDotFill}"></div>` +
+        `<div class="tl-station-name">${alightStop}</div>` +
+        (arrTimeStr ? `<div class="tl-station-time">${arrTimeStr}</div>` : '') +
+        `</div>`;
     });
 
+    html += '</div>';
+
+    // Summary bar
     const transfers = resolvedLegs.length - 1;
     const totalStops = resolvedLegs.reduce((sum, l) => sum + l.stops.length - 1, 0);
-
     let summaryParts = [`${totalStops} stops`, `${transfers} transfer${transfers !== 1 ? 's' : ''}`];
     if (resolvedLegs[0].depTime !== null) {
       const firstDep = resolvedLegs[0].depTime;
-      const lastArr = resolvedLegs[resolvedLegs.length - 1].arrTime;
+      const lastArr = resolvedLegs[lastLegIdx].arrTime;
       if (lastArr !== null) {
         const totalTime = lastArr - firstDep;
         summaryParts.push(`<strong>${formatDuration(totalTime)} total</strong> (${formatTime(firstDep)} &rarr; ${formatTime(lastArr)})`);
       }
     }
-    html += `<div class="dir-summary">${summaryParts.join(' &middot; ')}</div>`;
+    html += `<div class="dir-summary">${summaryParts.join(' \u00B7 ')}</div>`;
     return html;
   }
 
