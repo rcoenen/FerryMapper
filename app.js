@@ -74,7 +74,10 @@
     if (e.target === aboutModal) closeAboutModal();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeAboutModal();
+    if (e.key === 'Escape') {
+      closeAboutModal();
+      if (typeof closeMapOverlay === 'function') closeMapOverlay();
+    }
   });
 
   function populateSelect(sel) {
@@ -110,6 +113,32 @@
   for (const el of [fromSel, toSel, dateInput, timeInput, document.getElementById('time-mode')]) {
     el.addEventListener('change', saveState);
   }
+
+  // When stop selection changes while a route is active, clear state and start fresh
+  function resetRoute() {
+    if (!lastSearch) return;
+    clearHighlights();
+    const dir = document.getElementById('directions');
+    dir.classList.remove('visible');
+    dir.innerHTML = '';
+    controls.classList.remove('collapsed');
+    lastSearch = null;
+    currentOptions = [null, null, null];
+    shiftCount = 0;
+    if (isMobile()) setSheetSnap('peek');
+  }
+  fromSel.addEventListener('change', resetRoute);
+  toSel.addEventListener('change', resetRoute);
+
+  // Collapsible summary bar for mobile
+  const controls = document.querySelector('.controls');
+  const controlsSummary = document.createElement('div');
+  controlsSummary.className = 'controls-summary';
+  controlsSummary.innerHTML = '<span class="summary-route"></span><button class="summary-edit" type="button" title="Edit search">&#9998;</button>';
+  controls.prepend(controlsSummary);
+  controlsSummary.addEventListener('click', () => {
+    controls.classList.remove('collapsed');
+  });
 
   // Swap button
   document.getElementById('swap-btn').addEventListener('click', () => {
@@ -616,7 +645,31 @@
   });
 
   const allLatLngs = stops.map(s => [s.lat, s.lng]);
-  if (allLatLngs.length) map.fitBounds(allLatLngs, { padding: [30, 30] });
+  const stopsBounds = allLatLngs.length ? L.latLngBounds(allLatLngs) : null;
+  if (stopsBounds) map.fitBounds(stopsBounds, { padding: [30, 30] });
+
+  // --- "Return to NYC" overlay when panned away ---
+  const returnOverlay = document.createElement('div');
+  returnOverlay.className = 'return-nyc-overlay';
+  returnOverlay.innerHTML = '<div class="nyc-icon">\uD83D\uDDFD</div>' +
+    '<div class="nyc-msg">Oy vey, you\'re outside NYC!</div>' +
+    '<button class="nyc-back-btn" type="button">Take me back</button>';
+  document.getElementById('map-overlay').appendChild(returnOverlay);
+
+  // Pad the bounds generously so users can explore the NYC metro area
+  const nycBounds = stopsBounds ? stopsBounds.pad(0.5) : null;
+
+  function checkReturnOverlay() {
+    if (!nycBounds) return;
+    const visible = map.getBounds().intersects(nycBounds);
+    returnOverlay.classList.toggle('visible', !visible);
+  }
+
+  map.on('moveend', checkReturnOverlay);
+
+  returnOverlay.querySelector('.nyc-back-btn').addEventListener('click', () => {
+    if (stopsBounds) map.flyToBounds(stopsBounds, { padding: [30, 30] });
+  });
 
   // --- Highlight layers ---
   let highlightLayers = [];
@@ -745,7 +798,39 @@
     // Keep stop nodes above route overlays so clicks reliably open the pier popup card.
     for (const sid in stopMarkers) stopMarkers[sid].bringToFront();
 
-    if (bounds.length) map.fitBounds(bounds, { padding: [50, 50] });
+    // Add Start/End pill markers at origin and destination
+    const originStop = stopById[originId];
+    const destStop = stopById[destId];
+
+    const startMarker = L.marker([originStop.lat, originStop.lng], {
+      icon: L.divIcon({
+        className: '',
+        html: '<div class="start-end-marker">Start</div>',
+        iconSize: [52, 36],
+        iconAnchor: [26, 36]
+      }),
+      interactive: false
+    }).addTo(map);
+    highlightLayers.push(startMarker);
+
+    const endMarker = L.marker([destStop.lat, destStop.lng], {
+      icon: L.divIcon({
+        className: '',
+        html: '<div class="start-end-marker">End</div>',
+        iconSize: [44, 36],
+        iconAnchor: [22, 36]
+      }),
+      interactive: false
+    }).addTo(map);
+    highlightLayers.push(endMarker);
+
+    if (bounds.length) {
+      if (isMobile()) {
+        map.panTo([originStop.lat, originStop.lng]);
+      } else {
+        map.fitBounds(bounds, { padding: [50, 50] });
+      }
+    }
   }
 
   function getShapeSegment(route, fromStop, toStop) {
@@ -771,7 +856,10 @@
   }
 
   // --- Directions display ---
+  const BASE_LABELS = ['Earlier', 'Best', 'Later'];
   let currentOptions = [null, null, null];
+  let currentActiveIdx = 1;
+  let shiftCount = 0; // negative = shifted earlier, positive = shifted later
   let lastSearch = null; // { legs, dateStr, startMin, mode, fromId, toId }
 
   function renderLegs(resolvedLegs) {
@@ -851,14 +939,15 @@
   }
 
   function buildTabHtml(option, label) {
+    const labelHtml = label ? `<div class="tab-label">${label}</div>` : '';
     if (!option || !isComplete(option)) {
-      return `<div class="option-tab disabled"><div class="tab-label">${label}</div><div class="tab-time">-</div></div>`;
+      return `<div class="option-tab disabled">${labelHtml}<div class="tab-time">-</div></div>`;
     }
     const dep = getDeparture(option);
     const total = getTotalTime(option);
     const maxWait = getMaxWait(option);
     const waitInfo = maxWait > 0 ? `<div class="tab-transfer">${maxWait} min transfer</div>` : '';
-    return `<div class="tab-label">${label}</div><div class="tab-time">${formatTime(dep)}</div><div class="tab-dur">${formatDuration(total)}</div>${waitInfo}`;
+    return `${labelHtml}<div class="tab-time">${formatTime(dep)}</div><div class="tab-dur">${formatDuration(total)}</div>${waitInfo}`;
   }
 
   function shiftOptions(direction) {
@@ -873,6 +962,7 @@
     lastSearch.startMin = newStartMin;
     const options = findOptions(allLegs, dateStr, newStartMin, mode);
     const activeIdx = 1;
+    shiftCount += direction;
     if (options[activeIdx] && isComplete(options[activeIdx])) {
       showRoute(options[activeIdx]);
     } else {
@@ -882,10 +972,28 @@
     showDirections(options, fromId, toId, activeIdx);
   }
 
-  function setDirections(html) {
+  function setDirections(html, hasRoute) {
     const dir = document.getElementById('directions');
+    if (isMobile()) {
+      closeMapOverlay();
+      setSheetSnap('full');
+      if (hasRoute) {
+        // Collapse form to compact summary bar
+        const fromName = fromSel.options[fromSel.selectedIndex]?.text || '';
+        const toName = toSel.options[toSel.selectedIndex]?.text || '';
+        controlsSummary.querySelector('.summary-route').textContent = fromName + ' \u2192 ' + toName;
+        controls.classList.add('collapsed');
+        // Inject "Show route on map" button
+        html += '<div style="padding:8px 16px 16px;padding-bottom:max(16px,env(safe-area-inset-bottom))"><button class="show-map-btn" id="show-map-btn">\uD83D\uDDFA\uFE0F Show route on map</button></div>';
+      } else {
+        controls.classList.remove('collapsed');
+      }
+    }
     dir.innerHTML = html;
     dir.classList.add('visible');
+    if (isMobile() && hasRoute) {
+      document.getElementById('show-map-btn')?.addEventListener('click', openMapOverlay);
+    }
     map.invalidateSize();
   }
 
@@ -894,6 +1002,7 @@
     const from = stopById[fromId];
     const to = stopById[toId];
     currentOptions = options;
+    currentActiveIdx = activeIdx;
 
     if (!options[0] && !options[1] && !options[2]) {
       setDirections('<div class="error-msg">No route found between these stops.</div>');
@@ -908,9 +1017,12 @@
       }
     }
 
-    let html = `<div class="dir-header">${from.name} &rarr; ${to.name}</div>`;
+    let html = '';
 
-    const labels = ['Earlier', 'Requested', 'Later'];
+    const labels = [0, 1, 2].map(k => {
+      const orig = k + shiftCount;
+      return (orig >= 0 && orig < 3) ? BASE_LABELS[orig] : '';
+    });
     const canGoEarlier = options[0] && isComplete(options[0]);
     const canGoLater = options[2] && isComplete(options[2]);
 
@@ -928,7 +1040,7 @@
 
     html += `<div id="option-detail">${renderLegs(options[activeIdx])}</div>`;
 
-    setDirections(html);
+    setDirections(html, true);
 
     dir.querySelectorAll('.option-tab:not(.disabled)').forEach(tab => {
       tab.addEventListener('click', () => {
@@ -978,6 +1090,7 @@
     const options = findOptions(allLegs, dateStr, startMin, mode);
 
     lastSearch = { allLegs, dateStr, startMin, mode, fromId, toId };
+    shiftCount = 0;
 
     const activeIdx = 1;
     if (options[activeIdx] && isComplete(options[activeIdx])) {
@@ -999,4 +1112,150 @@
     const b = parseInt(hex.substring(4, 6), 16);
     return (r * 299 + g * 587 + b * 114) / 1000 > 160;
   }
+
+  // --- Mobile bottom sheet ---
+  function isMobile() { return window.innerWidth <= 640; }
+
+  const sheet = document.getElementById('bottom-sheet');
+  const handle = document.getElementById('sheet-handle');
+  const mapOverlay = document.getElementById('map-overlay');
+  const mapCloseBtn = document.getElementById('map-close');
+  let currentSnap = 'peek';
+
+  function setSheetSnap(snap) {
+    currentSnap = snap;
+    sheet.classList.remove('snap-collapsed', 'snap-peek', 'snap-full');
+    sheet.classList.add('snap-' + snap);
+    // Let map recalculate its size after transition
+    setTimeout(() => map.invalidateSize(), 320);
+  }
+
+  // --- Map overlay (mobile fullscreen map) ---
+  function openMapOverlay() {
+    mapOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+      map.invalidateSize();
+      if (highlightLayers.length) {
+        const bounds = [];
+        highlightLayers.forEach(l => {
+          if (l.getBounds) bounds.push(l.getBounds());
+          else if (l.getLatLng) bounds.push(l.getLatLng());
+        });
+        if (bounds.length) {
+          const group = L.featureGroup(highlightLayers);
+          map.fitBounds(group.getBounds(), { padding: [50, 50] });
+        }
+      }
+    }, 50);
+  }
+
+  function closeMapOverlay() {
+    if (!mapOverlay.classList.contains('open')) return;
+    mapOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => map.invalidateSize(), 50);
+  }
+
+  mapCloseBtn.addEventListener('click', closeMapOverlay);
+
+  // Initialize sheet position on mobile
+  function initSheet() {
+    if (isMobile()) {
+      closeMapOverlay();
+      sheet.classList.remove('snap-collapsed', 'snap-peek', 'snap-full');
+      sheet.style.transform = '';
+      setSheetSnap('peek');
+    } else {
+      sheet.classList.remove('snap-collapsed', 'snap-peek', 'snap-full');
+      sheet.style.transform = '';
+      // Ensure overlay is closed and map is visible on desktop
+      mapOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  }
+  initSheet();
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      initSheet();
+      map.invalidateSize();
+    }, 150);
+  });
+
+  // Touch drag on handle (with velocity tracking for magnetic snap)
+  let dragStartY = 0;
+  let dragStartTranslate = 0;
+  let isDragging = false;
+  let lastTouchY = 0;
+  let lastTouchTime = 0;
+  let velocity = 0; // px/ms, positive = dragging down (closing)
+
+  function getSheetTranslateY() {
+    const style = window.getComputedStyle(sheet);
+    const matrix = new DOMMatrix(style.transform);
+    return matrix.m42;
+  }
+
+  handle.addEventListener('touchstart', (e) => {
+    if (!isMobile()) return;
+    isDragging = true;
+    dragStartY = e.touches[0].clientY;
+    dragStartTranslate = getSheetTranslateY();
+    lastTouchY = dragStartY;
+    lastTouchTime = Date.now();
+    velocity = 0;
+    sheet.classList.add('dragging');
+  }, { passive: true });
+
+  document.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const touchY = e.touches[0].clientY;
+    const now = Date.now();
+    const dt = now - lastTouchTime;
+    if (dt > 0) velocity = (touchY - lastTouchY) / dt;
+    lastTouchY = touchY;
+    lastTouchTime = now;
+    const dy = touchY - dragStartY;
+    const newY = Math.max(0, dragStartTranslate + dy);
+    const maxY = sheet.offsetHeight - 52;
+    sheet.style.transform = `translateY(${Math.min(newY, maxY)}px)`;
+  }, { passive: true });
+
+  const FLICK_THRESHOLD = 0.4; // px/ms — above this, snap in throw direction
+  const snaps = ['full', 'peek', 'collapsed']; // ordered open → closed
+
+  document.addEventListener('touchend', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    sheet.classList.remove('dragging');
+
+    const currentIdx = snaps.indexOf(currentSnap);
+
+    // Fast flick: magnetic snap one step in the throw direction
+    if (Math.abs(velocity) > FLICK_THRESHOLD) {
+      sheet.style.transform = '';
+      const dir = velocity > 0 ? 1 : -1; // positive = closing, negative = opening
+      const nextIdx = Math.max(0, Math.min(snaps.length - 1, currentIdx + dir));
+      setSheetSnap(snaps[nextIdx]);
+      return;
+    }
+
+    // Slow drag: stay exactly where released (keep current inline transform)
+  });
+
+  // Tap handle to toggle open/collapsed
+  handle.addEventListener('click', () => {
+    if (!isMobile()) return;
+    const currentY = getSheetTranslateY();
+    // If partially dragged or collapsed, snap open; if already fully open, collapse
+    if (currentSnap === 'collapsed' || currentY > 10) {
+      sheet.style.transform = '';
+      setSheetSnap('peek');
+    } else {
+      setSheetSnap('collapsed');
+    }
+  });
 })();
