@@ -197,8 +197,8 @@
   // --- Candidate Topology Router (k-shortest-ish topologies) ---
   const MAX_CANDIDATES = 3;
 
-  // Single weighted shortest-path run. penaltyStops adds +1 cost to transfers at those stops.
-  // We use a tiny Dijkstra loop because penalized transfers can raise an edge cost above 1.
+  // Single bounded-weight shortest-path run. penaltyStops adds +1 cost to transfers at those stops.
+  // Transfer edges are in {1,2} and same-route moves are 0, so we can use a 0/1/2 BFS bucket queue.
   function bfsRoute(fromId, toId, penaltyStops) {
     const INF = Infinity;
     const dist = {};
@@ -209,16 +209,43 @@
     function setDist(stop, route, d) { dist[key(stop, route)] = d; }
     function setPrev(stop, route, pStop, pRoute) { prev[key(stop, route)] = { stop: pStop, route: pRoute }; }
 
-    const queue = [];
-    setDist(fromId, null, 0);
-    queue.push({ stop: fromId, route: null, cost: 0 });
+    const MAX_EDGE_COST = 2;
+    const BUCKET_COUNT = MAX_EDGE_COST + 1;
+    const buckets = Array.from({ length: BUCKET_COUNT }, () => []);
+    const bucketHeads = new Array(BUCKET_COUNT).fill(0);
+    let pending = 0;
+    let currentCost = 0;
 
-    while (queue.length > 0) {
-      let bestIdx = 0;
-      for (let i = 1; i < queue.length; i++) {
-        if (queue[i].cost < queue[bestIdx].cost) bestIdx = i;
+    function pushState(state) {
+      const idx = state.cost % BUCKET_COUNT;
+      buckets[idx].push(state);
+      pending++;
+    }
+
+    function popNext() {
+      while (pending > 0) {
+        const idx = currentCost % BUCKET_COUNT;
+        if (bucketHeads[idx] < buckets[idx].length) {
+          const state = buckets[idx][bucketHeads[idx]++];
+          pending--;
+          // Reset fully-drained bucket to avoid unbounded array growth over time.
+          if (bucketHeads[idx] === buckets[idx].length) {
+            buckets[idx] = [];
+            bucketHeads[idx] = 0;
+          }
+          return state;
+        }
+        currentCost++;
       }
-      const [cur] = queue.splice(bestIdx, 1);
+      return null;
+    }
+
+    setDist(fromId, null, 0);
+    pushState({ stop: fromId, route: null, cost: 0 });
+
+    while (pending > 0) {
+      const cur = popNext();
+      if (!cur) break;
       if (cur.cost > getDist(cur.stop, cur.route)) continue;
 
       if (cur.stop === toId) {
@@ -234,7 +261,7 @@
         if (newCost < getDist(cur.stop, rid)) {
           setDist(cur.stop, rid, newCost);
           setPrev(cur.stop, rid, cur.stop, cur.route);
-          queue.push({ stop: cur.stop, route: rid, cost: newCost });
+          pushState({ stop: cur.stop, route: rid, cost: newCost });
         }
       }
 
@@ -245,7 +272,7 @@
             if (newCost < getDist(edge.to, cur.route)) {
               setDist(edge.to, cur.route, newCost);
               setPrev(edge.to, cur.route, cur.stop, cur.route);
-              queue.push({ stop: edge.to, route: cur.route, cost: newCost });
+              pushState({ stop: edge.to, route: cur.route, cost: newCost });
             }
           }
         }
