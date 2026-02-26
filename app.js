@@ -657,6 +657,22 @@
   }
 
 
+  function smoothLine(pts, iterations = 3) {
+    if (pts.length < 3) return pts;
+    let result = pts.map(p => [p[0], p[1]]);
+    for (let iter = 0; iter < iterations; iter++) {
+      const smooth = [result[0]];
+      for (let i = 0; i < result.length - 1; i++) {
+        const [ax, ay] = result[i], [bx, by] = result[i + 1];
+        smooth.push([ax * 0.75 + bx * 0.25, ay * 0.75 + by * 0.25]);
+        smooth.push([ax * 0.25 + bx * 0.75, ay * 0.25 + by * 0.75]);
+      }
+      smooth.push(result[result.length - 1]);
+      result = smooth;
+    }
+    return result;
+  }
+
   function showRoute(legs) {
     clearHighlights();
     for (const rid in routePolylines) routePolylines[rid].setStyle({ weight: 2, opacity: 0.15 });
@@ -668,20 +684,38 @@
 
     legs.forEach(leg => {
       const route = routeById[leg.route];
+      // Collect all raw shape points for the entire leg
+      const allRaw = [];
+      const segBoundaries = [0]; // indices where each stop-to-stop segment starts in allRaw
       for (let i = 0; i + 1 < leg.stops.length; i++) {
         const fromStop = stopById[leg.stops[i]];
         const toStop = stopById[leg.stops[i + 1]];
-        const segment = getShapeSegment(route, fromStop, toStop);
-        const noTrips = leg.depTime === null;
-        const line = L.polyline(segment, {
-          color: route.color, weight: noTrips ? 4 : 6,
-          opacity: noTrips ? 0.5 : 0.9,
-          dashArray: noTrips ? '8 6' : null,
-          interactive: false
-        }).addTo(map);
-        highlightLayers.push(line);
-        segment.forEach(p => bounds.push(p));
-        addChevronToSegment(segment, route.color);
+        const seg = getShapeSegment(route, fromStop, toStop);
+        if (i === 0) {
+          seg.forEach(p => allRaw.push(p));
+        } else {
+          // skip first point (duplicate of previous segment's last)
+          for (let j = 1; j < seg.length; j++) allRaw.push(seg[j]);
+        }
+        segBoundaries.push(allRaw.length - 1);
+      }
+      // Smooth the entire leg as one continuous polyline
+      const smoothed = smoothLine(allRaw);
+      const noTrips = leg.depTime === null;
+      const line = L.polyline(smoothed, {
+        color: route.color, weight: noTrips ? 4 : 6,
+        opacity: noTrips ? 0.5 : 0.9,
+        dashArray: noTrips ? '8 6' : null,
+        interactive: false
+      }).addTo(map);
+      highlightLayers.push(line);
+      smoothed.forEach(p => bounds.push(p));
+      // Place chevrons per stop-to-stop segment (smooth each so chevron lands on the curved line)
+      for (let i = 0; i + 1 < leg.stops.length; i++) {
+        const fromStop = stopById[leg.stops[i]];
+        const toStop = stopById[leg.stops[i + 1]];
+        const seg = getShapeSegment(route, fromStop, toStop);
+        addChevronToSegment(smoothLine(seg), route.color);
       }
       leg.stops.forEach(sid => {
         const isEndpoint = sid === originId || sid === destId;
@@ -749,7 +783,7 @@
       // Departure station
       const originClass = isFirst ? ' tl-origin' : '';
       const depTimeStr = leg.depTime !== null ? formatTime(leg.depTime) : '';
-      const depDotFill = isFirst ? route.color : '#fff';
+      const depDotFill = route.color;
       html += `<div class="tl-station${originClass}">` +
         `<div class="tl-dot" style="border-color:${route.color};background:${depDotFill}"></div>` +
         `<div class="tl-station-name">${boardStop}</div>` +
@@ -775,7 +809,7 @@
       // Arrival station
       const destClass = isLast ? ' tl-dest' : '';
       const arrTimeStr = leg.arrTime !== null ? formatTime(leg.arrTime) : '';
-      const arrDotFill = isLast ? route.color : '#fff';
+      const arrDotFill = route.color;
       html += `<div class="tl-station${destClass}">` +
         `<div class="tl-dot" style="border-color:${route.color};background:${arrDotFill}"></div>` +
         `<div class="tl-station-name">${alightStop}</div>` +
