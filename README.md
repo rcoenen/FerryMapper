@@ -1,12 +1,14 @@
 # NYC Ferry Trip Planner
 
+### [Try it live](https://rcoenen.github.io/FerryMapper/)
+
 A lightweight, no-framework trip planner for the NYC Ferry system. Plan routes across all active ferry lines with real schedule data, transfer times, and multiple trip options.
 
 ![Screenshot](screenshot.png)
 
 ## Features
 
-- **Route planning** across 39 stops and 7 active ferry routes
+- **Route planning** across 25 ferry stops and 5 active routes
 - **Schedule-aware** — uses real GTFS departure/arrival times
 - **Transfer optimization** — 10-minute minimum transfer time, finds fastest connections
 - **3 trip options** with Earlier/Requested/Later tabs and navigation
@@ -38,7 +40,7 @@ npm start              # serves on localhost
 ## Data
 
 The `data/ferry-data.json` file contains:
-- **39 stops** (ferry terminals + shuttle bus stops)
-- **7 active routes** (Astoria, East River, South Brooklyn, Soundview, St. George, plus shuttles)
+- **25 ferry stops**
+- **5 active routes** (Astoria, East River, Rockaway-Soundview, South Brooklyn, St. George)
 - **503 trip schedules** with full stop times
 - Pre-built routing graph with edges from all trip patterns per route
