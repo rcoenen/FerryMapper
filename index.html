@@ -405,7 +405,8 @@
           alightIdx,
           depTime,
           arrTime: timeToMin(trip.stops[alightIdx].arr),
-          stops: trip.stops.slice(boardIdx, alightIdx + 1)
+          stops: trip.stops.slice(boardIdx, alightIdx + 1),
+          toward: stopById[trip.stops[trip.stops.length - 1].id]?.name || ''
         };
       }
     }
@@ -575,7 +576,8 @@
         arrTime: trip.arrTime,
         waitMin: i === 0 ? null : waitMin,
         rideMin: trip.arrTime - trip.depTime,
-        tripStops: trip.stops
+        tripStops: trip.stops,
+        toward: trip.toward
       });
 
       // Add minimum transfer time (10 min) for connections — ferries don't wait
@@ -837,7 +839,7 @@
       html += `<div class="leg">
         <div class="leg-color" style="background:${route.color}"></div>
         <div class="leg-details">
-          <div class="leg-route" style="color:${route.color}">${route.name}</div>
+          <div class="leg-route" style="color:${route.color}">${route.name}${leg.toward ? ` <span style="font-weight:400;color:#888">toward ${leg.toward}</span>` : ''}</div>
           <div class="leg-stops">
             Board at <strong>${boardStop}</strong><br>
             Ride ${numStops} stop${numStops !== 1 ? 's' : ''} to <strong>${alightStop}</strong>
