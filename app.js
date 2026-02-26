@@ -565,9 +565,13 @@
     maxZoom: 18
   }).addTo(map);
 
+  const routeOutlines = {};
   const routePolylines = {};
   routes.forEach(r => {
     if (r.shape.length > 0) {
+      routeOutlines[r.id] = L.polyline(r.shape, {
+        color: '#fff', weight: 5, opacity: 0.35, interactive: false
+      }).addTo(map);
       routePolylines[r.id] = L.polyline(r.shape, {
         color: r.color, weight: 3, opacity: 0.35, interactive: false
       }).addTo(map);
@@ -620,12 +624,13 @@
   function clearHighlights() {
     highlightLayers.forEach(l => map.removeLayer(l));
     highlightLayers = [];
+    for (const rid in routeOutlines) routeOutlines[rid].setStyle({ weight: 5, opacity: 0.35 });
     for (const rid in routePolylines) routePolylines[rid].setStyle({ weight: 3, opacity: 0.35 });
     for (const sid in stopMarkers) stopMarkers[sid].setStyle({ radius: 5, color: '#333', weight: 1.5, fillColor: '#fff' });
   }
 
-  function addChevronToSegment(pts, color) {
-    // Place a single chevron at the midpoint of a shape segment.
+  function addChevronToSegment(pts, color, lineWeight) {
+    // Place a simple white chevron at the midpoint, sized to the line weight.
     // Skip spur/branch segments (path much longer than straight line).
     const segs = [];
     let totalLen = 0;
@@ -644,9 +649,13 @@
         const lat = seg.a.lat + t * (seg.b.lat - seg.a.lat);
         const lng = seg.a.lng + t * (seg.b.lng - seg.a.lng);
         const angle = Math.atan2(seg.b.lng - seg.a.lng, seg.b.lat - seg.a.lat) * 180 / Math.PI;
-        const svg = `<svg width="12" height="12" viewBox="0 0 12 12" style="transform:rotate(${angle}deg)"><path d="M2 8L6 2L10 8" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        // Chevron width ~lineWeight * 2.5 so wings extend slightly past the line
+        const s = Math.round(lineWeight * 2.5);
+        const sw = Math.max(2, Math.round(lineWeight * 0.45));
+        const half = Math.round(s / 2);
+        const svg = `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" style="transform:rotate(${angle}deg)"><path d="M${s * 0.2} ${s * 0.75}L${half} ${s * 0.2}L${s * 0.8} ${s * 0.75}" fill="none" stroke="white" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
         const m = L.marker([lat, lng], {
-          icon: L.divIcon({ className: '', html: svg, iconSize: [12, 12], iconAnchor: [6, 6] }),
+          icon: L.divIcon({ className: '', html: svg, iconSize: [s, s], iconAnchor: [half, half] }),
           interactive: false
         }).addTo(map);
         highlightLayers.push(m);
@@ -655,7 +664,6 @@
       target -= seg.len;
     }
   }
-
 
   function smoothLine(pts, iterations = 3) {
     if (pts.length < 3) return pts;
@@ -675,6 +683,7 @@
 
   function showRoute(legs) {
     clearHighlights();
+    for (const rid in routeOutlines) routeOutlines[rid].setStyle({ weight: 4, opacity: 0.15 });
     for (const rid in routePolylines) routePolylines[rid].setStyle({ weight: 2, opacity: 0.15 });
 
     const bounds = [];
@@ -702,6 +711,12 @@
       // Smooth the entire leg as one continuous polyline
       const smoothed = smoothLine(allRaw);
       const noTrips = leg.depTime === null;
+      const outline = L.polyline(smoothed, {
+        color: '#fff', weight: noTrips ? 8 : 10,
+        opacity: 1,
+        interactive: false
+      }).addTo(map);
+      highlightLayers.push(outline);
       const line = L.polyline(smoothed, {
         color: route.color, weight: noTrips ? 4 : 6,
         opacity: noTrips ? 0.5 : 0.9,
@@ -715,7 +730,7 @@
         const fromStop = stopById[leg.stops[i]];
         const toStop = stopById[leg.stops[i + 1]];
         const seg = getShapeSegment(route, fromStop, toStop);
-        addChevronToSegment(smoothLine(seg), route.color);
+        addChevronToSegment(smoothLine(seg), route.color, noTrips ? 4 : 6);
       }
       leg.stops.forEach(sid => {
         const isEndpoint = sid === originId || sid === destId;
