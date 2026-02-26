@@ -600,7 +600,8 @@
   }
 
   // --- Initialize map ---
-  const map = L.map('map', { minZoom: 12 }).setView([40.6960, -73.9901], 13);
+  const DEFAULT_VIEW = { lat: 40.6989, lng: -73.9922, zoom: 13 };
+  const map = L.map('map', { minZoom: 12 }).setView([DEFAULT_VIEW.lat, DEFAULT_VIEW.lng], DEFAULT_VIEW.zoom);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors',
     maxZoom: 18
@@ -658,7 +659,6 @@
 
   const allLatLngs = stops.map(s => [s.lat, s.lng]);
   const stopsBounds = allLatLngs.length ? L.latLngBounds(allLatLngs) : null;
-  if (stopsBounds) map.fitBounds(stopsBounds, { padding: [30, 30] });
 
   // --- "Return to NYC" overlay when panned away ---
   const returnOverlay = document.createElement('div');
@@ -686,7 +686,7 @@
   map.on('zoomend', logMapPos);
 
   returnOverlay.querySelector('.nyc-back-btn').addEventListener('click', () => {
-    if (stopsBounds) map.flyToBounds(stopsBounds, { padding: [30, 30] });
+    map.flyTo([DEFAULT_VIEW.lat, DEFAULT_VIEW.lng], DEFAULT_VIEW.zoom);
   });
 
   // --- Highlight layers ---
