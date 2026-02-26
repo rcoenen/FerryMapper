@@ -703,7 +703,7 @@
       html += `<div class="tl-leg" style="color:${route.color}">`;
       html += `<div class="tl-route">` +
         `<span class="tl-route-badge" style="background:${route.color}">\u26F4 ${route.name}</span>` +
-        (leg.toward ? `<span class="tl-route-dir">\u2192 ${leg.toward}</span>` : '') +
+        (leg.toward && leg.toward !== alightStop ? `<br><span class="tl-route-dir">Direction: ${leg.toward}</span>` : '') +
         `</div>`;
       if (leg.depTime !== null) {
         html += `<div class="tl-stops-row">` +
