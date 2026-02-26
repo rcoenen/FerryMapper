@@ -134,6 +134,8 @@
     flex-shrink: 0;
   }
   .controls label { font-size: 13px; font-weight: 500; color: #555; }
+  input[type="time"]::-webkit-calendar-picker-indicator,
+  input[type="date"]::-webkit-calendar-picker-indicator { display: none; }
   .controls select, .controls input[type="date"], .controls input[type="time"] {
     padding: 10px 12px;
     border: 1px solid #ccc;
@@ -165,40 +167,66 @@
 
   .controls-stops {
     display: grid;
-    grid-template-columns: 1fr 40px;
-    gap: 6px 0;
-    align-items: center;
+    grid-template-columns: 1fr auto;
+    border: 1.5px solid #ccc;
+    border-radius: 12px;
+    overflow: hidden;
   }
-  .controls-stops .control-field { grid-column: 1; }
+  .controls-stops .control-field {
+    grid-column: 1;
+    padding: 10px 14px 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+  .control-field-icon { color: #aaa; font-size: 13px; flex-shrink: 0; }
+  .controls-stops .control-field select {
+    border: none;
+    border-radius: 0;
+    padding: 4px 0;
+    min-height: 0;
+    height: auto;
+    font-size: 16px;
+    font-weight: 500;
+    flex: 1;
+    min-width: 0;
+    background-color: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+    box-shadow: none;
+  }
+  .controls-stops .control-field select:focus { outline: none; box-shadow: none; border-color: transparent; }
+  .controls-stops .control-field label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #999;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .stop-divider { grid-column: 1; height: 1px; background: #eee; margin: 0 14px; }
   #swap-btn {
-    grid-row: 1 / 3;
     grid-column: 2;
-    align-self: center;
-    justify-self: center;
+    grid-row: 1 / 4;
+    align-self: stretch;
+    justify-self: stretch;
     background: white;
     color: #555;
-    padding: 0; margin: 0;
-    width: 34px; height: 34px; min-height: 0; max-height: 34px;
-    border-radius: 50%;
-    border: 1.5px solid #ccc;
+    padding: 0;
+    margin: 0;
+    width: 52px;
+    min-height: 0;
+    max-height: none;
+    border-radius: 0;
+    border: none;
+    border-left: 1.5px solid #eee;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    z-index: 1;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
   }
-  #swap-btn::before,
-  #swap-btn::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    width: 1.5px;
-    background: #ddd;
-    transform: translateX(-50%);
-  }
-  #swap-btn::before { bottom: 100%; height: 10px; }
-  #swap-btn::after { top: 100%; height: 10px; }
   #swap-btn:hover { background: #f5f5f5; border-color: #aaa; color: #555; }
 
   .controls-summary {
@@ -248,9 +276,12 @@
   }
   .controls-time select { flex: 0 0 auto; min-width: 0; }
   .controls-time input[type="date"] { flex: 1 1 0; min-width: 0; }
-  .controls-time input[type="time"] { flex: 0 0 84px; }
-  #now-btn { flex: 0 0 auto; padding: 0 10px; height: 44px; background: white; color: #1a237e; border: 1.5px solid #1a237e; border-radius: 8px; font-size: 13px; font-weight: 600; }
-  #now-btn:active { background: #e8eaf6; }
+  .controls-time .time-now-group { flex: 0 0 auto; }
+  .controls-time input[type="date"] { flex: 1 1 0; min-width: 0; }
+  .time-now-group { display: flex; flex: 0 0 auto; border: 1.5px solid #ccc; border-radius: 8px; overflow: hidden; }
+  .time-now-group input[type="time"] { flex: 0 0 auto; border: none; border-radius: 0; padding: 0 8px; height: 44px; outline: none; background: white; }
+  .time-now-group #now-btn { flex: 0 0 auto; padding: 0 10px; height: 44px; background: white; color: #1a237e; border: none; border-left: 1.5px solid #ccc; border-radius: 0; font-size: 13px; font-weight: 600; }
+  .time-now-group #now-btn:active { background: #e8eaf6; }
   #go-btn { background: #1a237e; color: white; padding: 12px; flex: 1 1 100%; }
   #go-btn:hover { background: #283593; }
   #go-btn:active { background: #0d1452; }

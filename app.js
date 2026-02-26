@@ -80,8 +80,8 @@
     }
   });
 
-  function populateSelect(sel) {
-    sel.innerHTML = '<option value="">-- Select a stop --</option>';
+  function populateSelect(sel, placeholder) {
+    sel.innerHTML = `<option value="">${placeholder}</option>`;
     sorted.forEach(s => {
       const opt = document.createElement('option');
       opt.value = s.id;
@@ -89,8 +89,8 @@
       sel.appendChild(opt);
     });
   }
-  populateSelect(fromSel);
-  populateSelect(toSel);
+  populateSelect(fromSel, 'From:');
+  populateSelect(toSel, 'To:');
 
   // Hydrate from saved state or default to now
   const saved = loadState();
@@ -600,7 +600,7 @@
   }
 
   // --- Initialize map ---
-  const map = L.map('map', { minZoom: 10 }).setView([40.7128, -74.006], 11);
+  const map = L.map('map', { minZoom: 12 }).setView([40.6960, -73.9901], 13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors',
     maxZoom: 18
@@ -678,6 +678,12 @@
   }
 
   map.on('moveend', checkReturnOverlay);
+  function logMapPos() {
+    const c = map.getCenter();
+    console.log(`map: zoom=${map.getZoom()} lat=${c.lat.toFixed(4)} lng=${c.lng.toFixed(4)}`);
+  }
+  map.on('moveend', logMapPos);
+  map.on('zoomend', logMapPos);
 
   returnOverlay.querySelector('.nyc-back-btn').addEventListener('click', () => {
     if (stopsBounds) map.flyToBounds(stopsBounds, { padding: [30, 30] });
