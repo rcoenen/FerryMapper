@@ -194,8 +194,11 @@
     return best;
   }
 
-  // --- 0-1 BFS Router ---
-  function findRoute(fromId, toId) {
+  // --- 0-1 BFS Router (k-shortest topologies) ---
+  const MAX_CANDIDATES = 3;
+
+  // Single 0-1 BFS run. penaltyStops adds +1 cost to transfers at those stops.
+  function bfsRoute(fromId, toId, penaltyStops) {
     const INF = Infinity;
     const dist = {};
     const prev = {};
@@ -214,12 +217,14 @@
       if (cur.cost > getDist(cur.stop, cur.route)) continue;
 
       if (cur.stop === toId) {
-        return reconstructPath(prev, cur.stop, cur.route, fromId);
+        return { legs: pathToLegs(reconstructSinglePath(prev, cur.stop, cur.route, fromId)), cost: cur.cost };
       }
 
       const stopData = stopById[cur.stop];
       for (const rid of stopData.routes) {
-        const transferCost = (cur.route === null || cur.route === rid) ? 0 : 1;
+        let transferCost = (cur.route === null || cur.route === rid) ? 0 : 1;
+        // Penalize transfers at previously-used hubs to find alternatives
+        if (transferCost > 0 && penaltyStops.has(cur.stop)) transferCost += 1;
         const newCost = cur.cost + transferCost;
         if (newCost < getDist(cur.stop, rid)) {
           setDist(cur.stop, rid, newCost);
@@ -245,10 +250,9 @@
     return null;
   }
 
-  function reconstructPath(prev, endStop, endRoute, startStop) {
+  function reconstructSinglePath(prev, endStop, endRoute, startStop) {
     const path = [];
     let stop = endStop, route = endRoute;
-
     while (stop !== startStop || route !== null) {
       path.unshift({ stop, route });
       const k = stop + '|' + (route || '');
@@ -258,7 +262,42 @@
       route = p.route;
     }
     path.unshift({ stop: startStop, route: null });
+    return path;
+  }
 
+  // Find up to MAX_CANDIDATES unique topologies by re-running BFS
+  // with penalties on transfer stops from previous results
+  function findRoutes(fromId, toId) {
+    const results = [];
+    const seen = new Set();
+    const penaltyStops = new Set();
+
+    for (let i = 0; i < MAX_CANDIDATES; i++) {
+      const result = bfsRoute(fromId, toId, penaltyStops);
+      if (!result) break;
+
+      // Signature = transfer stops (where route changes)
+      const sig = result.legs.map(l => l.route + ':' + l.stops[0]).join('|');
+      if (seen.has(sig)) break; // No new topology found
+      seen.add(sig);
+      results.push(result.legs);
+
+      // Penalize transfer stops from this result for next BFS run
+      for (let j = 1; j < result.legs.length; j++) {
+        penaltyStops.add(result.legs[j].stops[0]);
+      }
+    }
+
+    return results.length > 0 ? results : null;
+  }
+
+  // Single-path findRoute for backward compat
+  function findRoute(fromId, toId) {
+    const routes = findRoutes(fromId, toId);
+    return routes ? routes[0] : null;
+  }
+
+  function pathToLegs(path) {
     const legs = [];
     let currentLeg = null;
 
@@ -365,8 +404,27 @@
   }
   function isComplete(r) { return getArrival(r) !== null; }
 
+  // Resolve best itinerary across multiple topologies for a given departure time
+  function resolveBest(allLegs, dateStr, tryMin, mode) {
+    let best = null;
+    for (const legs of allLegs) {
+      const c = resolveScheduleAt(legs, dateStr, tryMin);
+      if (!isComplete(c)) continue;
+      if (!best) { best = c; continue; }
+      // Pick by mode: depart = earliest arrival; arrive = latest departure
+      if (mode === 'arrive') {
+        if (getDeparture(c) > getDeparture(best)) best = c;
+        else if (getDeparture(c) === getDeparture(best) && getTotalTime(c) < getTotalTime(best)) best = c;
+      } else {
+        if (getArrival(c) < getArrival(best)) best = c;
+        else if (getArrival(c) === getArrival(best) && getTotalTime(c) < getTotalTime(best)) best = c;
+      }
+    }
+    return best || resolveScheduleAt(allLegs[0], dateStr, tryMin);
+  }
+
   // Generate 3 options: earlier/faster, requested time, later/less wait
-  function findOptions(legs, dateStr, startMin, mode) {
+  function findOptions(allLegs, dateStr, startMin, mode) {
     // Collect many candidates across a wide time window
     const candidates = [];
     // For arrive-by, scan much further back since we need departures
@@ -377,7 +435,7 @@
     for (let offset = -backRange; offset <= fwdRange; offset += 5) {
       const tryMin = startMin + offset;
       if (tryMin < 0 || tryMin >= 24 * 60) continue;
-      const c = resolveScheduleAt(legs, dateStr, tryMin);
+      const c = resolveBest(allLegs, dateStr, tryMin, mode);
       if (isComplete(c)) candidates.push(c);
     }
 
@@ -452,7 +510,7 @@
   routes.forEach(r => {
     if (r.shape.length > 0) {
       routePolylines[r.id] = L.polyline(r.shape, {
-        color: r.color, weight: 3, opacity: 0.35
+        color: r.color, weight: 3, opacity: 0.35, interactive: false
       }).addTo(map);
     }
   });
@@ -521,7 +579,8 @@
         const line = L.polyline(segment, {
           color: route.color, weight: noTrips ? 4 : 6,
           opacity: noTrips ? 0.5 : 0.9,
-          dashArray: noTrips ? '8 6' : null
+          dashArray: noTrips ? '8 6' : null,
+          interactive: false
         }).addTo(map);
         highlightLayers.push(line);
         segment.forEach(p => bounds.push(p));
@@ -530,6 +589,9 @@
         stopMarkers[sid].setStyle({ radius: 7, color: route.color, weight: 3, fillColor: '#fff' });
       });
     });
+
+    // Keep stop nodes above route overlays so clicks reliably open the pier popup card.
+    for (const sid in stopMarkers) stopMarkers[sid].bringToFront();
 
     const originStop = stopById[legs[0].stops[0]];
     const destStop = stopById[legs[legs.length - 1].stops[legs[legs.length - 1].stops.length - 1]];
@@ -642,7 +704,7 @@
 
   function shiftOptions(direction) {
     if (!lastSearch) return;
-    const { legs, dateStr, mode, fromId, toId } = lastSearch;
+    const { allLegs, dateStr, mode, fromId, toId } = lastSearch;
     const ref = direction === -1 ? currentOptions[0] : currentOptions[2];
     if (!ref || !isComplete(ref)) return;
     // Offset by 1 min so we don't land on the same trip again
@@ -650,7 +712,7 @@
     const refTime = mode === 'arrive' ? getArrival(ref) : getDeparture(ref);
     const newStartMin = refTime + direction;
     lastSearch.startMin = newStartMin;
-    const options = findOptions(legs, dateStr, newStartMin, mode);
+    const options = findOptions(allLegs, dateStr, newStartMin, mode);
     const activeIdx = 1;
     if (options[activeIdx] && isComplete(options[activeIdx])) {
       showRoute(options[activeIdx]);
@@ -735,25 +797,28 @@
       return;
     }
 
-    const legs = findRoute(fromId, toId);
-    if (!legs || legs.length === 0) {
+    const allLegs = findRoutes(fromId, toId);
+    if (!allLegs || allLegs.length === 0) {
       clearHighlights();
       setDirections('<div class="error-msg">No route found between these stops.</div>');
       return;
     }
 
-    legs.forEach(leg => {
-      if (leg.stops.length === 2) {
-        const expanded = expandLegStops(leg.stops[0], leg.stops[leg.stops.length - 1], leg.route);
-        if (expanded) leg.stops = expanded;
-      }
-    });
+    // Expand intermediate stops for all candidate topologies
+    for (const legs of allLegs) {
+      legs.forEach(leg => {
+        if (leg.stops.length === 2) {
+          const expanded = expandLegStops(leg.stops[0], leg.stops[leg.stops.length - 1], leg.route);
+          if (expanded) leg.stops = expanded;
+        }
+      });
+    }
 
     const dateStr = dateInput.value;
     const startMin = timeToMin(timeInput.value + ':00');
-    const options = findOptions(legs, dateStr, startMin, mode);
+    const options = findOptions(allLegs, dateStr, startMin, mode);
 
-    lastSearch = { legs, dateStr, startMin, mode, fromId, toId };
+    lastSearch = { allLegs, dateStr, startMin, mode, fromId, toId };
 
     const activeIdx = 1;
     if (options[activeIdx] && isComplete(options[activeIdx])) {
