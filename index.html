@@ -238,6 +238,24 @@
   // --- Load data ---
   const res = await fetch('data/ferry-data.json');
   const data = await res.json();
+
+  // Filter out shuttle bus routes (RES/RWS) and their stops
+  const shuttleRouteIds = new Set(['RES', 'RWS']);
+  const keepStopName = 'Beach Channel Dr/Beach 108th Street';
+  data.routes = data.routes.filter(r => !shuttleRouteIds.has(r.id));
+  data.schedules = data.schedules.filter(s => !shuttleRouteIds.has(s.r));
+  // Remove shuttle route edges from graph
+  for (const stopId in data.graph) {
+    data.graph[stopId] = data.graph[stopId].filter(e => !shuttleRouteIds.has(e.route));
+  }
+  // Remove shuttle route refs from stops, then drop stops with no routes (except the ferry terminal)
+  data.stops.forEach(s => { s.routes = s.routes.filter(r => !shuttleRouteIds.has(r)); });
+  data.stops = data.stops.filter(s => s.routes.length > 0 || s.name === keepStopName);
+  // Clean up empty graph entries
+  for (const stopId in data.graph) {
+    if (data.graph[stopId].length === 0) delete data.graph[stopId];
+  }
+
   const { stops, routes, graph, routeStopSequences, services, schedules } = data;
 
   const stopById = {};
@@ -658,7 +676,6 @@
   }
 
   // --- Initialize map ---
-  const shuttleRoutes = new Set(['RES', 'RWS']);
   const map = L.map('map', { minZoom: 10 }).setView([40.7128, -74.006], 11);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors',
@@ -668,27 +685,20 @@
   const routePolylines = {};
   routes.forEach(r => {
     if (r.shape.length > 0) {
-      const isBus = shuttleRoutes.has(r.id);
       routePolylines[r.id] = L.polyline(r.shape, {
-        color: r.color, weight: isBus ? 2 : 3, opacity: isBus ? 0.25 : 0.35,
-        dashArray: isBus ? '6 4' : null
+        color: r.color, weight: 3, opacity: 0.35
       }).addTo(map);
     }
   });
 
   const stopMarkers = {};
   stops.forEach(s => {
-    const isBusOnly = s.routes.every(r => shuttleRoutes.has(r));
     const marker = L.circleMarker([s.lat, s.lng], {
-      radius: isBusOnly ? 3 : 5,
-      fillColor: isBusOnly ? '#ccc' : '#fff',
-      fillOpacity: 1,
-      color: isBusOnly ? '#999' : '#333',
-      weight: isBusOnly ? 1 : 1.5,
-      dashArray: isBusOnly ? '3 3' : null
+      radius: 5, fillColor: '#fff', fillOpacity: 1,
+      color: '#333', weight: 1.5
     }).addTo(map);
 
-    const typeLabel = isBusOnly ? '<div style="font-size:11px;color:#888;margin-top:2px">Shuttle bus stop</div>' : '';
+    const typeLabel = '';
     const routeTags = s.routes.map(rid => {
       const r = routeById[rid];
       const textColor = isLightColor(r.color) ? '#333' : '#fff';

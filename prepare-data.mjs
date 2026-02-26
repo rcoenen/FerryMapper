@@ -132,10 +132,13 @@ async function main() {
   const activeRoutes = new Set(rawTrips.map(t => t.route_id));
   console.log('Active routes:', [...activeRoutes].sort().join(', '));
 
-  // Build shapes per route
-  const tripShape = {};
+  // Collect all shape_ids per route
+  const routeShapeIds = {};
   for (const t of rawTrips) {
-    if (t.shape_id) tripShape[t.route_id] = t.shape_id;
+    if (t.shape_id) {
+      if (!routeShapeIds[t.route_id]) routeShapeIds[t.route_id] = new Set();
+      routeShapeIds[t.route_id].add(t.shape_id);
+    }
   }
 
   // Parse shapes into polylines grouped by shape_id
@@ -161,10 +164,13 @@ async function main() {
       console.log(`Skipping inactive route: ${r.route_id} (${r.route_long_name})`);
       continue;
     }
-    const shapeId = tripShape[r.route_id];
-    const shapePoints = shapeId && shapesById[shapeId]
-      ? shapesById[shapeId].map(p => [p.lat, p.lng])
-      : [];
+    // Pick the longest shape for this route (covers most of the route path)
+    const shapeIds = routeShapeIds[r.route_id] || new Set();
+    let shapePoints = [];
+    for (const sid of shapeIds) {
+      const pts = shapesById[sid] ? shapesById[sid].map(p => [p.lat, p.lng]) : [];
+      if (pts.length > shapePoints.length) shapePoints = pts;
+    }
 
     // Use GTFS color if available, fall back to our defaults
     const color = r.route_color
