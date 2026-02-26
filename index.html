@@ -11,9 +11,27 @@
 <body>
 
 <header>
-  <span style="font-size:24px;display:inline-flex;flex-direction:column;align-items:center;line-height:1">⛴<svg width="24" height="6" viewBox="0 0 24 6" style="margin-top:-2px"><path d="M0 3c3-2.5 5-2.5 8 0s5 2.5 8 0 5-2.5 8 0" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></span>
-  <h1>NYC Ferry Trip Planner</h1>
+  <button id="about-trigger" class="brand-btn" type="button" aria-haspopup="dialog" aria-controls="about-modal" title="About this app">
+    <span style="font-size:24px;display:inline-flex;flex-direction:column;align-items:center;line-height:1">⛴<svg width="24" height="6" viewBox="0 0 24 6" style="margin-top:-2px"><path d="M0 3c3-2.5 5-2.5 8 0s5 2.5 8 0 5-2.5 8 0" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+    <h1>NYC Ferry Trip Planner</h1>
+  </button>
 </header>
+
+<div id="about-modal" class="modal-backdrop" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="about-title">
+    <button id="about-close" class="modal-close" type="button" aria-label="Close dialog">&times;</button>
+    <h2 id="about-title">About This App</h2>
+    <p>
+      This is an unofficial NYC Ferry planner, built out of frustration with a specific problem: the official app can't plan trips that require a transfer.
+    </p>
+    <p>
+      If your journey crosses more than one route, you're normally stuck cross-referencing timetables and working it out yourself. This app handles that automatically — just enter your origin and destination and it finds the best way to get there.
+    </p>
+    <p>
+      <strong>Built by ferry riders for ferry riders.</strong>
+    </p>
+  </div>
+</div>
 
 <div class="controls">
   <label for="from-select">From</label>

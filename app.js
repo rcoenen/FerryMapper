@@ -47,7 +47,35 @@
   const timeInput = document.getElementById('time-input');
   const fromSel = document.getElementById('from-select');
   const toSel = document.getElementById('to-select');
+  const aboutTrigger = document.getElementById('about-trigger');
+  const aboutModal = document.getElementById('about-modal');
+  const aboutClose = document.getElementById('about-close');
   const sorted = [...stops].sort((a, b) => a.name.localeCompare(b.name));
+
+  function openAboutModal() {
+    aboutModal.hidden = false;
+    document.body.classList.add('modal-open');
+    aboutTrigger.setAttribute('aria-expanded', 'true');
+    aboutClose.focus();
+  }
+
+  function closeAboutModal() {
+    if (aboutModal.hidden) return;
+    aboutModal.hidden = true;
+    document.body.classList.remove('modal-open');
+    aboutTrigger.setAttribute('aria-expanded', 'false');
+    aboutTrigger.focus();
+  }
+
+  aboutTrigger.setAttribute('aria-expanded', 'false');
+  aboutTrigger.addEventListener('click', openAboutModal);
+  aboutClose.addEventListener('click', closeAboutModal);
+  aboutModal.addEventListener('click', (e) => {
+    if (e.target === aboutModal) closeAboutModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAboutModal();
+  });
 
   function populateSelect(sel) {
     sel.innerHTML = '<option value="">-- Select a stop --</option>';
@@ -568,6 +596,7 @@
     document.querySelectorAll('.popup-start').forEach(btn => {
       btn.addEventListener('click', () => {
         fromSel.value = btn.dataset.stop;
+        saveState();
         map.closePopup();
         if (fromSel.value && toSel.value) document.getElementById('go-btn').click();
       });
@@ -575,6 +604,7 @@
     document.querySelectorAll('.popup-end').forEach(btn => {
       btn.addEventListener('click', () => {
         toSel.value = btn.dataset.stop;
+        saveState();
         map.closePopup();
         if (fromSel.value && toSel.value) document.getElementById('go-btn').click();
       });
@@ -594,6 +624,40 @@
     for (const sid in stopMarkers) stopMarkers[sid].setStyle({ radius: 5, color: '#333', weight: 1.5, fillColor: '#fff' });
   }
 
+  function addChevrons(pts, color) {
+    // Measure total length, place chevrons at even intervals along it
+    const segs = [];
+    let totalLen = 0;
+    for (let i = 0; i + 1 < pts.length; i++) {
+      const a = L.latLng(pts[i]), b = L.latLng(pts[i + 1]);
+      const len = a.distanceTo(b);
+      segs.push({ a, b, len });
+      totalLen += len;
+    }
+    if (totalLen < 2000) return; // too short for chevrons
+    const count = Math.max(1, Math.round(totalLen / 2500));
+    const spacing = totalLen / (count + 1);
+    for (let n = 1; n <= count; n++) {
+      let target = n * spacing;
+      for (const seg of segs) {
+        if (target <= seg.len) {
+          const t = target / seg.len;
+          const lat = seg.a.lat + t * (seg.b.lat - seg.a.lat);
+          const lng = seg.a.lng + t * (seg.b.lng - seg.a.lng);
+          const angle = Math.atan2(seg.b.lng - seg.a.lng, seg.b.lat - seg.a.lat) * 180 / Math.PI;
+          const svg = `<svg width="12" height="12" viewBox="0 0 12 12" style="transform:rotate(${angle}deg)"><path d="M2 8L6 2L10 8" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+          const m = L.marker([lat, lng], {
+            icon: L.divIcon({ className: '', html: svg, iconSize: [12, 12], iconAnchor: [6, 6] }),
+            interactive: false
+          }).addTo(map);
+          highlightLayers.push(m);
+          break;
+        }
+        target -= seg.len;
+      }
+    }
+  }
+
   function showRoute(legs) {
     clearHighlights();
     for (const rid in routePolylines) routePolylines[rid].setStyle({ weight: 2, opacity: 0.15 });
@@ -602,6 +666,7 @@
 
     legs.forEach(leg => {
       const route = routeById[leg.route];
+      const allSegPts = [];
       for (let i = 0; i + 1 < leg.stops.length; i++) {
         const fromStop = stopById[leg.stops[i]];
         const toStop = stopById[leg.stops[i + 1]];
@@ -615,6 +680,11 @@
         }).addTo(map);
         highlightLayers.push(line);
         segment.forEach(p => bounds.push(p));
+        allSegPts.push(...segment);
+      }
+      // Add directional chevrons along the leg
+      if (allSegPts.length >= 2) {
+        addChevrons(allSegPts, route.color);
       }
       leg.stops.forEach(sid => {
         stopMarkers[sid].setStyle({ radius: 7, color: route.color, weight: 3, fillColor: '#fff' });
@@ -627,15 +697,14 @@
     const originStop = stopById[legs[0].stops[0]];
     const destStop = stopById[legs[legs.length - 1].stops[legs[legs.length - 1].stops.length - 1]];
 
-    for (const [stop, label, color] of [[originStop, 'A', '#4caf50'], [destStop, 'B', '#f44336']]) {
+    for (const [stop, style] of [[originStop, 'border:3px solid #1a237e;background:white'], [destStop, 'background:#1a237e']]) {
       const m = L.marker([stop.lat, stop.lng], {
         icon: L.divIcon({
           className: '',
-          html: `<div style="background:${color};color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">${label}</div>`,
-          iconSize: [28, 28], iconAnchor: [14, 14]
+          html: `<div style="${style};border-radius:50%;width:22px;height:22px;box-shadow:0 2px 4px rgba(0,0,0,0.3)"></div>`,
+          iconSize: [22, 22], iconAnchor: [11, 11]
         })
       }).addTo(map);
-      // Clicking A/B opens the underlying stop marker's popup
       m.on('click', () => { stopMarkers[stop.id].openPopup(); });
       highlightLayers.push(m);
     }
@@ -650,9 +719,10 @@
     let fromIdx = nearestPointOnShape(route.shape, fromStop);
     let toIdx = nearestPointOnShape(route.shape, toStop);
     if (fromIdx === toIdx) return [[fromStop.lat, fromStop.lng], [toStop.lat, toStop.lng]];
-    const start = Math.min(fromIdx, toIdx);
-    const end = Math.max(fromIdx, toIdx);
-    return route.shape.slice(start, end + 1);
+    if (fromIdx < toIdx) {
+      return route.shape.slice(fromIdx, toIdx + 1);
+    }
+    return route.shape.slice(toIdx, fromIdx + 1).reverse();
   }
 
   function nearestPointOnShape(shape, stop) {
