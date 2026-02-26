@@ -711,7 +711,11 @@
 
   map.on('popupopen', () => {
     document.querySelectorAll('.popup-start').forEach(btn => {
-      btn.addEventListener('click', () => { fromSel.value = btn.dataset.stop; map.closePopup(); });
+      btn.addEventListener('click', () => {
+        fromSel.value = btn.dataset.stop;
+        map.closePopup();
+        if (fromSel.value && toSel.value) document.getElementById('go-btn').click();
+      });
     });
     document.querySelectorAll('.popup-end').forEach(btn => {
       btn.addEventListener('click', () => {
