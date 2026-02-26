@@ -170,7 +170,7 @@
     content: '';
     position: absolute;
     left: 0;
-    top: 0;
+    top: 4px;
     bottom: 8px;
     width: 4px;
     background: currentColor;
@@ -203,7 +203,7 @@
   .tl-no-trips { font-size: 13px; color: #c62828 !important; font-weight: 500; }
 
   .tl-transfer {
-    margin-left: 5px;
+    margin: 4px 0 4px 5px;
     border-left: 3px dashed #e0a050;
     padding: 6px 0 6px 25px;
   }

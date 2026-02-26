@@ -625,7 +625,8 @@
   }
 
   function addChevronToSegment(pts, color) {
-    // Place a single chevron at the midpoint of a shape segment
+    // Place a single chevron at the midpoint of a shape segment.
+    // Skip spur/branch segments (path much longer than straight line).
     const segs = [];
     let totalLen = 0;
     for (let i = 0; i + 1 < pts.length; i++) {
@@ -634,7 +635,8 @@
       segs.push({ a, b, len });
       totalLen += len;
     }
-    if (totalLen < 800) return; // too short, skip
+    const straightLine = L.latLng(pts[0]).distanceTo(L.latLng(pts[pts.length - 1]));
+    if (straightLine < 200 || totalLen > straightLine * 1.8) return;
     let target = totalLen / 2;
     for (const seg of segs) {
       if (target <= seg.len) {
@@ -654,11 +656,15 @@
     }
   }
 
+
   function showRoute(legs) {
     clearHighlights();
     for (const rid in routePolylines) routePolylines[rid].setStyle({ weight: 2, opacity: 0.15 });
 
     const bounds = [];
+
+    const originId = legs[0].stops[0];
+    const destId = legs[legs.length - 1].stops[legs[legs.length - 1].stops.length - 1];
 
     legs.forEach(leg => {
       const route = routeById[leg.route];
@@ -675,24 +681,20 @@
         }).addTo(map);
         highlightLayers.push(line);
         segment.forEach(p => bounds.push(p));
-        // One chevron per stop-to-stop segment (skipped if too short)
         addChevronToSegment(segment, route.color);
       }
       leg.stops.forEach(sid => {
-        stopMarkers[sid].setStyle({ radius: 7, color: route.color, weight: 3, fillColor: '#fff' });
+        const isEndpoint = sid === originId || sid === destId;
+        if (isEndpoint) {
+          stopMarkers[sid].setStyle({ radius: 7, color: route.color, weight: 3, fillColor: route.color, fillOpacity: 1 });
+        } else {
+          stopMarkers[sid].setStyle({ radius: 5, color: route.color, weight: 1.5, fillColor: route.color, fillOpacity: 1 });
+        }
       });
     });
 
     // Keep stop nodes above route overlays so clicks reliably open the pier popup card.
     for (const sid in stopMarkers) stopMarkers[sid].bringToFront();
-
-    // Fill origin and destination dots with their leg's route color
-    const originId = legs[0].stops[0];
-    const destId = legs[legs.length - 1].stops[legs[legs.length - 1].stops.length - 1];
-    const originColor = routeById[legs[0].route].color;
-    const destColor = routeById[legs[legs.length - 1].route].color;
-    stopMarkers[originId].setStyle({ fillColor: originColor });
-    stopMarkers[destId].setStyle({ fillColor: destColor });
 
     if (bounds.length) map.fitBounds(bounds, { padding: [50, 50] });
   }
