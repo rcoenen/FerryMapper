@@ -27,7 +27,8 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
     border-bottom: 1px solid #ddd;
     flex-shrink: 0;
   }
@@ -50,7 +51,7 @@
     cursor: pointer;
     font-weight: 500;
   }
-  #go-btn { background: #1a237e; color: white; }
+  #go-btn { background: #1a237e; color: white; padding: 8px 32px; }
   #go-btn:hover { background: #283593; }
   #swap-btn { background: #e8eaf6; color: #1a237e; font-size: 18px; padding: 6px 12px; }
   #swap-btn:hover { background: #c5cae9; }
@@ -169,7 +170,8 @@
   .option-tab.disabled { opacity: 0.35; cursor: default; pointer-events: none; }
   .option-tab .tab-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.3px; }
   .option-tab .tab-time { font-size: 15px; font-weight: 600; color: #333; margin: 2px 0; }
-  .option-tab .tab-dur { font-size: 12px; color: #666; }
+  .option-tab .tab-dur { font-size: 12px; color: #666; line-height: 1.5; }
+  .option-tab .tab-transfer { font-size: 11px; color: #999; white-space: nowrap; }
   .option-tab.active .tab-label { color: #1a237e; }
   .option-tab.active .tab-time { color: #1a237e; }
   .nav-btn {
@@ -316,12 +318,9 @@
 
   // Format minutes to "h:mm AM/PM"
   function formatTime(mins) {
-    let h = Math.floor(mins / 60) % 24;
+    const h = Math.floor(mins / 60) % 24;
     const m = mins % 60;
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    if (h === 0) h = 12;
-    else if (h > 12) h -= 12;
-    return h + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
   }
 
   // Format duration in minutes to human-readable
@@ -561,7 +560,9 @@
         tripStops: trip.stops
       });
 
-      currentMin = trip.arrTime;
+      // Add minimum transfer time (10 min) for connections — ferries don't wait
+      const MIN_TRANSFER = 10;
+      currentMin = trip.arrTime + (i < legs.length - 1 ? MIN_TRANSFER : 0);
     }
     return resolved;
   }
@@ -584,9 +585,12 @@
   function findOptions(legs, dateStr, startMin, mode) {
     // Collect many candidates across a wide time window
     const candidates = [];
-    const scanRange = 120; // minutes each direction
+    // For arrive-by, scan much further back since we need departures
+    // that are early enough to still arrive by the target time
+    const backRange = mode === 'arrive' ? 360 : 120;
+    const fwdRange = mode === 'arrive' ? 120 : 180;
 
-    for (let offset = -scanRange; offset <= scanRange; offset += 5) {
+    for (let offset = -backRange; offset <= fwdRange; offset += 5) {
       const tryMin = startMin + offset;
       if (tryMin < 0 || tryMin >= 24 * 60) continue;
       const c = resolveScheduleAt(legs, dateStr, tryMin);
@@ -758,6 +762,8 @@
           iconSize: [28, 28], iconAnchor: [14, 14]
         })
       }).addTo(map);
+      // Clicking A/B opens the underlying stop marker's popup
+      m.on('click', () => { stopMarkers[stop.id].openPopup(); });
       highlightLayers.push(m);
     }
 
@@ -850,17 +856,19 @@
     const dep = getDeparture(option);
     const total = getTotalTime(option);
     const maxWait = getMaxWait(option);
-    const waitInfo = maxWait > 0 ? ` &middot; ${maxWait} min transfer` : '';
-    return `<div class="tab-label">${label}</div><div class="tab-time">${formatTime(dep)}</div><div class="tab-dur">${formatDuration(total)}${waitInfo}</div>`;
+    const waitInfo = maxWait > 0 ? `<div class="tab-transfer">${maxWait} min transfer</div>` : '';
+    return `<div class="tab-label">${label}</div><div class="tab-time">${formatTime(dep)}</div><div class="tab-dur">${formatDuration(total)}</div>${waitInfo}`;
   }
 
   function shiftOptions(direction) {
     if (!lastSearch) return;
     const { legs, dateStr, mode, fromId, toId } = lastSearch;
-    // Shift based on the current edge option's departure
     const ref = direction === -1 ? currentOptions[0] : currentOptions[2];
     if (!ref || !isComplete(ref)) return;
-    const newStartMin = getDeparture(ref);
+    // Offset by 1 min so we don't land on the same trip again
+    // In arrive mode, shift by arrival time (since startMin = target arrival)
+    const refTime = mode === 'arrive' ? getArrival(ref) : getDeparture(ref);
+    const newStartMin = refTime + direction;
     lastSearch.startMin = newStartMin;
     const options = findOptions(legs, dateStr, newStartMin, mode);
     const activeIdx = 1;
