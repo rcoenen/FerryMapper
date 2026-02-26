@@ -98,12 +98,17 @@
   const todayStr = now.toISOString().slice(0, 10);
   const nowTime = now.toTimeString().slice(0, 5);
 
-  if (saved && saved.date >= todayStr) {
-    dateInput.value = saved.date;
-    timeInput.value = saved.time || nowTime;
+  // Always restore stops and mode from saved state
+  if (saved) {
     if (saved.from) fromSel.value = saved.from;
     if (saved.to) toSel.value = saved.to;
     if (saved.mode) document.getElementById('time-mode').value = saved.mode;
+  }
+  // For date/time: keep saved value only if it's still in the future, otherwise use now
+  const savedDateTime = saved?.date && saved?.time ? new Date(saved.date + 'T' + saved.time) : null;
+  if (savedDateTime && savedDateTime > now) {
+    dateInput.value = saved.date;
+    timeInput.value = saved.time;
   } else {
     dateInput.value = todayStr;
     timeInput.value = nowTime;
@@ -113,6 +118,13 @@
   for (const el of [fromSel, toSel, dateInput, timeInput, document.getElementById('time-mode')]) {
     el.addEventListener('change', saveState);
   }
+
+  document.getElementById('now-btn').addEventListener('click', () => {
+    const n = new Date();
+    dateInput.value = n.toISOString().slice(0, 10);
+    timeInput.value = n.toTimeString().slice(0, 5);
+    saveState();
+  });
 
   // When stop selection changes while a route is active, clear state and start fresh
   function resetRoute() {
