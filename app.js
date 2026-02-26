@@ -624,8 +624,8 @@
     for (const sid in stopMarkers) stopMarkers[sid].setStyle({ radius: 5, color: '#333', weight: 1.5, fillColor: '#fff' });
   }
 
-  function addChevrons(pts, color) {
-    // Measure total length, place chevrons at even intervals along it
+  function addChevronToSegment(pts, color) {
+    // Place a single chevron at the midpoint of a shape segment
     const segs = [];
     let totalLen = 0;
     for (let i = 0; i + 1 < pts.length; i++) {
@@ -634,27 +634,23 @@
       segs.push({ a, b, len });
       totalLen += len;
     }
-    if (totalLen < 2000) return; // too short for chevrons
-    const count = Math.max(1, Math.round(totalLen / 2500));
-    const spacing = totalLen / (count + 1);
-    for (let n = 1; n <= count; n++) {
-      let target = n * spacing;
-      for (const seg of segs) {
-        if (target <= seg.len) {
-          const t = target / seg.len;
-          const lat = seg.a.lat + t * (seg.b.lat - seg.a.lat);
-          const lng = seg.a.lng + t * (seg.b.lng - seg.a.lng);
-          const angle = Math.atan2(seg.b.lng - seg.a.lng, seg.b.lat - seg.a.lat) * 180 / Math.PI;
-          const svg = `<svg width="12" height="12" viewBox="0 0 12 12" style="transform:rotate(${angle}deg)"><path d="M2 8L6 2L10 8" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-          const m = L.marker([lat, lng], {
-            icon: L.divIcon({ className: '', html: svg, iconSize: [12, 12], iconAnchor: [6, 6] }),
-            interactive: false
-          }).addTo(map);
-          highlightLayers.push(m);
-          break;
-        }
-        target -= seg.len;
+    if (totalLen < 800) return; // too short, skip
+    let target = totalLen / 2;
+    for (const seg of segs) {
+      if (target <= seg.len) {
+        const t = target / seg.len;
+        const lat = seg.a.lat + t * (seg.b.lat - seg.a.lat);
+        const lng = seg.a.lng + t * (seg.b.lng - seg.a.lng);
+        const angle = Math.atan2(seg.b.lng - seg.a.lng, seg.b.lat - seg.a.lat) * 180 / Math.PI;
+        const svg = `<svg width="12" height="12" viewBox="0 0 12 12" style="transform:rotate(${angle}deg)"><path d="M2 8L6 2L10 8" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        const m = L.marker([lat, lng], {
+          icon: L.divIcon({ className: '', html: svg, iconSize: [12, 12], iconAnchor: [6, 6] }),
+          interactive: false
+        }).addTo(map);
+        highlightLayers.push(m);
+        return;
       }
+      target -= seg.len;
     }
   }
 
@@ -666,7 +662,6 @@
 
     legs.forEach(leg => {
       const route = routeById[leg.route];
-      const allSegPts = [];
       for (let i = 0; i + 1 < leg.stops.length; i++) {
         const fromStop = stopById[leg.stops[i]];
         const toStop = stopById[leg.stops[i + 1]];
@@ -680,11 +675,8 @@
         }).addTo(map);
         highlightLayers.push(line);
         segment.forEach(p => bounds.push(p));
-        allSegPts.push(...segment);
-      }
-      // Add directional chevrons along the leg
-      if (allSegPts.length >= 2) {
-        addChevrons(allSegPts, route.color);
+        // One chevron per stop-to-stop segment (skipped if too short)
+        addChevronToSegment(segment, route.color);
       }
       leg.stops.forEach(sid => {
         stopMarkers[sid].setStyle({ radius: 7, color: route.color, weight: 3, fillColor: '#fff' });
@@ -694,20 +686,13 @@
     // Keep stop nodes above route overlays so clicks reliably open the pier popup card.
     for (const sid in stopMarkers) stopMarkers[sid].bringToFront();
 
-    const originStop = stopById[legs[0].stops[0]];
-    const destStop = stopById[legs[legs.length - 1].stops[legs[legs.length - 1].stops.length - 1]];
-
-    for (const [stop, style] of [[originStop, 'border:3px solid #1a237e;background:white'], [destStop, 'background:#1a237e']]) {
-      const m = L.marker([stop.lat, stop.lng], {
-        icon: L.divIcon({
-          className: '',
-          html: `<div style="${style};border-radius:50%;width:22px;height:22px;box-shadow:0 2px 4px rgba(0,0,0,0.3)"></div>`,
-          iconSize: [22, 22], iconAnchor: [11, 11]
-        })
-      }).addTo(map);
-      m.on('click', () => { stopMarkers[stop.id].openPopup(); });
-      highlightLayers.push(m);
-    }
+    // Fill origin and destination dots with their leg's route color
+    const originId = legs[0].stops[0];
+    const destId = legs[legs.length - 1].stops[legs[legs.length - 1].stops.length - 1];
+    const originColor = routeById[legs[0].route].color;
+    const destColor = routeById[legs[legs.length - 1].route].color;
+    stopMarkers[originId].setStyle({ fillColor: originColor });
+    stopMarkers[destId].setStyle({ fillColor: destColor });
 
     if (bounds.length) map.fitBounds(bounds, { padding: [50, 50] });
   }
