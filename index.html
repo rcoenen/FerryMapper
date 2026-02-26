@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NYC Ferry Trip Planner</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; height: 100vh; background: #f5f5f5; }
+
+  header {
+    background: #1a237e;
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  header h1 { font-size: 20px; font-weight: 600; }
+
+  .controls {
+    background: white;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #ddd;
+    flex-shrink: 0;
+  }
+  .controls label { font-size: 14px; font-weight: 500; color: #333; }
+  .controls select, .controls input[type="date"], .controls input[type="time"] {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+    font-family: inherit;
+  }
+  .controls select { min-width: 200px; }
+  .controls select:focus, .controls input:focus { outline: none; border-color: #1a237e; }
+  .controls button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  #go-btn { background: #1a237e; color: white; }
+  #go-btn:hover { background: #283593; }
+  #swap-btn { background: #e8eaf6; color: #1a237e; font-size: 18px; padding: 6px 12px; }
+  #swap-btn:hover { background: #c5cae9; }
+
+  #main { display: flex; flex: 1; min-height: 0; }
+  #map { flex: 1; min-height: 300px; }
+
+  #directions {
+    background: white;
+    border-left: 1px solid #ddd;
+    width: 380px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    display: none;
+  }
+  #directions.visible { display: block; }
+  #directions .dir-header {
+    padding: 12px 20px 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 1px solid #eee;
+  }
+  #directions .leg {
+    padding: 10px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  #directions .leg:last-child { border-bottom: none; }
+  .leg-color {
+    width: 6px;
+    min-height: 40px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .leg-details { flex: 1; }
+  .leg-route {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .leg-stops {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+  }
+  .leg-time {
+    font-size: 13px;
+    color: #333;
+    font-weight: 500;
+    margin-top: 3px;
+  }
+  .leg-transfer {
+    padding: 8px 20px 8px 38px;
+    font-size: 13px;
+    color: #e65100;
+    border-bottom: 1px solid #f0f0f0;
+    font-weight: 500;
+  }
+  .dir-summary {
+    padding: 10px 20px 12px;
+    font-size: 13px;
+    color: #666;
+  }
+  .dir-summary strong { color: #333; }
+  .error-msg {
+    padding: 12px 20px;
+    color: #c62828;
+    font-size: 14px;
+  }
+
+  .stop-popup-routes { margin-top: 4px; }
+  .stop-popup-routes span {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: white;
+    font-size: 11px;
+    margin: 1px 2px;
+    font-weight: 500;
+  }
+  .popup-actions { margin-top: 8px; display: flex; gap: 6px; }
+  .popup-actions button {
+    padding: 4px 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .popup-start { background: #4caf50; color: white; }
+  .popup-start:hover { background: #388e3c; }
+  .popup-end { background: #f44336; color: white; }
+  .popup-end:hover { background: #d32f2f; }
+
+  .option-tabs {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    background: #fafafa;
+    align-items: stretch;
+  }
+  .option-tab {
+    flex: 1;
+    padding: 10px 12px;
+    cursor: pointer;
+    text-align: center;
+    border-bottom: 3px solid transparent;
+    transition: all 0.15s;
+    min-width: 0;
+  }
+  .option-tab:hover { background: #f0f0f0; }
+  .option-tab.active { border-bottom-color: #1a237e; background: white; }
+  .option-tab.disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+  .option-tab .tab-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.3px; }
+  .option-tab .tab-time { font-size: 15px; font-weight: 600; color: #333; margin: 2px 0; }
+  .option-tab .tab-dur { font-size: 12px; color: #666; }
+  .option-tab.active .tab-label { color: #1a237e; }
+  .option-tab.active .tab-time { color: #1a237e; }
+  .nav-btn {
+    flex-shrink: 0;
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: #1a237e;
+    padding: 0;
+    transition: background 0.15s;
+  }
+  .nav-btn:hover { background: #e8eaf6; }
+  .nav-btn:disabled { color: #ccc; cursor: default; background: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <svg width="34" height="30" viewBox="0 0 34 28" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <!-- hull - side view with pointed bow on right -->
+    <path d="M3 20h22l5-4H7z"/>
+    <!-- cabin -->
+    <rect x="8" y="11" width="14" height="5" rx="1"/>
+    <!-- cabin windows -->
+    <circle cx="12" cy="13.5" r="1" fill="white" stroke="none"/>
+    <circle cx="16" cy="13.5" r="1" fill="white" stroke="none"/>
+    <circle cx="20" cy="13.5" r="1" fill="white" stroke="none"/>
+    <!-- funnel/smokestack -->
+    <rect x="10" y="6" width="3" height="5" rx="0.5"/>
+    <!-- wavy water -->
+    <path d="M1 24c2.5-1.5 5-1.5 7.5 0s5 1.5 7.5 0 5-1.5 7.5 0 5 1.5 7.5 0"/>
+  </svg>
+  <h1>NYC Ferry Trip Planner</h1>
+</header>
+
+<div class="controls">
+  <label for="from-select">From</label>
+  <select id="from-select"><option value="">Loading...</option></select>
+  <button id="swap-btn" title="Swap origin and destination">&#8646;</button>
+  <label for="to-select">To</label>
+  <select id="to-select"><option value="">Loading...</option></select>
+  <label for="date-input">Date</label>
+  <input type="date" id="date-input">
+  <select id="time-mode">
+    <option value="depart">Depart at</option>
+    <option value="arrive">Arrive by</option>
+  </select>
+  <input type="time" id="time-input">
+  <button id="go-btn">Go</button>
+</div>
+
+<div id="main">
+  <div id="map"></div>
+  <div id="directions"></div>
+</div>
+
+<script>
+(async function() {
+  // --- Load data ---
+  const res = await fetch('data/ferry-data.json');
+  const data = await res.json();
+  const { stops, routes, graph, routeStopSequences, services, schedules } = data;
+
+  const stopById = {};
+  stops.forEach(s => stopById[s.id] = s);
+  const routeById = {};
+  routes.forEach(r => routeById[r.id] = r);
+
+  // --- Persist/restore state via localStorage ---
+  const STORAGE_KEY = 'ferryMapper';
+  function saveState() {
+    const state = {
+      from: fromSel.value,
+      to: toSel.value,
+      date: dateInput.value,
+      time: timeInput.value,
+      mode: document.getElementById('time-mode').value
+    };
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+  }
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { return null; }
+  }
+
+  const dateInput = document.getElementById('date-input');
+  const timeInput = document.getElementById('time-input');
+  const fromSel = document.getElementById('from-select');
+  const toSel = document.getElementById('to-select');
+  const sorted = [...stops].sort((a, b) => a.name.localeCompare(b.name));
+
+  function populateSelect(sel) {
+    sel.innerHTML = '<option value="">-- Select a stop --</option>';
+    sorted.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = s.name;
+      sel.appendChild(opt);
+    });
+  }
+  populateSelect(fromSel);
+  populateSelect(toSel);
+
+  // Hydrate from saved state or default to now
+  const saved = loadState();
+  const now = new Date();
+  const todayStr = now.toISOString().slice(0, 10);
+  const nowTime = now.toTimeString().slice(0, 5);
+
+  if (saved && saved.date >= todayStr) {
+    dateInput.value = saved.date;
+    timeInput.value = saved.time || nowTime;
+    if (saved.from) fromSel.value = saved.from;
+    if (saved.to) toSel.value = saved.to;
+    if (saved.mode) document.getElementById('time-mode').value = saved.mode;
+  } else {
+    dateInput.value = todayStr;
+    timeInput.value = nowTime;
+  }
+
+  // Save on any change
+  for (const el of [fromSel, toSel, dateInput, timeInput, document.getElementById('time-mode')]) {
+    el.addEventListener('change', saveState);
+  }
+
+  // Swap button
+  document.getElementById('swap-btn').addEventListener('click', () => {
+    const tmp = fromSel.value;
+    fromSel.value = toSel.value;
+    toSel.value = tmp;
+    saveState();
+  });
+
+  // --- Schedule helpers ---
+  // Convert "HH:MM:SS" to minutes since midnight (GTFS allows >24:00 for overnight)
+  function timeToMin(t) {
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+  }
+
+  // Format minutes to "h:mm AM/PM"
+  function formatTime(mins) {
+    let h = Math.floor(mins / 60) % 24;
+    const m = mins % 60;
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    if (h === 0) h = 12;
+    else if (h > 12) h -= 12;
+    return h + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+  }
+
+  // Format duration in minutes to human-readable
+  function formatDuration(mins) {
+    if (mins < 1) return 'less than a minute';
+    const h = Math.floor(mins / 60);
+    const m = Math.round(mins % 60);
+    if (h === 0) return m + ' min';
+    if (m === 0) return h + ' hr';
+    return h + ' hr ' + m + ' min';
+  }
+
+  // Check if a service runs on a given date string "YYYY-MM-DD"
+  function serviceRunsOn(serviceId, dateStr) {
+    const svc = services[serviceId];
+    if (!svc) return false;
+    const ds = dateStr.replace(/-/g, ''); // "YYYYMMDD"
+
+    // Check removed exceptions
+    if (svc.removed && svc.removed.includes(ds)) return false;
+    // Check added exceptions
+    if (svc.added && svc.added.includes(ds)) return true;
+
+    // Check date range
+    if (ds < svc.start || ds > svc.end) return false;
+    // Check day of week (GTFS: mon=0 ... sun=6 in our array, JS: sun=0 ... sat=6)
+    const d = new Date(dateStr);
+    const jsDay = d.getDay(); // 0=Sun, 1=Mon ... 6=Sat
+    const gtfsIdx = jsDay === 0 ? 6 : jsDay - 1; // convert to Mon=0 ... Sun=6
+    return svc.days[gtfsIdx] === 1;
+  }
+
+  // Get active trips for a route on a given date, sorted by departure at a given stop
+  function getTripsForRoute(routeId, dateStr) {
+    return schedules.filter(t => t.r === routeId && serviceRunsOn(t.s, dateStr));
+  }
+
+  // Index schedules by route for faster lookups
+  const schedulesByRoute = {};
+  for (const trip of schedules) {
+    if (!schedulesByRoute[trip.r]) schedulesByRoute[trip.r] = [];
+    schedulesByRoute[trip.r].push(trip);
+  }
+
+  // Find next trip on a route that departs from boardStop at or after departMin,
+  // and passes through alightStop AFTER boardStop
+  function findNextTrip(routeId, boardStopId, alightStopId, dateStr, departMin) {
+    const trips = (schedulesByRoute[routeId] || []).filter(t => serviceRunsOn(t.s, dateStr));
+    let best = null;
+    let bestDep = Infinity;
+
+    for (const trip of trips) {
+      const boardIdx = trip.stops.findIndex(s => s.id === boardStopId);
+      const alightIdx = trip.stops.findIndex(s => s.id === alightStopId);
+      if (boardIdx === -1 || alightIdx === -1 || alightIdx <= boardIdx) continue;
+
+      const depTime = timeToMin(trip.stops[boardIdx].dep);
+      if (depTime >= departMin && depTime < bestDep) {
+        bestDep = depTime;
+        best = {
+          tripId: trip.t,
+          routeId,
+          boardIdx,
+          alightIdx,
+          depTime,
+          arrTime: timeToMin(trip.stops[alightIdx].arr),
+          stops: trip.stops.slice(boardIdx, alightIdx + 1)
+        };
+      }
+    }
+    return best;
+  }
+
+  // Find next trip across ALL routes that connect boardStop -> alightStop
+  function findNextTripAnyRoute(boardStopId, alightStopId, dateStr, departMin) {
+    const boardRoutes = stopById[boardStopId].routes;
+    const alightRoutes = stopById[alightStopId].routes;
+    // Only try routes that serve both stops
+    const commonRoutes = boardRoutes.filter(r => alightRoutes.includes(r));
+
+    let best = null;
+    for (const rid of commonRoutes) {
+      const candidate = findNextTrip(rid, boardStopId, alightStopId, dateStr, departMin);
+      if (candidate && (!best || candidate.depTime < best.depTime)) {
+        best = candidate;
+      }
+    }
+    return best;
+  }
+
+  // --- 0-1 BFS Router ---
+  function findRoute(fromId, toId) {
+    const INF = Infinity;
+    const dist = {};
+    const prev = {};
+
+    function key(stop, route) { return stop + '|' + (route || ''); }
+    function getDist(stop, route) { return dist[key(stop, route)] ?? INF; }
+    function setDist(stop, route, d) { dist[key(stop, route)] = d; }
+    function setPrev(stop, route, pStop, pRoute) { prev[key(stop, route)] = { stop: pStop, route: pRoute }; }
+
+    const deque = [];
+    setDist(fromId, null, 0);
+    deque.push({ stop: fromId, route: null, cost: 0 });
+
+    while (deque.length > 0) {
+      const cur = deque.shift();
+      if (cur.cost > getDist(cur.stop, cur.route)) continue;
+
+      if (cur.stop === toId) {
+        return reconstructPath(prev, cur.stop, cur.route, fromId);
+      }
+
+      const stopData = stopById[cur.stop];
+      for (const rid of stopData.routes) {
+        const transferCost = (cur.route === null || cur.route === rid) ? 0 : 1;
+        const newCost = cur.cost + transferCost;
+        if (newCost < getDist(cur.stop, rid)) {
+          setDist(cur.stop, rid, newCost);
+          setPrev(cur.stop, rid, cur.stop, cur.route);
+          if (transferCost === 0) deque.unshift({ stop: cur.stop, route: rid, cost: newCost });
+          else deque.push({ stop: cur.stop, route: rid, cost: newCost });
+        }
+      }
+
+      if (cur.route) {
+        for (const edge of graph[cur.stop]) {
+          if (edge.route === cur.route) {
+            const newCost = cur.cost;
+            if (newCost < getDist(edge.to, cur.route)) {
+              setDist(edge.to, cur.route, newCost);
+              setPrev(edge.to, cur.route, cur.stop, cur.route);
+              deque.unshift({ stop: edge.to, route: cur.route, cost: newCost });
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  function reconstructPath(prev, endStop, endRoute, startStop) {
+    const path = [];
+    let stop = endStop, route = endRoute;
+
+    while (stop !== startStop || route !== null) {
+      path.unshift({ stop, route });
+      const k = stop + '|' + (route || '');
+      const p = prev[k];
+      if (!p) break;
+      stop = p.stop;
+      route = p.route;
+    }
+    path.unshift({ stop: startStop, route: null });
+
+    const legs = [];
+    let currentLeg = null;
+
+    for (const step of path) {
+      if (step.route === null) continue;
+      if (!currentLeg || currentLeg.route !== step.route) {
+        if (currentLeg) legs.push(currentLeg);
+        currentLeg = { route: step.route, stops: [] };
+        const prevStep = path[path.indexOf(step) - 1];
+        if (prevStep && !currentLeg.stops.includes(prevStep.stop)) {
+          currentLeg.stops.push(prevStep.stop);
+        }
+      }
+      if (!currentLeg.stops.includes(step.stop)) {
+        currentLeg.stops.push(step.stop);
+      }
+    }
+    if (currentLeg) legs.push(currentLeg);
+    return legs;
+  }
+
+  // Expand a leg to show all intermediate stops along a route
+  function expandLegStops(fromId, toId, routeId) {
+    const visited = new Set([fromId]);
+    const prev = {};
+    const queue = [fromId];
+
+    while (queue.length > 0) {
+      const cur = queue.shift();
+      if (cur === toId) {
+        const path = [toId];
+        let node = toId;
+        while (node !== fromId) { node = prev[node]; path.unshift(node); }
+        return path;
+      }
+      for (const edge of graph[cur]) {
+        if (edge.route === routeId && !visited.has(edge.to)) {
+          visited.add(edge.to);
+          prev[edge.to] = cur;
+          queue.push(edge.to);
+        }
+      }
+    }
+    return null;
+  }
+
+  // Resolve schedule times for a set of legs starting at a given time
+  function resolveScheduleAt(legs, dateStr, startMin) {
+    let currentMin = startMin;
+    const resolved = [];
+
+    for (let i = 0; i < legs.length; i++) {
+      const leg = legs[i];
+      const boardStop = leg.stops[0];
+      const alightStop = leg.stops[leg.stops.length - 1];
+
+      // Try all routes that connect these two stops, pick earliest departure
+      const trip = findNextTripAnyRoute(boardStop, alightStop, dateStr, currentMin);
+      if (!trip) {
+        resolved.push({
+          ...leg,
+          depTime: null, arrTime: null, waitMin: null, rideMin: null, tripStops: null
+        });
+        for (let j = i + 1; j < legs.length; j++) {
+          resolved.push({ ...legs[j], depTime: null, arrTime: null, waitMin: null, rideMin: null, tripStops: null });
+        }
+        return resolved;
+      }
+      // Update leg route if a different route departs sooner
+      if (trip.routeId !== leg.route) {
+        leg.route = trip.routeId;
+      }
+
+      const waitMin = trip.depTime - currentMin;
+
+      resolved.push({
+        ...leg,
+        depTime: trip.depTime,
+        arrTime: trip.arrTime,
+        waitMin: i === 0 ? null : waitMin,
+        rideMin: trip.arrTime - trip.depTime,
+        tripStops: trip.stops
+      });
+
+      currentMin = trip.arrTime;
+    }
+    return resolved;
+  }
+
+  // Helpers for resolved schedules
+  function getArrival(r) { return r[r.length - 1].arrTime; }
+  function getDeparture(r) { return r[0].depTime; }
+  function getTotalTime(r) {
+    const a = getArrival(r), d = getDeparture(r);
+    return (a !== null && d !== null) ? a - d : null;
+  }
+  function getMaxWait(r) {
+    let max = 0;
+    for (const l of r) if (l.waitMin !== null && l.waitMin > max) max = l.waitMin;
+    return max;
+  }
+  function isComplete(r) { return getArrival(r) !== null; }
+
+  // Generate 3 options: earlier/faster, requested time, later/less wait
+  function findOptions(legs, dateStr, startMin, mode) {
+    // Collect many candidates across a wide time window
+    const candidates = [];
+    const scanRange = 120; // minutes each direction
+
+    for (let offset = -scanRange; offset <= scanRange; offset += 5) {
+      const tryMin = startMin + offset;
+      if (tryMin < 0 || tryMin >= 24 * 60) continue;
+      const c = resolveScheduleAt(legs, dateStr, tryMin);
+      if (isComplete(c)) candidates.push(c);
+    }
+
+    if (candidates.length === 0) {
+      const fallback = resolveScheduleAt(legs, dateStr, startMin);
+      return [null, fallback, null];
+    }
+
+    // Sort by departure time
+    candidates.sort((a, b) => getDeparture(a) - getDeparture(b));
+
+    // Deduplicate by departure time (same dep = same trip)
+    const unique = [];
+    for (const c of candidates) {
+      const dep = getDeparture(c);
+      if (unique.length === 0 || getDeparture(unique[unique.length - 1]) !== dep) {
+        unique.push(c);
+      }
+    }
+
+    if (mode === 'arrive') {
+      // "Arrive by": baseline = latest departure that arrives <= startMin
+      // Earlier = one before that, Later = first that departs after baseline
+      const validArrivals = unique.filter(c => getArrival(c) <= startMin);
+      const baseline = validArrivals.length > 0 ? validArrivals[validArrivals.length - 1] : null;
+
+      if (!baseline) {
+        // Nothing arrives in time, show earliest available
+        return [null, unique[0], unique[1] || null];
+      }
+
+      const baseIdx = unique.indexOf(baseline);
+      const earlier = baseIdx > 0 ? unique[baseIdx - 1] : null;
+      const later = baseIdx < unique.length - 1 ? unique[baseIdx + 1] : null;
+      return [earlier, baseline, later];
+    }
+
+    // "Depart at": baseline = first departure >= startMin
+    const baseIdx = unique.findIndex(c => getDeparture(c) >= startMin);
+    if (baseIdx === -1) {
+      // Nothing departing after requested time
+      const last = unique[unique.length - 1];
+      const prev = unique.length > 1 ? unique[unique.length - 2] : null;
+      return [prev, last, null];
+    }
+
+    const baseline = unique[baseIdx];
+
+    // Earlier: best option departing before baseline that arrives sooner
+    let earlier = null;
+    for (let i = baseIdx - 1; i >= 0; i--) {
+      if (getArrival(unique[i]) < getArrival(baseline)) {
+        earlier = unique[i];
+        break;
+      }
+    }
+
+    // Later: next departure after baseline (less transfer wait typically)
+    let later = baseIdx < unique.length - 1 ? unique[baseIdx + 1] : null;
+
+    return [earlier, baseline, later];
+  }
+
+  // --- Initialize map ---
+  const shuttleRoutes = new Set(['RES', 'RWS']);
+  const map = L.map('map', { minZoom: 10 }).setView([40.7128, -74.006], 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
+    maxZoom: 18
+  }).addTo(map);
+
+  const routePolylines = {};
+  routes.forEach(r => {
+    if (r.shape.length > 0) {
+      const isBus = shuttleRoutes.has(r.id);
+      routePolylines[r.id] = L.polyline(r.shape, {
+        color: r.color, weight: isBus ? 2 : 3, opacity: isBus ? 0.25 : 0.35,
+        dashArray: isBus ? '6 4' : null
+      }).addTo(map);
+    }
+  });
+
+  const stopMarkers = {};
+  stops.forEach(s => {
+    const isBusOnly = s.routes.every(r => shuttleRoutes.has(r));
+    const marker = L.circleMarker([s.lat, s.lng], {
+      radius: isBusOnly ? 3 : 5,
+      fillColor: isBusOnly ? '#ccc' : '#fff',
+      fillOpacity: 1,
+      color: isBusOnly ? '#999' : '#333',
+      weight: isBusOnly ? 1 : 1.5,
+      dashArray: isBusOnly ? '3 3' : null
+    }).addTo(map);
+
+    const typeLabel = isBusOnly ? '<div style="font-size:11px;color:#888;margin-top:2px">Shuttle bus stop</div>' : '';
+    const routeTags = s.routes.map(rid => {
+      const r = routeById[rid];
+      const textColor = isLightColor(r.color) ? '#333' : '#fff';
+      return `<span style="background:${r.color};color:${textColor}">${r.name}</span>`;
+    }).join('');
+
+    marker.bindPopup(`<strong>${s.name}</strong>${typeLabel}<div class="stop-popup-routes">${routeTags}</div><div class="popup-actions"><button class="popup-start" data-stop="${s.id}">Start</button><button class="popup-end" data-stop="${s.id}">End</button></div>`);
+    stopMarkers[s.id] = marker;
+  });
+
+  map.on('popupopen', () => {
+    document.querySelectorAll('.popup-start').forEach(btn => {
+      btn.addEventListener('click', () => { fromSel.value = btn.dataset.stop; map.closePopup(); });
+    });
+    document.querySelectorAll('.popup-end').forEach(btn => {
+      btn.addEventListener('click', () => {
+        toSel.value = btn.dataset.stop;
+        map.closePopup();
+        if (fromSel.value && toSel.value) document.getElementById('go-btn').click();
+      });
+    });
+  });
+
+  const allLatLngs = stops.map(s => [s.lat, s.lng]);
+  if (allLatLngs.length) map.fitBounds(allLatLngs, { padding: [30, 30] });
+
+  // --- Highlight layers ---
+  let highlightLayers = [];
+
+  function clearHighlights() {
+    highlightLayers.forEach(l => map.removeLayer(l));
+    highlightLayers = [];
+    for (const rid in routePolylines) routePolylines[rid].setStyle({ weight: 3, opacity: 0.35 });
+    for (const sid in stopMarkers) stopMarkers[sid].setStyle({ radius: 5, color: '#333', weight: 1.5, fillColor: '#fff' });
+  }
+
+  function showRoute(legs) {
+    clearHighlights();
+    for (const rid in routePolylines) routePolylines[rid].setStyle({ weight: 2, opacity: 0.15 });
+
+    const bounds = [];
+
+    legs.forEach(leg => {
+      const route = routeById[leg.route];
+      for (let i = 0; i + 1 < leg.stops.length; i++) {
+        const fromStop = stopById[leg.stops[i]];
+        const toStop = stopById[leg.stops[i + 1]];
+        const segment = getShapeSegment(route, fromStop, toStop);
+        const noTrips = leg.depTime === null;
+        const line = L.polyline(segment, {
+          color: route.color, weight: noTrips ? 4 : 6,
+          opacity: noTrips ? 0.5 : 0.9,
+          dashArray: noTrips ? '8 6' : null
+        }).addTo(map);
+        highlightLayers.push(line);
+        segment.forEach(p => bounds.push(p));
+      }
+      leg.stops.forEach(sid => {
+        stopMarkers[sid].setStyle({ radius: 7, color: route.color, weight: 3, fillColor: '#fff' });
+      });
+    });
+
+    const originStop = stopById[legs[0].stops[0]];
+    const destStop = stopById[legs[legs.length - 1].stops[legs[legs.length - 1].stops.length - 1]];
+
+    for (const [stop, label, color] of [[originStop, 'A', '#4caf50'], [destStop, 'B', '#f44336']]) {
+      const m = L.marker([stop.lat, stop.lng], {
+        icon: L.divIcon({
+          className: '',
+          html: `<div style="background:${color};color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">${label}</div>`,
+          iconSize: [28, 28], iconAnchor: [14, 14]
+        })
+      }).addTo(map);
+      highlightLayers.push(m);
+    }
+
+    if (bounds.length) map.fitBounds(bounds, { padding: [50, 50] });
+  }
+
+  function getShapeSegment(route, fromStop, toStop) {
+    if (!route.shape || route.shape.length < 2) {
+      return [[fromStop.lat, fromStop.lng], [toStop.lat, toStop.lng]];
+    }
+    let fromIdx = nearestPointOnShape(route.shape, fromStop);
+    let toIdx = nearestPointOnShape(route.shape, toStop);
+    if (fromIdx === toIdx) return [[fromStop.lat, fromStop.lng], [toStop.lat, toStop.lng]];
+    const start = Math.min(fromIdx, toIdx);
+    const end = Math.max(fromIdx, toIdx);
+    return route.shape.slice(start, end + 1);
+  }
+
+  function nearestPointOnShape(shape, stop) {
+    let minDist = Infinity, minIdx = 0;
+    shape.forEach((p, i) => {
+      const d = (p[0] - stop.lat) ** 2 + (p[1] - stop.lng) ** 2;
+      if (d < minDist) { minDist = d; minIdx = i; }
+    });
+    return minIdx;
+  }
+
+  // --- Directions display ---
+  let currentOptions = [null, null, null];
+  let lastSearch = null; // { legs, dateStr, startMin, mode, fromId, toId }
+
+  function renderLegs(resolvedLegs) {
+    let html = '';
+    resolvedLegs.forEach((leg, i) => {
+      const route = routeById[leg.route];
+
+      if (i > 0) {
+        const transferStop = stopById[leg.stops[0]].name;
+        if (leg.waitMin !== null && leg.waitMin >= 0) {
+          html += `<div class="leg-transfer">Transfer at ${transferStop} &middot; ${formatDuration(leg.waitMin)} wait</div>`;
+        } else {
+          html += `<div class="leg-transfer">Transfer at ${transferStop}</div>`;
+        }
+      }
+
+      const boardStop = stopById[leg.stops[0]].name;
+      const alightStop = stopById[leg.stops[leg.stops.length - 1]].name;
+      const numStops = leg.stops.length - 1;
+
+      let timeHtml = '';
+      if (leg.depTime !== null) {
+        timeHtml = `<div class="leg-time">${formatTime(leg.depTime)} &rarr; ${formatTime(leg.arrTime)} (${formatDuration(leg.rideMin)})</div>`;
+      } else {
+        timeHtml = '<div class="leg-time" style="color:#c62828">No more trips today</div>';
+      }
+
+      html += `<div class="leg">
+        <div class="leg-color" style="background:${route.color}"></div>
+        <div class="leg-details">
+          <div class="leg-route" style="color:${route.color}">${route.name}</div>
+          <div class="leg-stops">
+            Board at <strong>${boardStop}</strong><br>
+            Ride ${numStops} stop${numStops !== 1 ? 's' : ''} to <strong>${alightStop}</strong>
+          </div>
+          ${timeHtml}
+        </div>
+      </div>`;
+    });
+
+    const transfers = resolvedLegs.length - 1;
+    const totalStops = resolvedLegs.reduce((sum, l) => sum + l.stops.length - 1, 0);
+
+    let summaryParts = [`${totalStops} stops`, `${transfers} transfer${transfers !== 1 ? 's' : ''}`];
+    if (resolvedLegs[0].depTime !== null) {
+      const firstDep = resolvedLegs[0].depTime;
+      const lastArr = resolvedLegs[resolvedLegs.length - 1].arrTime;
+      if (lastArr !== null) {
+        const totalTime = lastArr - firstDep;
+        summaryParts.push(`<strong>${formatDuration(totalTime)} total</strong> (${formatTime(firstDep)} &rarr; ${formatTime(lastArr)})`);
+      }
+    }
+    html += `<div class="dir-summary">${summaryParts.join(' &middot; ')}</div>`;
+    return html;
+  }
+
+  function buildTabHtml(option, label) {
+    if (!option || !isComplete(option)) {
+      return `<div class="option-tab disabled"><div class="tab-label">${label}</div><div class="tab-time">-</div></div>`;
+    }
+    const dep = getDeparture(option);
+    const total = getTotalTime(option);
+    const maxWait = getMaxWait(option);
+    const waitInfo = maxWait > 0 ? ` &middot; ${maxWait} min transfer` : '';
+    return `<div class="tab-label">${label}</div><div class="tab-time">${formatTime(dep)}</div><div class="tab-dur">${formatDuration(total)}${waitInfo}</div>`;
+  }
+
+  function shiftOptions(direction) {
+    if (!lastSearch) return;
+    const { legs, dateStr, mode, fromId, toId } = lastSearch;
+    // Shift based on the current edge option's departure
+    const ref = direction === -1 ? currentOptions[0] : currentOptions[2];
+    if (!ref || !isComplete(ref)) return;
+    const newStartMin = getDeparture(ref);
+    lastSearch.startMin = newStartMin;
+    const options = findOptions(legs, dateStr, newStartMin, mode);
+    const activeIdx = 1;
+    if (options[activeIdx] && isComplete(options[activeIdx])) {
+      showRoute(options[activeIdx]);
+    } else {
+      const fb = options.findIndex(o => o && isComplete(o));
+      if (fb >= 0) showRoute(options[fb]);
+    }
+    showDirections(options, fromId, toId, activeIdx);
+  }
+
+  function setDirections(html) {
+    const dir = document.getElementById('directions');
+    dir.innerHTML = html;
+    dir.classList.add('visible');
+    map.invalidateSize();
+  }
+
+  function showDirections(options, fromId, toId, activeIdx) {
+    const dir = document.getElementById('directions');
+    const from = stopById[fromId];
+    const to = stopById[toId];
+    currentOptions = options;
+
+    if (!options[0] && !options[1] && !options[2]) {
+      setDirections('<div class="error-msg">No route found between these stops.</div>');
+      return;
+    }
+
+    if (!options[activeIdx] || !isComplete(options[activeIdx])) {
+      activeIdx = options.findIndex(o => o && isComplete(o));
+      if (activeIdx === -1) {
+        setDirections('<div class="error-msg">No trips available for this date.</div>');
+        return;
+      }
+    }
+
+    let html = `<div class="dir-header">${from.name} &rarr; ${to.name}</div>`;
+
+    const labels = ['Earlier', 'Requested', 'Later'];
+    const canGoEarlier = options[0] && isComplete(options[0]);
+    const canGoLater = options[2] && isComplete(options[2]);
+
+    html += '<div class="option-tabs">';
+    html += `<button class="nav-btn" id="nav-earlier" ${canGoEarlier ? '' : 'disabled'}>&lsaquo;</button>`;
+    for (let i = 0; i < 3; i++) {
+      const opt = options[i];
+      const isActive = i === activeIdx;
+      const isDisabled = !opt || !isComplete(opt);
+      const cls = isDisabled ? 'option-tab disabled' : (isActive ? 'option-tab active' : 'option-tab');
+      html += `<div class="${cls}" data-tab="${i}">${buildTabHtml(opt, labels[i])}</div>`;
+    }
+    html += `<button class="nav-btn" id="nav-later" ${canGoLater ? '' : 'disabled'}>&rsaquo;</button>`;
+    html += '</div>';
+
+    html += `<div id="option-detail">${renderLegs(options[activeIdx])}</div>`;
+
+    setDirections(html);
+
+    dir.querySelectorAll('.option-tab:not(.disabled)').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const idx = parseInt(tab.dataset.tab);
+        showRoute(currentOptions[idx]);
+        showDirections(currentOptions, fromId, toId, idx);
+      });
+    });
+    document.getElementById('nav-earlier')?.addEventListener('click', () => shiftOptions(-1));
+    document.getElementById('nav-later')?.addEventListener('click', () => shiftOptions(1));
+  }
+
+  // --- Go button ---
+  document.getElementById('go-btn').addEventListener('click', () => {
+    const fromId = fromSel.value;
+    const toId = toSel.value;
+    const mode = document.getElementById('time-mode').value;
+
+    if (!fromId || !toId) {
+      setDirections('<div class="error-msg">Please select both a From and To stop.</div>');
+      return;
+    }
+    if (fromId === toId) {
+      setDirections('<div class="error-msg">Origin and destination are the same stop.</div>');
+      return;
+    }
+
+    const legs = findRoute(fromId, toId);
+    if (!legs || legs.length === 0) {
+      clearHighlights();
+      setDirections('<div class="error-msg">No route found between these stops.</div>');
+      return;
+    }
+
+    legs.forEach(leg => {
+      if (leg.stops.length === 2) {
+        const expanded = expandLegStops(leg.stops[0], leg.stops[leg.stops.length - 1], leg.route);
+        if (expanded) leg.stops = expanded;
+      }
+    });
+
+    const dateStr = dateInput.value;
+    const startMin = timeToMin(timeInput.value + ':00');
+    const options = findOptions(legs, dateStr, startMin, mode);
+
+    lastSearch = { legs, dateStr, startMin, mode, fromId, toId };
+
+    const activeIdx = 1;
+    if (options[activeIdx] && isComplete(options[activeIdx])) {
+      showRoute(options[activeIdx]);
+    } else {
+      const fb = options.findIndex(o => o && isComplete(o));
+      if (fb >= 0) showRoute(options[fb]);
+      else clearHighlights();
+    }
+    showDirections(options, fromId, toId, activeIdx);
+  });
+
+  // Helper: is a hex color light?
+  function isLightColor(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    return (r * 299 + g * 587 + b * 114) / 1000 > 160;
+  }
+})();
+</script>
+</body>
+</html>

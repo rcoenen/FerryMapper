@@ -1,0 +1,13 @@
+{
+  "name": "ferrymapper",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare-data": "node prepare-data.mjs",
+    "start": "npx serve ."
+  },
+  "dependencies": {
+    "unzipper": "^0.12.3"
+  }
+}
