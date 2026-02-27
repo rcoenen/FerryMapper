@@ -711,7 +711,6 @@
         fromSel.value = btn.dataset.stop;
         saveState();
         map.closePopup();
-        if (fromSel.value && toSel.value) document.getElementById('go-btn').click();
       });
     });
     document.querySelectorAll('.popup-end').forEach(btn => {
@@ -719,7 +718,6 @@
         toSel.value = btn.dataset.stop;
         saveState();
         map.closePopup();
-        if (fromSel.value && toSel.value) document.getElementById('go-btn').click();
       });
     });
   });
