@@ -748,12 +748,20 @@
   });
 
   map.on('popupopen', () => {
+    function flashField(sel) {
+      const field = sel.closest('.control-field');
+      if (!field) return;
+      field.classList.remove('field-flash');
+      void field.offsetWidth; // reflow to restart animation
+      field.classList.add('field-flash');
+    }
     document.querySelectorAll('.popup-start').forEach(btn => {
       btn.addEventListener('click', () => {
         fromSel.value = btn.dataset.stop;
         resetRoute();
         saveState();
         map.closePopup();
+        flashField(fromSel);
       });
     });
     document.querySelectorAll('.popup-end').forEach(btn => {
@@ -762,6 +770,7 @@
         resetRoute();
         saveState();
         map.closePopup();
+        flashField(toSel);
       });
     });
   });

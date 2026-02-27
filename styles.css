@@ -339,6 +339,12 @@
     min-height: 44px;
   }
   .control-field { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+  @keyframes field-flash {
+    0%   { background: transparent; }
+    30%  { background: rgba(76, 175, 80, 0.18); }
+    100% { background: transparent; }
+  }
+  .field-flash { animation: field-flash 0.6s ease-out; }
   .control-field select { width: 100%; }
 
   .controls-stops {
