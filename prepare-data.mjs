@@ -251,8 +251,12 @@ async function main() {
   console.log(`${stops.length} stops after proximity merge`);
 
   // Assign canonical IDs and convert routes to arrays
-  const canonicalStops = stops.map((s, i) => ({
-    id: 'S' + i,
+  // Use a slug from the stop name so IDs are stable across data refreshes
+  function toStopId(name) {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+  const canonicalStops = stops.map((s) => ({
+    id: toStopId(s.name),
     name: s.name,
     lat: s.lat,
     lng: s.lng,

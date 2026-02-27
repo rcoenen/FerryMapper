@@ -31,8 +31,6 @@
   const STORAGE_KEY = 'ferryMapperNYC';
   function saveState() {
     const state = {
-      from: fromSel.value,
-      to: toSel.value,
       date: dateInput.value,
       time: timeInput.value,
       mode: document.getElementById('time-mode').value
@@ -194,10 +192,8 @@
   const todayStr = now.toISOString().slice(0, 10);
   const nowTime = now.toTimeString().slice(0, 5);
 
-  // Always restore stops and mode from saved state
+  // Restore mode only; stops are intentionally not restored on reload
   if (saved) {
-    if (saved.from) fromSel.value = saved.from;
-    if (saved.to) toSel.value = saved.to;
     if (saved.mode) document.getElementById('time-mode').value = saved.mode;
   }
   // For date/time: keep saved value only if it's still in the future, otherwise use now
@@ -240,6 +236,11 @@
   setInterval(checkPastTime, 30000);
 
 
+  let lastSearch = null; // { legs, dateStr, startMin, mode, fromId, toId }
+  let currentOptions = [null, null, null];
+  let currentActiveIdx = 1;
+  let shiftCount = 0;
+
   // When stop selection changes while a route is active, clear state and start fresh
   function resetRoute() {
     if (!lastSearch) return;
@@ -252,9 +253,44 @@
     currentOptions = [null, null, null];
     shiftCount = 0;
     if (isMobile()) setSheetSnap('peek');
+    updatePreviewMarkers();
+  }
+  function newRoute() {
+    fromSel.value = '';
+    toSel.value = '';
+    saveState();
+    resetRoute();
   }
   fromSel.addEventListener('change', resetRoute);
   toSel.addEventListener('change', resetRoute);
+
+  // Preview Start/End markers on the map as soon as stops are selected
+  let previewStartMarker = null;
+  let previewEndMarker = null;
+
+  function makePillIcon(label) {
+    const w = label === 'Start' ? 52 : 44;
+    return L.divIcon({
+      className: '',
+      html: `<div class="start-end-marker" style="pointer-events:none">${label}</div>`,
+      iconSize: [w, 36],
+      iconAnchor: [w / 2, 36]
+    });
+  }
+
+  function updatePreviewMarkers() {
+    if (previewStartMarker) { previewStartMarker.remove(); previewStartMarker = null; }
+    if (previewEndMarker) { previewEndMarker.remove(); previewEndMarker = null; }
+    if (!lastSearch) {
+      const from = stopById[fromSel.value];
+      const to = stopById[toSel.value];
+      if (from) previewStartMarker = L.marker([from.lat, from.lng], { icon: makePillIcon('Start'), interactive: false }).addTo(map);
+      if (to) previewEndMarker = L.marker([to.lat, to.lng], { icon: makePillIcon('End'), interactive: false }).addTo(map);
+    }
+  }
+
+  fromSel.addEventListener('change', updatePreviewMarkers);
+  toSel.addEventListener('change', updatePreviewMarkers);
 
   const controls = document.querySelector('.controls');
 
@@ -788,6 +824,8 @@
     stopMarkers[s.id] = marker;
   });
 
+  updatePreviewMarkers(); // show badges for any pre-loaded stop selections
+
   // Allow map panning by dragging the popup (Leaflet blocks touch propagation,
   // but extra listeners on the same element still fire)
   let popupDragCleanup = null;
@@ -832,7 +870,9 @@
     document.querySelectorAll('.popup-start').forEach(btn => {
       btn.addEventListener('click', () => {
         fromSel.value = btn.dataset.stop;
+        if (lastSearch) toSel.value = '';
         resetRoute();
+        updatePreviewMarkers();
         saveState();
         map.closePopup();
         flashField(fromSel);
@@ -841,7 +881,9 @@
     document.querySelectorAll('.popup-end').forEach(btn => {
       btn.addEventListener('click', () => {
         toSel.value = btn.dataset.stop;
+        if (lastSearch) fromSel.value = '';
         resetRoute();
+        updatePreviewMarkers();
         saveState();
         map.closePopup();
         flashField(toSel);
@@ -939,6 +981,8 @@
   }
 
   function showRoute(legs) {
+    if (previewStartMarker) { previewStartMarker.remove(); previewStartMarker = null; }
+    if (previewEndMarker) { previewEndMarker.remove(); previewEndMarker = null; }
     clearHighlights();
     for (const rid in routeOutlines) routeOutlines[rid].setStyle({ weight: 4, opacity: 0.15 });
     for (const rid in routePolylines) routePolylines[rid].setStyle({ weight: 2, opacity: 0.15 });
@@ -1006,26 +1050,10 @@
     const originStop = stopById[originId];
     const destStop = stopById[destId];
 
-    const startMarker = L.marker([originStop.lat, originStop.lng], {
-      icon: L.divIcon({
-        className: '',
-        html: '<div class="start-end-marker">Start</div>',
-        iconSize: [52, 36],
-        iconAnchor: [26, 36]
-      }),
-      interactive: false
-    }).addTo(map);
+    const startMarker = L.marker([originStop.lat, originStop.lng], { icon: makePillIcon('Start'), interactive: false }).addTo(map);
     highlightLayers.push(startMarker);
 
-    const endMarker = L.marker([destStop.lat, destStop.lng], {
-      icon: L.divIcon({
-        className: '',
-        html: '<div class="start-end-marker">End</div>',
-        iconSize: [44, 36],
-        iconAnchor: [22, 36]
-      }),
-      interactive: false
-    }).addTo(map);
+    const endMarker = L.marker([destStop.lat, destStop.lng], { icon: makePillIcon('End'), interactive: false }).addTo(map);
     highlightLayers.push(endMarker);
 
     if (bounds.length) {
@@ -1076,10 +1104,6 @@
 
   // --- Directions display ---
   const BASE_LABELS = ['Earlier', 'Best', 'Later'];
-  let currentOptions = [null, null, null];
-  let currentActiveIdx = 1;
-  let shiftCount = 0; // negative = shifted earlier, positive = shifted later
-  let lastSearch = null; // { legs, dateStr, startMin, mode, fromId, toId }
 
   function renderLegs(resolvedLegs) {
     let html = '<div class="timeline">';
@@ -1205,12 +1229,14 @@
       } else {
         controls.style.display = '';
       }
+    } else if (hasRoute) {
+      html += '<div class="route-actions desktop"><button class="route-action-btn" id="clear-route-btn">New route</button></div>';
     }
     dir.innerHTML = html;
     dir.classList.add('visible');
-    if (isMobile() && hasRoute) {
+    if (hasRoute) {
       document.getElementById('show-map-btn')?.addEventListener('click', openMapOverlay);
-      document.getElementById('clear-route-btn')?.addEventListener('click', resetRoute);
+      document.getElementById('clear-route-btn')?.addEventListener('click', newRoute);
     }
     map.invalidateSize();
   }
