@@ -725,9 +725,8 @@
   // 🗽 Easter egg
   L.marker([40.6892, -74.0445], {
     icon: L.divIcon({ html: '<div style="font-size:24px;line-height:1">🗽</div>', className: '', iconAnchor: [12, 24] }),
-    interactive: false,
     zIndexOffset: -1
-  }).addTo(map);
+  }).addTo(map).bindPopup('Regular ferry to the Statue?<br>Not happening. That\'s <a href="https://www.cityexperiences.com/new-york/city-cruises/statue/" target="_blank" rel="noopener">Statue City Cruises</a>.<br><br>⚠️ Skip the scammers — buy tickets at the official desk only.');
 
   const LANDING_SIZE = 8;
   const stopMarkers = {};
