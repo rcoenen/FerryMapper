@@ -1047,7 +1047,7 @@
         summaryParts.push(`<strong>${formatDuration(totalTime)} total</strong>`);
       }
     }
-    html += `<div class="dir-summary">${summaryParts.join(' \u00B7 ')}</div>`;
+    if (transfers > 0) html += `<div class="dir-summary">${summaryParts.join(' \u00B7 ')}</div>`;
     return html;
   }
 
