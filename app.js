@@ -47,6 +47,9 @@
   const dateDisplay = document.getElementById('date-display');
   const timeInput = document.getElementById('time-input');
   const timeDisplay = document.getElementById('time-display');
+  const TIME_FMT_KEY = 'ferryMapperNYCTimeFmt';
+  let use12h = false;
+  try { use12h = localStorage.getItem(TIME_FMT_KEY) === '12'; } catch {}
   const fromSel = document.getElementById('from-select');
   const toSel = document.getElementById('to-select');
   const aboutTrigger = document.getElementById('about-trigger');
@@ -229,10 +232,6 @@
     const [h, m] = t.split(':').map(Number);
     return h * 60 + m;
   }
-
-  const TIME_FMT_KEY = 'ferryMapperNYCTimeFmt';
-  let use12h = false;
-  try { use12h = localStorage.getItem(TIME_FMT_KEY) === '12'; } catch {}
 
   function formatTime(mins) {
     const h = Math.floor(mins / 60) % 24;
