@@ -674,11 +674,15 @@
     .sheet-handle {
       display: flex;
       justify-content: center;
-      padding: 2px 0 6px;
+      align-items: center;
+      height: 14px;
       cursor: grab;
       flex-shrink: 0;
     }
     .sheet-handle span {
+      position: relative;
+      z-index: 1;
+      top: -5px;
       width: 36px;
       height: 5px;
       border-radius: 3px;
