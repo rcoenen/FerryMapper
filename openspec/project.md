@@ -57,7 +57,7 @@ NYC Ferry Trip Planner — a lightweight web app for planning routes across the 
 - **GTFS feed**: `https://nycferry.connexionz.net/rtt/public/utility/gtfs.aspx` — NYC Ferry schedule data (zip file)
 - **Leaflet CDN**: `unpkg.com/leaflet@1.9.4` — map library
 - **OpenStreetMap tiles**: `tile.openstreetmap.org` — map tile imagery
-- **GitHub Pages**: `rcoenen.github.io/FerryMapper` — live hosting
+- **GitHub Pages**: `rcoenen.github.io/FerryMapperNYC` — live hosting
 
 ## Key Files
 | File | Purpose |

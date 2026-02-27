@@ -28,7 +28,7 @@
   routes.forEach(r => routeById[r.id] = r);
 
   // --- Persist/restore state via localStorage ---
-  const STORAGE_KEY = 'ferryMapper';
+  const STORAGE_KEY = 'ferryMapperNYC';
   function saveState() {
     const state = {
       from: fromSel.value,
@@ -680,7 +680,7 @@
       maxZoom: 18
     }
   };
-  const STYLE_STORAGE_KEY = 'ferryMapperStyle';
+  const STYLE_STORAGE_KEY = 'ferryMapperNYCStyle';
   let activeStyleKey = 'positron';
   try { activeStyleKey = localStorage.getItem(STYLE_STORAGE_KEY) || 'positron'; } catch {}
   if (!MAP_STYLES[activeStyleKey]) activeStyleKey = 'positron';
@@ -1482,7 +1482,7 @@
   });
 
   // --- Geolocation toggle ---
-  const LOC_STORAGE_KEY = 'ferryMapperLocation';
+  const LOC_STORAGE_KEY = 'ferryMapperNYCLocation';
   let geoWatchId = null;
   let geoMarker = null;
 

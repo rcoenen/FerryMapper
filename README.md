@@ -1,6 +1,6 @@
 # NYC Ferry Trip Planner
 
-### [Click here to try the FerryMapper live](https://rcoenen.github.io/FerryMapper/)
+### [Click here to try FerryMapperNYC live](https://rcoenen.github.io/FerryMapperNYC/)
 
 A lightweight, no-framework trip planner for the NYC Ferry system. Plan routes across all active ferry lines with real schedule data, transfer times, and multiple trip options.
 
