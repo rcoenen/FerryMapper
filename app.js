@@ -1045,7 +1045,7 @@
   }
 
   function buildTabHtml(option, label) {
-    const labelHtml = label ? `<div class="tab-label">${label}</div>` : '';
+    const labelHtml = `<div class="tab-label">${label || '&nbsp;'}</div>`;
     if (!option || !isComplete(option)) {
       return `<div class="option-tab disabled">${labelHtml}<div class="tab-time">-</div></div>`;
     }
