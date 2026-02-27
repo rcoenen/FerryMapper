@@ -663,6 +663,7 @@
       height: 22px;
       background: white;
       border-radius: 8px 8px 0 0;
+      pointer-events: none;
     }
     .bottom-sheet.dragging { transition: none; }
 
@@ -672,17 +673,20 @@
     .bottom-sheet.snap-full { transform: translateY(0); }
 
     .sheet-handle {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 68px;
+      height: 22px;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 14px;
       cursor: grab;
-      flex-shrink: 0;
+      z-index: 2;
+      touch-action: none;
     }
     .sheet-handle span {
-      position: relative;
-      z-index: 1;
-      top: -5px;
       width: 36px;
       height: 5px;
       border-radius: 3px;
@@ -695,6 +699,7 @@
       flex: 1;
       min-height: 0;
       overflow: hidden;
+      padding-top: 10px;
     }
 
     .controls { padding: 8px 16px; padding-bottom: max(16px, env(safe-area-inset-bottom)); }

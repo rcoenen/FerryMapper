@@ -1233,6 +1233,7 @@
   let isDragging = false;
   let lastTouchY = 0;
   let lastTouchTime = 0;
+  let dragDistance = 0;
   let velocity = 0; // px/ms, positive = dragging down (closing)
 
   function getSheetTranslateY() {
@@ -1248,6 +1249,7 @@
     dragStartTranslate = getSheetTranslateY();
     lastTouchY = dragStartY;
     lastTouchTime = Date.now();
+    dragDistance = 0;
     velocity = 0;
     sheet.classList.add('dragging');
   }, { passive: true });
@@ -1261,6 +1263,7 @@
     lastTouchY = touchY;
     lastTouchTime = now;
     const dy = touchY - dragStartY;
+    dragDistance = Math.max(dragDistance, Math.abs(dy));
     const newY = Math.max(0, dragStartTranslate + dy);
     const maxY = sheet.offsetHeight - 52;
     sheet.style.transform = `translateY(${Math.min(newY, maxY)}px)`;
@@ -1288,8 +1291,7 @@
     // Slow drag: stay exactly where released (keep current inline transform)
   });
 
-  // Tap handle to toggle open/collapsed
-  handle.addEventListener('click', () => {
+  function toggleSheetFromHandle() {
     if (!isMobile()) return;
     const currentY = getSheetTranslateY();
     // If partially dragged or collapsed, snap open; if already fully open, collapse
@@ -1299,5 +1301,17 @@
     } else {
       setSheetSnap('collapsed');
     }
-  });
+  }
+
+  handle.addEventListener('touchend', (e) => {
+    if (!isMobile()) return;
+    // Treat small/no movement as tap for immediate toggle on mobile.
+    if (dragDistance <= 6) {
+      e.preventDefault();
+      toggleSheetFromHandle();
+    }
+  }, { passive: false });
+
+  // Click fallback (desktop/simulators and non-touch interactions)
+  handle.addEventListener('click', toggleSheetFromHandle);
 })();
