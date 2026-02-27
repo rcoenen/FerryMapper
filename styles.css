@@ -547,15 +547,15 @@
     font-size: 14px;
   }
 
-  .stop-popup-routes { margin-top: 4px; }
+  .stop-popup-routes { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; }
   .stop-popup-routes span {
     display: inline-block;
-    padding: 1px 6px;
-    border-radius: 3px;
+    padding: 2px 7px;
+    border-radius: 10px;
     color: white;
     font-size: 11px;
-    margin: 1px 2px;
-    font-weight: 500;
+    font-weight: 600;
+    white-space: nowrap;
   }
   .popup-actions { margin-top: 8px; display: flex; gap: 6px; }
   .popup-actions button {

@@ -718,7 +718,7 @@
       return `<span style="background:${r.color};color:${textColor}">${r.name}</span>`;
     }).join('');
 
-    marker.bindPopup(`<strong>${s.name}</strong>${typeLabel}<div class="stop-popup-routes">${routeTags}</div><div class="popup-actions"><button class="popup-start" data-stop="${s.id}">Start</button><button class="popup-end" data-stop="${s.id}">End</button></div>`);
+    marker.bindPopup(`<strong>${s.name}</strong>${typeLabel}<div class="stop-popup-routes">${routeTags}</div><div class="popup-actions"><button class="popup-start" data-stop="${s.id}"><span class="ab-marker ab-a">A</span> From</button><button class="popup-end" data-stop="${s.id}"><span class="ab-marker ab-b">B</span> To</button></div>`);
     stopMarkers[s.id] = marker;
   });
 
@@ -1092,7 +1092,7 @@
       setSheetSnap('full');
       if (hasRoute) {
         controls.style.display = 'none';
-        html += '<div class="route-actions"><button class="route-action-btn" id="show-map-btn">Show full route</button><button class="route-action-btn" id="clear-route-btn">New route</button></div>';
+        html += '<div class="route-actions"><button class="route-action-btn" id="clear-route-btn">New route</button><button class="route-action-btn" id="show-map-btn">Show full route</button></div>';
       } else {
         controls.style.display = '';
       }
