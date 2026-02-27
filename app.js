@@ -295,6 +295,9 @@
   const controls = document.querySelector('.controls');
 
   // Swap button
+  document.getElementById('clear-route-btn').addEventListener('click', newRoute);
+  document.getElementById('show-map-btn').addEventListener('click', openMapOverlay);
+
   document.getElementById('swap-btn').addEventListener('click', () => {
     const tmp = fromSel.value;
     fromSel.value = toSel.value;
@@ -1225,18 +1228,16 @@
       setSheetSnap('full');
       if (hasRoute) {
         controls.style.display = 'none';
-        html += '<div class="route-actions"><button class="route-action-btn" id="clear-route-btn">New route</button><button class="route-action-btn" id="show-map-btn">Show full route</button></div>';
+        html += '<div class="route-actions"><button class="route-action-btn" id="mobile-clear-route-btn">New route</button><button class="route-action-btn" id="mobile-show-map-btn">Show full route</button></div>';
       } else {
         controls.style.display = '';
       }
-    } else if (hasRoute) {
-      html += '<div class="route-actions desktop"><button class="route-action-btn" id="clear-route-btn">New route</button></div>';
     }
     dir.innerHTML = html;
     dir.classList.add('visible');
     if (hasRoute) {
-      document.getElementById('show-map-btn')?.addEventListener('click', openMapOverlay);
-      document.getElementById('clear-route-btn')?.addEventListener('click', newRoute);
+      document.getElementById('mobile-show-map-btn')?.addEventListener('click', openMapOverlay);
+      document.getElementById('mobile-clear-route-btn')?.addEventListener('click', newRoute);
     }
     map.invalidateSize();
   }
