@@ -106,22 +106,30 @@
     z-index: 1001;
   }
   .map-close-btn:hover { background: rgba(0,0,0,0.7); }
-  .show-map-btn {
+  .show-map-btn { display: none; }
+
+  .route-actions {
     display: none;
-    width: 100%;
-    padding: 14px;
-    margin-top: 4px;
+    gap: 8px;
+    padding: 8px 16px 16px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+  .route-action-btn {
+    flex: 1;
+    padding: 12px 10px;
     border: none;
     border-radius: 10px;
-    background: #1a237e;
-    color: white;
-    font-size: 15px;
+    background: #ececec;
+    color: #444;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     text-align: center;
+    font-family: inherit;
+    min-height: 44px;
   }
-  .show-map-btn:hover { background: #283593; }
-  .show-map-btn:active { background: #0d1452; }
+  .route-action-btn:hover { background: #e0e0e0; }
+  .route-action-btn:active { background: #d4d4d4; }
 
   /* --- Controls --- */
   .controls {
@@ -643,7 +651,19 @@
       flex-direction: column;
       z-index: 10;
       transition: transform 0.3s ease;
-      overflow: hidden;
+      overflow: visible;
+    }
+    .bottom-sheet::before {
+      content: '';
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 72px;
+      height: 26px;
+      background: white;
+      border-radius: 12px 12px 0 0;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.12);
     }
     .bottom-sheet.dragging { transition: none; }
 
@@ -690,6 +710,7 @@
     .nav-btn { width: 52px; font-size: 26px; }
 
     .show-map-btn { display: block; }
+    .route-actions { display: flex; }
 
     .modal-card { padding: 18px 16px 14px; border-radius: 12px; }
     .modal-card h2 { font-size: 18px; }

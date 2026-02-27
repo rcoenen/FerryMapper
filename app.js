@@ -1024,8 +1024,8 @@
         const toName = toSel.options[toSel.selectedIndex]?.text || '';
         controlsSummary.querySelector('.summary-route').textContent = fromName + ' \u2192 ' + toName;
         controls.classList.add('collapsed');
-        // Inject "Show route on map" button
-        html += '<div style="padding:8px 16px 16px;padding-bottom:max(16px,env(safe-area-inset-bottom))"><button class="show-map-btn" id="show-map-btn">\uD83D\uDDFA\uFE0F Show route on map</button></div>';
+        // Inject action buttons
+        html += '<div class="route-actions"><button class="route-action-btn" id="show-map-btn">Show full route</button><button class="route-action-btn" id="clear-route-btn">Clear route</button></div>';
       } else {
         controls.classList.remove('collapsed');
       }
@@ -1034,6 +1034,7 @@
     dir.classList.add('visible');
     if (isMobile() && hasRoute) {
       document.getElementById('show-map-btn')?.addEventListener('click', openMapOverlay);
+      document.getElementById('clear-route-btn')?.addEventListener('click', resetRoute);
     }
     map.invalidateSize();
   }
