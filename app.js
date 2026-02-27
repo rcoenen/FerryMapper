@@ -466,10 +466,20 @@
 
   // Expand a leg to show all intermediate stops along a route
   function expandLegStops(fromId, toId, routeId) {
+    // Use the canonical stop sequence for this route to get all intermediate stops
+    const seq = routeStopSequences[routeId];
+    if (seq) {
+      const fromIdx = seq.indexOf(fromId);
+      const toIdx = seq.indexOf(toId);
+      if (fromIdx !== -1 && toIdx !== -1 && fromIdx !== toIdx) {
+        if (fromIdx < toIdx) return seq.slice(fromIdx, toIdx + 1);
+        return seq.slice(toIdx, fromIdx + 1).reverse();
+      }
+    }
+    // Fallback: BFS on graph edges
     const visited = new Set([fromId]);
     const prev = {};
     const queue = [fromId];
-
     while (queue.length > 0) {
       const cur = queue.shift();
       if (cur === toId) {
@@ -867,7 +877,7 @@
         if (isEndpoint) {
           stopMarkers[sid].setStyle({ radius: 7, color: route.color, weight: 3, fillColor: route.color, fillOpacity: 1 });
         } else {
-          stopMarkers[sid].setStyle({ radius: 5, color: route.color, weight: 1.5, fillColor: route.color, fillOpacity: 1 });
+          stopMarkers[sid].setStyle({ radius: 5, color: route.color, weight: 2, fillColor: '#fff', fillOpacity: 1 });
         }
       });
     });
@@ -926,10 +936,16 @@
     let fromIdx = nearestPointOnShape(route.shape, fromStop);
     let toIdx = nearestPointOnShape(route.shape, toStop);
     if (fromIdx === toIdx) return [[fromStop.lat, fromStop.lng], [toStop.lat, toStop.lng]];
+    let pts;
     if (fromIdx < toIdx) {
-      return route.shape.slice(fromIdx, toIdx + 1);
+      pts = route.shape.slice(fromIdx, toIdx + 1);
+    } else {
+      pts = route.shape.slice(toIdx, fromIdx + 1).reverse();
     }
-    return route.shape.slice(toIdx, fromIdx + 1).reverse();
+    // Anchor endpoints to actual stop coordinates so the line connects through the markers
+    pts[0] = [fromStop.lat, fromStop.lng];
+    pts[pts.length - 1] = [toStop.lat, toStop.lng];
+    return pts;
   }
 
   function nearestPointOnShape(shape, stop) {
