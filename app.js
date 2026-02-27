@@ -715,7 +715,7 @@
   }
 
   function addChevronToSegment(pts, color, lineWeight) {
-    // Place a simple white chevron at the midpoint, sized to the line weight.
+    // Place a simple black chevron at the midpoint, sized to the line weight.
     // Skip spur/branch segments (path much longer than straight line).
     const segs = [];
     let totalLen = 0;
@@ -738,7 +738,7 @@
         const s = Math.round(lineWeight * 2.5);
         const sw = Math.max(2, Math.round(lineWeight * 0.45));
         const half = Math.round(s / 2);
-        const svg = `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" style="transform:rotate(${angle}deg)"><path d="M${s * 0.2} ${s * 0.75}L${half} ${s * 0.2}L${s * 0.8} ${s * 0.75}" fill="none" stroke="white" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        const svg = `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" style="transform:rotate(${angle}deg)"><path d="M${s * 0.2} ${s * 0.75}L${half} ${s * 0.2}L${s * 0.8} ${s * 0.75}" fill="none" stroke="black" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
         const m = L.marker([lat, lng], {
           icon: L.divIcon({ className: '', html: svg, iconSize: [s, s], iconAnchor: [half, half] }),
           interactive: false
@@ -858,7 +858,16 @@
 
     if (bounds.length) {
       if (isMobile()) {
-        map.panTo([originStop.lat, originStop.lng]);
+        const ZOOM = 14;
+        // Defer until after the bottom sheet has fully expanded
+        setTimeout(() => {
+          const sheetHeight = document.getElementById('bottom-sheet').offsetHeight;
+          const mapHeight = document.getElementById('map').offsetHeight;
+          const visibleHeight = mapHeight - sheetHeight;
+          const originPx = map.project([originStop.lat, originStop.lng], ZOOM);
+          const centeredPx = L.point(originPx.x, originPx.y + sheetHeight / 2);
+          map.setView(map.unproject(centeredPx, ZOOM), ZOOM);
+        }, 350);
       } else {
         map.fitBounds(bounds, { padding: [50, 50] });
       }
