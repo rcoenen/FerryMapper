@@ -809,7 +809,7 @@
     highlightLayers = [];
     for (const rid in routeOutlines) routeOutlines[rid].setStyle({ weight: 5, opacity: 0.35 });
     for (const rid in routePolylines) routePolylines[rid].setStyle({ weight: 3, opacity: 0.35 });
-    for (const sid in stopMarkers) stopMarkers[sid].setStyle({ radius: 5, color: '#333', weight: 1.5, fillColor: '#fff' });
+    for (const sid in stopMarkers) stopMarkers[sid].setStyle({ radius: 8, color: '#333', weight: 1.5, fillColor: '#fff' });
   }
 
   function addChevronToSegment(pts, color, lineWeight) {
