@@ -674,8 +674,7 @@
     .sheet-handle {
       display: flex;
       justify-content: center;
-      padding: 4px 0 6px;
-      margin-top: -10px;
+      padding: 10px 0 6px;
       cursor: grab;
       flex-shrink: 0;
     }
