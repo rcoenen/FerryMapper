@@ -1181,10 +1181,18 @@
     // Expand intermediate stops for all candidate topologies
     for (const legs of allLegs) {
       legs.forEach(leg => {
-        if (leg.stops.length === 2) {
-          const expanded = expandLegStops(leg.stops[0], leg.stops[leg.stops.length - 1], leg.route);
-          if (expanded) leg.stops = expanded;
+        const full = [];
+        for (let i = 0; i < leg.stops.length - 1; i++) {
+          const seg = expandLegStops(leg.stops[i], leg.stops[i + 1], leg.route);
+          if (seg) {
+            if (i === 0) full.push(...seg);
+            else full.push(...seg.slice(1));
+          } else {
+            if (i === 0) full.push(leg.stops[i]);
+            full.push(leg.stops[i + 1]);
+          }
         }
+        if (full.length > leg.stops.length) leg.stops = full;
       });
     }
 
