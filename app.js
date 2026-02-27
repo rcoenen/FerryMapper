@@ -132,10 +132,9 @@
     if (!dateStr) return '';
     const dt = new Date(dateStr + 'T00:00:00');
     if (Number.isNaN(dt.getTime())) return dateStr;
-    return new Intl.DateTimeFormat(undefined, {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
+    return new Intl.DateTimeFormat('en', {
+      day: 'numeric',
+      month: 'short'
     }).format(dt);
   }
 
