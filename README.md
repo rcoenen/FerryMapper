@@ -44,3 +44,10 @@ The `data/ferry-data.json` file contains:
 - **5 active routes** (Astoria, East River, Rockaway-Soundview, South Brooklyn, St. George)
 - **503 trip schedules** with full stop times
 - Pre-built routing graph with edges from all trip patterns per route
+
+## License
+
+This project is released under the **MIT License**.
+
+Use it however you want: copy, modify, fork, sell, or ship in your own projects, as long as you keep the copyright and license notice.
+See [LICENSE](LICENSE).
