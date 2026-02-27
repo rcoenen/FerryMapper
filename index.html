@@ -34,9 +34,9 @@
     <div class="settings-section">
       <label class="settings-label">Map Style</label>
       <select id="map-style-select">
-        <option value="positron">Light (Positron)</option>
+        <option value="positron">Light</option>
         <option value="darkMatter">Dark</option>
-        <option value="osm">Classic (OSM)</option>
+        <option value="osm">Classic</option>
       </select>
     </div>
     <div class="settings-section">
@@ -135,6 +135,10 @@
             <input type="text" id="time-display" class="date-display" readonly tabindex="-1" aria-hidden="true">
             <input type="time" id="time-input" aria-label="Time">
           </div>
+          <div class="time-dropdowns" aria-hidden="true">
+            <select id="time-hour-select" aria-label="Hour"></select>
+            <select id="time-minute-select" aria-label="Minute"></select>
+          </div>
           <div class="date-input-shell">
             <input type="text" id="date-display" class="date-display" readonly tabindex="-1" aria-hidden="true">
             <input type="date" id="date-input" aria-label="Date">
@@ -148,5 +152,8 @@
 </div>
 
 <script src="app.js"></script>
+<!-- 100% privacy-first analytics -->
+<script data-collect-dnt="true" async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" alt="" referrerpolicy="no-referrer-when-downgrade"/></noscript>
 </body>
 </html>

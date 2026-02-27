@@ -84,22 +84,22 @@
   .time-fmt-btn:hover:not(.active) { background: #f0f0f0; }
   .settings-version {
     font-size: 12px;
-    color: #666;
+    color: #9aa0ad;
     border-top: 1px solid #ececf2;
     padding-top: 10px;
   }
   .settings-version code {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-    background: #f3f4f7;
+    background: #f5f6fa;
     padding: 1px 6px;
     border-radius: 6px;
-    color: #30385c;
+    color: #a5acba;
     cursor: pointer;
     user-select: none;
     transition: background 0.15s ease, color 0.15s ease;
   }
-  .settings-version code:hover { background: #e7e9f0; }
-  .settings-version code.copied { background: #dcefdc; color: #1c5f1c; }
+  .settings-version code:hover { background: #eceef5; }
+  .settings-version code.copied { background: #eef4ee; color: #90a890; }
 
   /* iOS-style toggle switch */
   .location-toggle {
@@ -455,6 +455,23 @@
     width: calc(7ch + 16px);
     min-width: calc(7ch + 16px);
   }
+  .controls-time .time-dropdowns {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    flex: 0 0 calc(9ch + 24px);
+    width: calc(9ch + 24px);
+    min-width: calc(9ch + 24px);
+  }
+  .controls-time .time-dropdowns select {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    text-align: center;
+    text-align-last: center;
+    padding-left: 6px;
+    padding-right: 20px;
+  }
   .controls-time .time-input-shell input[type="time"] {
     position: absolute;
     inset: 0;
@@ -777,6 +794,10 @@
     }
     #directions { flex: 1; min-height: 0; }
     #map { margin-right: 400px; }
+
+    /* Desktop/non-native: use explicit HH/MM dropdowns */
+    .controls-time .time-input-shell { display: none; }
+    .controls-time .time-dropdowns { display: flex; }
   }
 
   /* ===========================
@@ -901,3 +922,4 @@
     .modal-card h2 { font-size: 18px; }
     .modal-card p { font-size: 13px; }
   }
+    .controls-time .time-dropdowns { display: none; }
