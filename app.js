@@ -918,9 +918,9 @@
       leg.stops.forEach(sid => {
         const isEndpoint = sid === originId || sid === destId;
         if (isEndpoint) {
-          stopMarkers[sid].setStyle({ radius: 7, color: route.color, weight: 3, fillColor: route.color, fillOpacity: 1 });
+          stopMarkers[sid].setStyle({ color: route.color, weight: 3, fillColor: route.color, fillOpacity: 1 });
         } else {
-          stopMarkers[sid].setStyle({ radius: 5, color: route.color, weight: 2, fillColor: '#fff', fillOpacity: 1 });
+          stopMarkers[sid].setStyle({ color: route.color, weight: 2, fillColor: '#fff', fillOpacity: 1 });
         }
       });
     });
