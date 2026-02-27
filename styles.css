@@ -782,6 +782,16 @@
       border-radius: 8px 8px 0 0;
       pointer-events: none;
     }
+    .bottom-sheet::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      left: 0;
+      right: 0;
+      height: 150px;
+      background: white;
+      pointer-events: none;
+    }
     .bottom-sheet.dragging { transition: none; }
 
     /* Snap positions */
@@ -808,7 +818,9 @@
       height: 5px;
       border-radius: 3px;
       background: #bbb;
+      transition: background 0.15s;
     }
+    .sheet-handle:active span { background: #333; }
 
     .sheet-content {
       display: flex;

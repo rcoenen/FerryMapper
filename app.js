@@ -1371,8 +1371,9 @@
     lastTouchTime = now;
     const dy = touchY - dragStartY;
     dragDistance = Math.max(dragDistance, Math.abs(dy));
-    const newY = Math.max(0, dragStartTranslate + dy);
+    let newY = dragStartTranslate + dy;
     const maxY = sheet.offsetHeight - 52;
+    if (newY < 0) newY = newY * 0.3; // rubber band: follow finger with resistance
     sheet.style.transform = `translateY(${Math.min(newY, maxY)}px)`;
   }, { passive: true });
 
@@ -1383,6 +1384,13 @@
     if (!isDragging) return;
     isDragging = false;
     sheet.classList.remove('dragging');
+
+    // Rubber band snap-back: if dragged above max expansion, spring back
+    if (getSheetTranslateY() < 0) {
+      sheet.style.transform = '';
+      setSheetSnap('full');
+      return;
+    }
 
     const currentIdx = snaps.indexOf(currentSnap);
 
