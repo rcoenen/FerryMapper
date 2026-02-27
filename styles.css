@@ -7,11 +7,129 @@
     padding: 12px 20px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
     flex-shrink: 0;
     z-index: 10;
+    position: relative;
   }
   header h1 { font-size: 20px; font-weight: 600; }
+  .settings-toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    line-height: 1;
+    border-radius: 6px;
+  }
+  .settings-toggle-btn:hover { opacity: 0.8; }
+  .settings-toggle-btn:focus-visible {
+    outline: 2px solid rgba(255,255,255,0.9);
+    outline-offset: 2px;
+  }
+  .settings-drawer {
+    position: absolute;
+    top: 100%;
+    right: 12px;
+    width: 240px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    padding: 16px;
+    z-index: 2500;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .settings-drawer[hidden] { display: none; }
+  .settings-section { display: flex; flex-direction: column; gap: 6px; }
+  .settings-label { font-size: 13px; font-weight: 600; color: #555; }
+  .settings-label.location-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  .settings-drawer select {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    background: white;
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 28px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+  }
+  .settings-drawer select:focus { outline: none; border-color: #1a237e; box-shadow: 0 0 0 3px rgba(26,35,126,0.1); }
+
+  /* iOS-style toggle switch */
+  .location-toggle {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 44px;
+    height: 24px;
+    background: #ccc;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+    border: none;
+    outline: none;
+  }
+  .location-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+  }
+  .location-toggle:checked { background: #4285F4; }
+  .location-toggle:checked::after { transform: translateX(20px); }
+  .location-toggle:focus-visible { box-shadow: 0 0 0 3px rgba(66,133,244,0.3); }
+
+  /* Geolocation blue dot pulse */
+  .location-dot {
+    width: 16px;
+    height: 16px;
+    position: relative;
+  }
+  .location-dot-inner {
+    width: 16px;
+    height: 16px;
+    background: #4285F4;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .location-dot-pulse {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgba(66,133,244,0.3);
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: loc-pulse 2s ease-out infinite;
+  }
+  @keyframes loc-pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(3); opacity: 0; }
+  }
   .brand-btn {
     display: inline-flex;
     align-items: center;
@@ -116,7 +234,11 @@
   }
   body.modal-open { overflow: hidden; }
 
-  /* --- Main layout --- */
+  /* --- Leaflet overrides --- */
+.leaflet-control-attribution { font-size: 10px; opacity: 0.5; }
+.leaflet-control-attribution:hover { opacity: 1; }
+
+/* --- Main layout --- */
   #main { display: flex; flex: 1; min-height: 0; position: relative; }
   #map-overlay { display: contents; }
   #map { flex: 1; min-height: 0; }

@@ -23,6 +23,25 @@
     <span style="font-size:24px;display:inline-flex;flex-direction:column;align-items:center;line-height:1">⛴<svg width="24" height="6" viewBox="0 0 24 6" style="margin-top:-2px"><path d="M0 3c3-2.5 5-2.5 8 0s5 2.5 8 0 5-2.5 8 0" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></span>
     <h1>FerryMapper</h1>
   </button>
+  <button id="settings-toggle" class="settings-toggle-btn" type="button" aria-label="Settings" aria-expanded="false">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+  <div id="settings-drawer" class="settings-drawer" hidden>
+    <div class="settings-section">
+      <label class="settings-label">Map Style</label>
+      <select id="map-style-select">
+        <option value="positron">Light (Positron)</option>
+        <option value="darkMatter">Dark</option>
+        <option value="osm">Classic (OSM)</option>
+      </select>
+    </div>
+    <div class="settings-section">
+      <label class="settings-label location-label">
+        <span>Show My Location</span>
+        <input type="checkbox" id="location-toggle" class="location-toggle">
+      </label>
+    </div>
+  </div>
 </header>
 
 <div id="about-modal" class="modal-backdrop" hidden>

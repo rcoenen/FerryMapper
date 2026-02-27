@@ -646,10 +646,32 @@
 
   // --- Initialize map ---
   const DEFAULT_VIEW = { lat: 40.6989, lng: -73.9922, zoom: 13 };
+  const MAP_STYLES = {
+    positron: {
+      url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+      maxZoom: 20
+    },
+    darkMatter: {
+      url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+      maxZoom: 20
+    },
+    osm: {
+      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 18
+    }
+  };
+  const STYLE_STORAGE_KEY = 'ferryMapperStyle';
+  let activeStyleKey = 'positron';
+  try { activeStyleKey = localStorage.getItem(STYLE_STORAGE_KEY) || 'positron'; } catch {}
+  if (!MAP_STYLES[activeStyleKey]) activeStyleKey = 'positron';
+
   const map = L.map('map', { minZoom: 12 }).setView([DEFAULT_VIEW.lat, DEFAULT_VIEW.lng], DEFAULT_VIEW.zoom);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors',
-    maxZoom: 18
+  let currentTileLayer = L.tileLayer(MAP_STYLES[activeStyleKey].url, {
+    attribution: MAP_STYLES[activeStyleKey].attribution,
+    maxZoom: MAP_STYLES[activeStyleKey].maxZoom
   }).addTo(map);
 
   const routeOutlines = {};
@@ -668,7 +690,7 @@
   const stopMarkers = {};
   stops.forEach(s => {
     const marker = L.circleMarker([s.lat, s.lng], {
-      radius: 5, fillColor: '#fff', fillOpacity: 1,
+      radius: 8, fillColor: '#fff', fillOpacity: 1,
       color: '#333', weight: 1.5
     }).addTo(map);
 
@@ -723,12 +745,6 @@
   }
 
   map.on('moveend', checkReturnOverlay);
-  function logMapPos() {
-    const c = map.getCenter();
-    console.log(`map: zoom=${map.getZoom()} lat=${c.lat.toFixed(4)} lng=${c.lng.toFixed(4)}`);
-  }
-  map.on('moveend', logMapPos);
-  map.on('zoomend', logMapPos);
 
   returnOverlay.querySelector('.nyc-back-btn').addEventListener('click', () => {
     map.flyTo([DEFAULT_VIEW.lat, DEFAULT_VIEW.lng], DEFAULT_VIEW.zoom);
@@ -1345,4 +1361,107 @@
 
   // Click fallback (desktop/simulators and non-touch interactions)
   handle.addEventListener('click', toggleSheetFromHandle);
+
+  // --- Settings drawer ---
+  const settingsToggle = document.getElementById('settings-toggle');
+  const settingsDrawer = document.getElementById('settings-drawer');
+  const mapStyleSelect = document.getElementById('map-style-select');
+  const locationToggle = document.getElementById('location-toggle');
+
+  // Restore map style select to match active style
+  mapStyleSelect.value = activeStyleKey;
+
+  function openSettingsDrawer() {
+    settingsDrawer.hidden = false;
+    settingsToggle.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeSettingsDrawer() {
+    settingsDrawer.hidden = true;
+    settingsToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  settingsToggle.addEventListener('click', () => {
+    if (settingsDrawer.hidden) openSettingsDrawer();
+    else closeSettingsDrawer();
+  });
+
+  // Close on click outside
+  document.addEventListener('click', (e) => {
+    if (!settingsDrawer.hidden && !settingsDrawer.contains(e.target) && !settingsToggle.contains(e.target)) {
+      closeSettingsDrawer();
+    }
+  });
+
+  // Close on Escape (extend existing handler)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSettingsDrawer();
+  });
+
+  // --- Map style switching ---
+  mapStyleSelect.addEventListener('change', () => {
+    const key = mapStyleSelect.value;
+    const s = MAP_STYLES[key];
+    if (!s) return;
+    map.removeLayer(currentTileLayer);
+    currentTileLayer = L.tileLayer(s.url, { attribution: s.attribution, maxZoom: s.maxZoom }).addTo(map);
+    // Push tile layer to back so markers/routes stay on top
+    currentTileLayer.bringToBack();
+    activeStyleKey = key;
+    try { localStorage.setItem(STYLE_STORAGE_KEY, key); } catch {}
+  });
+
+  // --- Geolocation toggle ---
+  let geoWatchId = null;
+  let geoMarker = null;
+
+  function createGeoMarker(lat, lng) {
+    const icon = L.divIcon({
+      className: '',
+      html: '<div class="location-dot"><div class="location-dot-pulse"></div><div class="location-dot-inner"></div></div>',
+      iconSize: [16, 16],
+      iconAnchor: [8, 8]
+    });
+    return L.marker([lat, lng], { icon, interactive: false, zIndexOffset: 1000 }).addTo(map);
+  }
+
+  function clearGeoLocation() {
+    if (geoWatchId !== null) {
+      navigator.geolocation.clearWatch(geoWatchId);
+      geoWatchId = null;
+    }
+    if (geoMarker) {
+      map.removeLayer(geoMarker);
+      geoMarker = null;
+    }
+  }
+
+  locationToggle.addEventListener('change', () => {
+    if (locationToggle.checked) {
+      if (!navigator.geolocation) {
+        locationToggle.checked = false;
+        return;
+      }
+      geoWatchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          if (geoMarker) {
+            geoMarker.setLatLng([latitude, longitude]);
+          } else {
+            geoMarker = createGeoMarker(latitude, longitude);
+          }
+        },
+        (err) => {
+          locationToggle.checked = false;
+          clearGeoLocation();
+          if (err.code === err.PERMISSION_DENIED) {
+            alert('Location access was denied. To re-enable it, click the lock/settings icon in your browser\'s address bar and allow location access, then try again.');
+          }
+        },
+        { enableHighAccuracy: true, maximumAge: 10000 }
+      );
+    } else {
+      clearGeoLocation();
+    }
+  });
 })();
