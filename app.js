@@ -1526,9 +1526,6 @@
         locationToggle.checked = false;
         clearGeoLocation();
         try { localStorage.removeItem(LOC_STORAGE_KEY); } catch {}
-        if (err.code === err.PERMISSION_DENIED) {
-          alert('Location access was denied. To re-enable it, click the lock/settings icon in your browser\'s address bar and allow location access, then try again.');
-        }
       },
       { enableHighAccuracy: true, maximumAge: 10000 }
     );
