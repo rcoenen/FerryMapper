@@ -219,10 +219,18 @@
     return h * 60 + m;
   }
 
-  // Format minutes to "h:mm AM/PM"
+  const TIME_FMT_KEY = 'ferryMapperNYCTimeFmt';
+  let use12h = false;
+  try { use12h = localStorage.getItem(TIME_FMT_KEY) === '12'; } catch {}
+
   function formatTime(mins) {
     const h = Math.floor(mins / 60) % 24;
     const m = mins % 60;
+    if (use12h) {
+      const period = h < 12 ? 'AM' : 'PM';
+      const h12 = h % 12 || 12;
+      return `${h12}:${String(m).padStart(2, '0')} ${period}`;
+    }
     return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
   }
 
@@ -1448,6 +1456,23 @@
 
   // Restore map style select to match active style
   mapStyleSelect.value = activeStyleKey;
+
+  // Time format toggle
+  function updateTimeFmtButtons() {
+    document.getElementById('fmt-24').classList.toggle('active', !use12h);
+    document.getElementById('fmt-12').classList.toggle('active', use12h);
+  }
+  updateTimeFmtButtons();
+  document.querySelectorAll('.time-fmt-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      use12h = btn.dataset.fmt === '12';
+      try { localStorage.setItem(TIME_FMT_KEY, btn.dataset.fmt); } catch {}
+      updateTimeFmtButtons();
+      if (currentOptions && lastSearch) {
+        showDirections(currentOptions, lastSearch.fromId, lastSearch.toId, currentActiveIdx);
+      }
+    });
+  });
 
   function openSettingsDrawer() {
     settingsDrawer.hidden = false;

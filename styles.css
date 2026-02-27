@@ -67,6 +67,21 @@
     background-position: right 8px center;
   }
   .settings-drawer select:focus { outline: none; border-color: #1a237e; box-shadow: 0 0 0 3px rgba(26,35,126,0.1); }
+  .time-format-toggle { display: flex; gap: 0; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; }
+  .time-fmt-btn {
+    flex: 1;
+    padding: 8px 0;
+    border: none;
+    background: white;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    color: #555;
+    transition: background 0.15s, color 0.15s;
+  }
+  .time-fmt-btn:first-child { border-right: 1px solid #ccc; }
+  .time-fmt-btn.active { background: #1a237e; color: white; }
+  .time-fmt-btn:hover:not(.active) { background: #f0f0f0; }
 
   /* iOS-style toggle switch */
   .location-toggle {
