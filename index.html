@@ -52,16 +52,16 @@
       No React. No build step. No server. Just one <code>app.js</code> that does everything in the browser.
     </p>
     <p>
-      <strong>Routing</strong> went through several iterations. We started with <strong><a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm" target="_blank">Dijkstra</a></strong>, but for a graph of ~39 stops where transfers matter more than distance, it was overkill. We landed on <strong><a href="https://en.wikipedia.org/wiki/0-1_BFS" target="_blank">0-1 BFS</a></strong> &mdash; riding the same line costs 0, transferring costs 1. Fewest transfers first, then shortest path. Solves in under a millisecond.
+      <strong>Routing</strong> went through several iterations. We started with <strong><a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm" target="_blank">Dijkstra</a></strong>, but for a graph of ~39 stops where transfers matter more than distance, it was overkill. We landed on <strong><a href="https://cp-algorithms.com/graph/01_bfs.html" target="_blank">0-1 BFS</a></strong> &mdash; riding the same line costs 0, transferring costs 1. Fewest transfers first, then shortest path. Solves in under a millisecond.
     </p>
     <p>
-      <strong>Map lines</strong> needed smoothing so routes follow the waterway instead of zigzagging between GPS points. We tried <strong><a href="https://en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline" target="_blank">Catmull-Rom splines</a></strong>, <strong><a href="https://en.wikipedia.org/wiki/B-spline" target="_blank">cubic B-splines</a></strong>, and simple moving-average filters before settling on <strong><a href="https://en.wikipedia.org/wiki/Chaikin%27s_algorithm" target="_blank">Chaikin corner-cutting</a></strong> &mdash; it gave the cleanest curves without overshooting tight harbor bends.
+      <strong>Map lines</strong> needed smoothing so routes follow the waterway instead of zigzagging between GPS points. We tried <strong><a href="https://en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline" target="_blank">Catmull-Rom splines</a></strong>, <strong><a href="https://en.wikipedia.org/wiki/B-spline" target="_blank">cubic B-splines</a></strong>, and simple moving-average filters before settling on <strong><a href="https://en.wikipedia.org/wiki/Subdivision_surface#Approximating_schemes" target="_blank">Chaikin corner-cutting</a></strong> &mdash; it gave the cleanest curves without overshooting tight harbor bends.
     </p>
     <p>
       <strong>Three options</strong> (Earlier / Best / Later) come from re-running the search with shifted departure times. Navigate far enough and you're browsing the full timetable.
     </p>
     <p>
-      <strong>Data</strong> is pulled from NYC Ferry's public <strong><a href="https://gtfs.org" target="_blank">GTFS</a></strong> feed and baked into a single JSON file. No API keys, no rate limits, no surprises.
+      <strong>Data</strong> is pulled from NYC Ferry's public <strong><a href="https://en.wikipedia.org/wiki/GTFS" target="_blank">GTFS</a></strong> feed and baked into a single JSON file. No API keys, no rate limits, no surprises.
     </p>
     <p>
       The whole thing was prototyped with two AI coding agents &mdash; <strong>Codex</strong> and <strong>Claude Code</strong> &mdash; competing on different approaches for the router, the UX, and the map rendering. The best ideas from each survived. The rest got <code>git reset --hard</code>.
