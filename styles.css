@@ -44,6 +44,8 @@
   .modal-card {
     position: relative;
     width: min(640px, 100%);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
     background: white;
     color: #222;
     border-radius: 14px;
@@ -64,6 +66,22 @@
     margin-bottom: 10px;
   }
   .modal-card p:last-child { margin-bottom: 0; }
+  .modal-link-btn {
+    border: none;
+    background: none;
+    color: #1a237e;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+  }
+  .modal-link-btn:hover { color: #0d1452; }
+  .modal-link-btn:focus-visible {
+    outline: 2px solid #1a237e;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
   .modal-close {
     position: absolute;
     top: 10px;
