@@ -1,4 +1,4 @@
-name: Update build version file
+name: Update code hash file
 
 on:
   push:
@@ -32,6 +32,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No version change, skipping commit."
           else
-            git commit -m "Update build version for ${GITHUB_SHA::8}"
+            git commit -m "Update code hash for ${GITHUB_SHA::8}"
             git push
           fi
