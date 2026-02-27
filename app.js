@@ -51,31 +51,62 @@
   const aboutTrigger = document.getElementById('about-trigger');
   const aboutModal = document.getElementById('about-modal');
   const aboutClose = document.getElementById('about-close');
+  const nerdTrigger = document.getElementById('nerd-trigger');
+  const nerdModal = document.getElementById('nerd-modal');
+  const nerdClose = document.getElementById('nerd-close');
   const sorted = [...stops].sort((a, b) => a.name.localeCompare(b.name));
 
+  function syncModalBodyLock() {
+    const hasOpenModal = !aboutModal.hidden || !nerdModal.hidden;
+    document.body.classList.toggle('modal-open', hasOpenModal);
+  }
+
   function openAboutModal() {
+    closeNerdModal({ restoreFocus: false });
     aboutModal.hidden = false;
-    document.body.classList.add('modal-open');
+    syncModalBodyLock();
     aboutTrigger.setAttribute('aria-expanded', 'true');
     aboutClose.focus();
   }
 
-  function closeAboutModal() {
+  function closeAboutModal({ restoreFocus = true } = {}) {
     if (aboutModal.hidden) return;
     aboutModal.hidden = true;
-    document.body.classList.remove('modal-open');
+    syncModalBodyLock();
     aboutTrigger.setAttribute('aria-expanded', 'false');
-    aboutTrigger.focus();
+    if (restoreFocus) aboutTrigger.focus();
+  }
+
+  function openNerdModal() {
+    closeAboutModal({ restoreFocus: false });
+    nerdModal.hidden = false;
+    syncModalBodyLock();
+    nerdClose.focus();
+  }
+
+  function closeNerdModal({ restoreFocus = true } = {}) {
+    if (nerdModal.hidden) return;
+    nerdModal.hidden = true;
+    syncModalBodyLock();
+    if (restoreFocus) aboutTrigger.focus();
   }
 
   aboutTrigger.setAttribute('aria-expanded', 'false');
   aboutTrigger.addEventListener('click', openAboutModal);
   aboutClose.addEventListener('click', closeAboutModal);
+  nerdTrigger.addEventListener('click', () => {
+    if (confirm('You sure?')) openNerdModal();
+  });
+  nerdClose.addEventListener('click', closeNerdModal);
   aboutModal.addEventListener('click', (e) => {
     if (e.target === aboutModal) closeAboutModal();
   });
+  nerdModal.addEventListener('click', (e) => {
+    if (e.target === nerdModal) closeNerdModal();
+  });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+      closeNerdModal();
       closeAboutModal();
       if (typeof closeMapOverlay === 'function') closeMapOverlay();
     }

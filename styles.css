@@ -66,6 +66,17 @@
     margin-bottom: 10px;
   }
   .modal-card p:last-child { margin-bottom: 0; }
+  .nerd-trigger-btn {
+    border: none;
+    background: none;
+    color: #999;
+    font-size: 12px;
+    font-family: monospace;
+    cursor: pointer;
+    padding: 0;
+    letter-spacing: 0.5px;
+  }
+  .nerd-trigger-btn:hover { color: #666; }
   .modal-card a { color: #1a237e; text-decoration: underline; text-underline-offset: 2px; }
   .modal-card a:hover { color: #283593; }
   .modal-link-btn {
