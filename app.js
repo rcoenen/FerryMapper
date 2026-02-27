@@ -44,6 +44,7 @@
   }
 
   const dateInput = document.getElementById('date-input');
+  const dateDisplay = document.getElementById('date-display');
   const timeInput = document.getElementById('time-input');
   const fromSel = document.getElementById('from-select');
   const toSel = document.getElementById('to-select');
@@ -92,6 +93,22 @@
   populateSelect(fromSel, 'From:');
   populateSelect(toSel, 'To:');
 
+  function formatDateForDisplay(dateStr) {
+    if (!dateStr) return '';
+    const dt = new Date(dateStr + 'T00:00:00');
+    if (Number.isNaN(dt.getTime())) return dateStr;
+    return new Intl.DateTimeFormat(undefined, {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).format(dt);
+  }
+
+  function syncDateDisplay() {
+    if (!dateDisplay) return;
+    dateDisplay.value = formatDateForDisplay(dateInput.value);
+  }
+
   // Hydrate from saved state or default to now
   const saved = loadState();
   const now = new Date();
@@ -113,18 +130,15 @@
     dateInput.value = todayStr;
     timeInput.value = nowTime;
   }
+  syncDateDisplay();
 
   // Save on any change
   for (const el of [fromSel, toSel, dateInput, timeInput, document.getElementById('time-mode')]) {
     el.addEventListener('change', saveState);
   }
+  dateInput.addEventListener('change', syncDateDisplay);
+  dateInput.addEventListener('input', syncDateDisplay);
 
-  document.getElementById('now-btn').addEventListener('click', () => {
-    const n = new Date();
-    dateInput.value = n.toISOString().slice(0, 10);
-    timeInput.value = n.toTimeString().slice(0, 5);
-    saveState();
-  });
 
   // When stop selection changes while a route is active, clear state and start fresh
   function resetRoute() {
