@@ -1037,7 +1037,8 @@
     // Summary bar
     const transfers = resolvedLegs.length - 1;
     const totalStops = resolvedLegs.reduce((sum, l) => sum + l.stops.length - 1, 0);
-    let summaryParts = [`${totalStops} stops`, `${transfers} transfer${transfers !== 1 ? 's' : ''}`];
+    let summaryParts = [`${totalStops} stops`];
+    if (transfers > 0) summaryParts.push(`${transfers} transfer${transfers !== 1 ? 's' : ''}`);
     if (resolvedLegs[0].depTime !== null) {
       const firstDep = resolvedLegs[0].depTime;
       const lastArr = resolvedLegs[lastLegIdx].arrTime;
