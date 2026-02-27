@@ -1359,6 +1359,7 @@
     dragDistance = 0;
     velocity = 0;
     sheet.classList.add('dragging');
+    handle.classList.add('pressed');
   }, { passive: true });
 
   document.addEventListener('touchmove', (e) => {
@@ -1384,6 +1385,7 @@
     if (!isDragging) return;
     isDragging = false;
     sheet.classList.remove('dragging');
+    handle.classList.remove('pressed');
 
     // Rubber band snap-back: if dragged above max expansion, spring back
     if (getSheetTranslateY() < 0) {

@@ -818,9 +818,8 @@
       height: 5px;
       border-radius: 3px;
       background: #bbb;
-      transition: background 0.15s;
     }
-    .sheet-handle:active span { background: #333; }
+    .sheet-handle.pressed span { background: #777; }
 
     .sheet-content {
       display: flex;
