@@ -683,6 +683,7 @@
       height: 5px;
       border-radius: 3px;
       background: #bbb;
+      margin-top: -6px;
     }
 
     .sheet-content {
