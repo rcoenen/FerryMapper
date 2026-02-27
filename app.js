@@ -190,8 +190,16 @@
     const today = now.toISOString().slice(0, 10);
     const pastDate = selDate < today;
     const pastTime = selDate === today && timeInput.value < now.toTimeString().slice(0, 5);
-    dateInput.style.color = dateDisplay.style.color = pastDate ? '#c62828' : '';
-    timeDisplay.style.color = (pastDate || pastTime) ? '#c62828' : '';
+    if (pastDate || pastTime) {
+      dateInput.value = today;
+      timeInput.value = now.toTimeString().slice(0, 5);
+      syncDateDisplay();
+      syncTimeDisplay();
+      saveState();
+    }
+    dateInput.style.color = '';
+    dateDisplay.style.color = '';
+    timeDisplay.style.color = '';
   }
   dateInput.addEventListener('change', checkPastTime);
   timeInput.addEventListener('change', checkPastTime);
