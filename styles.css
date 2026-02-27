@@ -656,14 +656,13 @@
     .bottom-sheet::before {
       content: '';
       position: absolute;
-      top: -22px;
+      top: -12px;
       left: 50%;
       transform: translateX(-50%);
-      width: 72px;
-      height: 26px;
+      width: 44px;
+      height: 16px;
       background: white;
-      border-radius: 12px 12px 0 0;
-      box-shadow: 0 -4px 12px rgba(0,0,0,0.12);
+      border-radius: 8px 8px 0 0;
     }
     .bottom-sheet.dragging { transition: none; }
 
