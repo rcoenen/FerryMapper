@@ -353,7 +353,7 @@
     background-repeat: no-repeat;
     background-position: right 10px center;
   }
-  .controls select:focus, .controls input:focus, .controls .date-input-shell:focus-within .date-display, .controls .time-input-shell:focus-within .date-display { outline: none; border-color: #1a237e; box-shadow: 0 0 0 3px rgba(26,35,126,0.1); }
+  .controls select:focus, .controls input:focus { outline: none; border-color: #1a237e; box-shadow: 0 0 0 3px rgba(26,35,126,0.1); }
   .controls button {
     border: none;
     border-radius: 8px;
@@ -449,78 +449,65 @@
     padding-right: 24px;
     background-position: right 8px center;
   }
-  .controls-time .time-input-shell {
-    position: relative;
-    flex: 0 0 calc(7ch + 16px);
-    width: calc(7ch + 16px);
-    min-width: calc(7ch + 16px);
-  }
-  .controls-time .time-dropdowns {
-    display: none;
-    align-items: center;
-    gap: 4px;
-    flex: 0 0 calc(9ch + 24px);
-    width: calc(9ch + 24px);
-    min-width: calc(9ch + 24px);
-  }
-  .controls-time .time-dropdowns select {
-    flex: 1 1 0;
+  .controls-time .date-picker-btn {
+    flex: 0 0 auto;
     width: auto;
-    min-width: 0;
-    text-align: center;
-    text-align-last: center;
-    padding-left: 6px;
-    padding-right: 20px;
-  }
-  .controls-time .time-dropdowns #time-ampm-select { display: none; }
-  body.use-12h .controls-time .time-dropdowns {
-    flex: 0 0 calc(13ch + 34px);
-    width: calc(13ch + 34px);
-    min-width: calc(13ch + 34px);
-  }
-  body.use-12h .controls-time .time-dropdowns #time-ampm-select {
-    display: block;
-    flex: 0 0 calc(4ch + 14px);
-  }
-  .controls-time .time-input-shell input[type="time"] {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    margin: 0;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  .controls-time .date-input-shell {
-    position: relative;
-    flex: 0 0 calc(7ch + 16px);
-    width: calc(7ch + 16px);
-    min-width: calc(7ch + 16px);
-  }
-  .controls-time .date-display {
-    width: 100%;
-    padding-left: 4px;
-    padding-right: 4px;
-    text-align: center;
+    min-width: 138px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: white;
+    font-size: 15px;
+    font-family: inherit;
     font-variant-numeric: tabular-nums;
-  }
-  .controls-time .date-input-shell input[type="date"] {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    margin: 0;
-    border: none;
-    padding: 0;
+    text-align: center;
+    min-height: 44px;
+    padding: 10px 8px;
     cursor: pointer;
-    -webkit-appearance: none;
-    appearance: none;
   }
+  .controls-time .date-picker-btn:hover { background: #f8f8f8; }
+  .controls-time .date-picker-btn:focus-visible {
+    outline: none;
+    border-color: #1a237e;
+    box-shadow: 0 0 0 3px rgba(26,35,126,0.1);
+  }
+  .date-modal-card input[type="date"],
+  .date-modal-card input[type="time"] {
+    width: 100%;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: inherit;
+    padding: 12px 10px;
+    min-height: 44px;
+  }
+  .date-modal-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .date-modal-actions button {
+    border: 1px solid #c8ccda;
+    border-radius: 8px;
+    background: #f7f8fc;
+    color: #2e3452;
+    font-size: 14px;
+    font-weight: 600;
+    min-height: 40px;
+    padding: 8px 14px;
+    cursor: pointer;
+    flex: 1 1 0;
+  }
+  #date-modal-done {
+    border-color: #1a237e;
+    background: #1a237e;
+    color: #fff;
+  }
+  .date-modal-actions button:hover { background: #eef1fb; }
+  #date-modal-done:hover { background: #283593; }
+  .date-modal-actions button:active { background: #e3e7f8; }
+  #date-modal-done:active { background: #0d1452; }
   #go-btn { background: #1a237e; color: white; padding: 12px 20px; flex: 1 1 0; }
   #go-btn:hover { background: #283593; }
   #go-btn:active { background: #0d1452; }
@@ -805,9 +792,6 @@
     #directions { flex: 1; min-height: 0; }
     #map { margin-right: 400px; }
 
-    /* Desktop/non-native only when enabled via JS class */
-    body.desktop-time-dropdowns .controls-time .time-input-shell { display: none; }
-    body.desktop-time-dropdowns .controls-time .time-dropdowns { display: flex; }
   }
 
   /* ===========================
@@ -932,4 +916,8 @@
     .modal-card h2 { font-size: 18px; }
     .modal-card p { font-size: 13px; }
   }
-    .controls-time .time-dropdowns { display: none; }
+    .controls-time .date-picker-btn {
+      width: auto;
+      min-width: 116px;
+      flex: 0 0 auto;
+    }

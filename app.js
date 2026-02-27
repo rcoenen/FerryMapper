@@ -44,12 +44,13 @@
   }
 
   const dateInput = document.getElementById('date-input');
-  const dateDisplay = document.getElementById('date-display');
+  const datePickerBtn = document.getElementById('date-picker-btn');
+  const dateModal = document.getElementById('date-modal');
+  const dateModalClose = document.getElementById('date-modal-close');
+  const dateModalToday = document.getElementById('date-modal-today');
+  const dateModalNow = document.getElementById('date-modal-now');
+  const dateModalDone = document.getElementById('date-modal-done');
   const timeInput = document.getElementById('time-input');
-  const timeDisplay = document.getElementById('time-display');
-  const timeHourSelect = document.getElementById('time-hour-select');
-  const timeMinuteSelect = document.getElementById('time-minute-select');
-  const timeAmPmSelect = document.getElementById('time-ampm-select');
   const TIME_FMT_KEY = 'ferryMapperNYCTimeFmt';
   let use12h = false;
   try { use12h = localStorage.getItem(TIME_FMT_KEY) === '12'; } catch {}
@@ -63,19 +64,8 @@
   const nerdClose = document.getElementById('nerd-close');
   const sorted = [...stops].sort((a, b) => a.name.localeCompare(b.name));
   
-  function syncDesktopTimeDropdownMode() {
-    const isWide = window.matchMedia('(min-width: 641px)').matches;
-    const isFinePointer = window.matchMedia('(pointer: fine)').matches;
-    const hasTouch = navigator.maxTouchPoints > 0;
-    const enable = isWide && isFinePointer && !hasTouch;
-    document.body.classList.toggle('desktop-time-dropdowns', enable);
-    document.body.classList.toggle('use-12h', use12h);
-  }
-  syncDesktopTimeDropdownMode();
-  window.addEventListener('resize', syncDesktopTimeDropdownMode);
-
   function syncModalBodyLock() {
-    const hasOpenModal = !aboutModal.hidden || !nerdModal.hidden;
+    const hasOpenModal = !aboutModal.hidden || !nerdModal.hidden || !dateModal.hidden;
     document.body.classList.toggle('modal-open', hasOpenModal);
   }
 
@@ -109,6 +99,19 @@
     if (restoreFocus) aboutTrigger.focus();
   }
 
+  function openDateModal() {
+    dateModal.hidden = false;
+    syncModalBodyLock();
+    dateInput.focus();
+  }
+
+  function closeDateModal({ restoreFocus = true } = {}) {
+    if (dateModal.hidden) return;
+    dateModal.hidden = true;
+    syncModalBodyLock();
+    if (restoreFocus) datePickerBtn.focus();
+  }
+
   aboutTrigger.setAttribute('aria-expanded', 'false');
   aboutTrigger.addEventListener('click', openAboutModal);
   aboutClose.addEventListener('click', closeAboutModal);
@@ -122,8 +125,29 @@
   nerdModal.addEventListener('click', (e) => {
     if (e.target === nerdModal) closeNerdModal();
   });
+  dateModal.addEventListener('click', (e) => {
+    if (e.target === dateModal) closeDateModal();
+  });
+  datePickerBtn.addEventListener('click', openDateModal);
+  dateModalClose.addEventListener('click', closeDateModal);
+  dateModalToday.addEventListener('click', () => {
+    dateInput.value = new Date().toISOString().slice(0, 10);
+    syncDateTimeButton();
+    checkPastTime();
+    saveState();
+  });
+  dateModalNow.addEventListener('click', () => {
+    const now = new Date();
+    dateInput.value = now.toISOString().slice(0, 10);
+    timeInput.value = now.toTimeString().slice(0, 5);
+    syncDateTimeButton();
+    saveState();
+    closeDateModal();
+  });
+  dateModalDone.addEventListener('click', closeDateModal);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+      closeDateModal();
       closeNerdModal();
       closeAboutModal();
       if (typeof closeMapOverlay === 'function') closeMapOverlay();
@@ -153,77 +177,15 @@
     }).format(dt);
   }
 
-  function syncDateDisplay() {
-    if (!dateDisplay) return;
-    dateDisplay.value = formatDateForDisplay(dateInput.value);
-  }
-
-  function syncTimeDisplay() {
-    if (!timeDisplay || !timeInput.value) return;
+  function syncDateTimeButton() {
+    if (!datePickerBtn) return;
+    if (!dateInput.value || !timeInput.value) {
+      datePickerBtn.textContent = 'Date & Time';
+      return;
+    }
     const [h, m] = timeInput.value.split(':').map(Number);
     const mins = h * 60 + m;
-    timeDisplay.value = formatTime(mins);
-  }
-
-  function populateTimeDropdowns() {
-    if (!timeHourSelect || !timeMinuteSelect) return;
-    timeHourSelect.innerHTML = '';
-    if (use12h) {
-      for (let h = 1; h <= 12; h++) {
-        const opt = document.createElement('option');
-        opt.value = String(h).padStart(2, '0');
-        opt.textContent = String(h).padStart(2, '0');
-        timeHourSelect.appendChild(opt);
-      }
-    } else {
-      for (let h = 0; h < 24; h++) {
-        const opt = document.createElement('option');
-        opt.value = String(h).padStart(2, '0');
-        opt.textContent = String(h).padStart(2, '0');
-        timeHourSelect.appendChild(opt);
-      }
-    }
-    if (timeMinuteSelect.children.length === 0) {
-      for (let m = 0; m < 60; m++) {
-        const opt = document.createElement('option');
-        opt.value = String(m).padStart(2, '0');
-        opt.textContent = String(m).padStart(2, '0');
-        timeMinuteSelect.appendChild(opt);
-      }
-    }
-  }
-
-  function syncTimeDropdownsFromInput() {
-    if (!timeHourSelect || !timeMinuteSelect || !timeInput.value) return;
-    const [hStr, m] = timeInput.value.split(':');
-    const h = Number(hStr);
-    if (use12h) {
-      const isPm = h >= 12;
-      const h12 = h % 12 || 12;
-      timeHourSelect.value = String(h12).padStart(2, '0');
-      if (timeAmPmSelect) timeAmPmSelect.value = isPm ? 'PM' : 'AM';
-    } else {
-      timeHourSelect.value = hStr;
-    }
-    timeMinuteSelect.value = m;
-  }
-
-  function syncTimeInputFromDropdowns() {
-    if (!timeHourSelect || !timeMinuteSelect) return;
-    let hh = Number(timeHourSelect.value);
-    const mm = timeMinuteSelect.value;
-    if (use12h) {
-      const ampm = timeAmPmSelect?.value || 'AM';
-      if (ampm === 'AM') {
-        if (hh === 12) hh = 0;
-      } else if (hh < 12) {
-        hh += 12;
-      }
-    }
-    timeInput.value = `${String(hh).padStart(2, '0')}:${mm}`;
-    syncTimeDisplay();
-    checkPastTime();
-    saveState();
+    datePickerBtn.textContent = `${formatDateForDisplay(dateInput.value)} ${formatTime(mins)}`;
   }
 
   // Hydrate from saved state or default to now
@@ -247,24 +209,16 @@
     dateInput.value = todayStr;
     timeInput.value = nowTime;
   }
-  syncDateDisplay();
-  syncTimeDisplay();
-  populateTimeDropdowns();
-  syncTimeDropdownsFromInput();
+  syncDateTimeButton();
 
   // Save on any change
   for (const el of [fromSel, toSel, dateInput, timeInput, document.getElementById('time-mode')]) {
     el.addEventListener('change', saveState);
   }
-  dateInput.addEventListener('change', syncDateDisplay);
-  dateInput.addEventListener('input', syncDateDisplay);
-  timeInput.addEventListener('change', syncTimeDisplay);
-  timeInput.addEventListener('input', syncTimeDisplay);
-  timeInput.addEventListener('change', syncTimeDropdownsFromInput);
-  timeInput.addEventListener('input', syncTimeDropdownsFromInput);
-  timeHourSelect?.addEventListener('change', syncTimeInputFromDropdowns);
-  timeMinuteSelect?.addEventListener('change', syncTimeInputFromDropdowns);
-  timeAmPmSelect?.addEventListener('change', syncTimeInputFromDropdowns);
+  dateInput.addEventListener('change', syncDateTimeButton);
+  dateInput.addEventListener('input', syncDateTimeButton);
+  timeInput.addEventListener('change', syncDateTimeButton);
+  timeInput.addEventListener('input', syncDateTimeButton);
 
   function checkPastTime() {
     const now = new Date();
@@ -275,14 +229,10 @@
     if (pastDate || pastTime) {
       dateInput.value = today;
       timeInput.value = now.toTimeString().slice(0, 5);
-      syncDateDisplay();
-      syncTimeDisplay();
-      syncTimeDropdownsFromInput();
+      syncDateTimeButton();
       saveState();
     }
     dateInput.style.color = '';
-    dateDisplay.style.color = '';
-    timeDisplay.style.color = '';
   }
   dateInput.addEventListener('change', checkPastTime);
   timeInput.addEventListener('change', checkPastTime);
@@ -1661,12 +1611,8 @@
     btn.addEventListener('click', () => {
       use12h = btn.dataset.fmt === '12';
       try { localStorage.setItem(TIME_FMT_KEY, btn.dataset.fmt); } catch {}
-      document.body.classList.toggle('use-12h', use12h);
-      populateTimeDropdowns();
-      syncTimeDropdownsFromInput();
       updateTimeFmtButtons();
-      syncTimeDisplay();
-      syncDateDisplay();
+      syncDateTimeButton();
       if (currentOptions && lastSearch) {
         showDirections(currentOptions, lastSearch.fromId, lastSearch.toId, currentActiveIdx);
       }
