@@ -124,7 +124,10 @@
             <option value="depart">Depart</option>
             <option value="arrive">Arrive</option>
           </select>
-          <input type="time" id="time-input">
+          <div class="time-input-shell">
+            <input type="text" id="time-display" class="date-display" readonly tabindex="-1" aria-hidden="true">
+            <input type="time" id="time-input" aria-label="Time">
+          </div>
           <div class="date-input-shell">
             <input type="text" id="date-display" class="date-display" readonly tabindex="-1" aria-hidden="true">
             <input type="date" id="date-input" aria-label="Date">

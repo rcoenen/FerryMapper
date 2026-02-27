@@ -46,6 +46,7 @@
   const dateInput = document.getElementById('date-input');
   const dateDisplay = document.getElementById('date-display');
   const timeInput = document.getElementById('time-input');
+  const timeDisplay = document.getElementById('time-display');
   const fromSel = document.getElementById('from-select');
   const toSel = document.getElementById('to-select');
   const aboutTrigger = document.getElementById('about-trigger');
@@ -140,6 +141,13 @@
     dateDisplay.value = formatDateForDisplay(dateInput.value);
   }
 
+  function syncTimeDisplay() {
+    if (!timeDisplay || !timeInput.value) return;
+    const [h, m] = timeInput.value.split(':').map(Number);
+    const mins = h * 60 + m;
+    timeDisplay.value = formatTime(mins);
+  }
+
   // Hydrate from saved state or default to now
   const saved = loadState();
   const now = new Date();
@@ -162,6 +170,7 @@
     timeInput.value = nowTime;
   }
   syncDateDisplay();
+  syncTimeDisplay();
 
   // Save on any change
   for (const el of [fromSel, toSel, dateInput, timeInput, document.getElementById('time-mode')]) {
@@ -169,6 +178,8 @@
   }
   dateInput.addEventListener('change', syncDateDisplay);
   dateInput.addEventListener('input', syncDateDisplay);
+  timeInput.addEventListener('change', syncTimeDisplay);
+  timeInput.addEventListener('input', syncTimeDisplay);
 
   function checkPastTime() {
     const now = new Date();
@@ -177,7 +188,7 @@
     const pastDate = selDate < today;
     const pastTime = selDate === today && timeInput.value < now.toTimeString().slice(0, 5);
     dateInput.style.color = dateDisplay.style.color = pastDate ? '#c62828' : '';
-    timeInput.style.color = (pastDate || pastTime) ? '#c62828' : '';
+    timeDisplay.style.color = (pastDate || pastTime) ? '#c62828' : '';
   }
   dateInput.addEventListener('change', checkPastTime);
   timeInput.addEventListener('change', checkPastTime);
@@ -1468,6 +1479,7 @@
       use12h = btn.dataset.fmt === '12';
       try { localStorage.setItem(TIME_FMT_KEY, btn.dataset.fmt); } catch {}
       updateTimeFmtButtons();
+      syncTimeDisplay();
       if (currentOptions && lastSearch) {
         showDirections(currentOptions, lastSearch.fromId, lastSearch.toId, currentActiveIdx);
       }
