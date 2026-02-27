@@ -132,7 +132,8 @@
     if (!dateStr) return '';
     const dt = new Date(dateStr + 'T00:00:00');
     if (Number.isNaN(dt.getTime())) return dateStr;
-    return new Intl.DateTimeFormat('en', {
+    const locale = use12h ? 'en-US' : 'en-GB';
+    return new Intl.DateTimeFormat(locale, {
       day: 'numeric',
       month: 'short'
     }).format(dt);
@@ -1478,6 +1479,7 @@
       try { localStorage.setItem(TIME_FMT_KEY, btn.dataset.fmt); } catch {}
       updateTimeFmtButtons();
       syncTimeDisplay();
+      syncDateDisplay();
       if (currentOptions && lastSearch) {
         showDirections(currentOptions, lastSearch.fromId, lastSearch.toId, currentActiveIdx);
       }
