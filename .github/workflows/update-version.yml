@@ -1,0 +1,37 @@
+name: Update build version file
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  version:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate version.json
+        run: |
+          node -e "const fs=require('fs'); const sha=process.env.GITHUB_SHA || ''; const payload={commit:sha.slice(0,8), fullCommit:sha, dirty:false}; fs.writeFileSync('version.json', JSON.stringify(payload, null, 2)+'\\n');"
+
+      - name: Commit version.json if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f version.json
+          if git diff --cached --quiet; then
+            echo "No version change, skipping commit."
+          else
+            git commit -m "Update build version for ${GITHUB_SHA::8}"
+            git push
+          fi
