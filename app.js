@@ -704,6 +704,13 @@
     }
   });
 
+  // 🗽 Easter egg
+  L.marker([40.6892, -74.0445], {
+    icon: L.divIcon({ html: '<div style="font-size:24px;line-height:1">🗽</div>', className: '', iconAnchor: [12, 24] }),
+    interactive: false,
+    zIndexOffset: -1
+  }).addTo(map);
+
   const stopMarkers = {};
   stops.forEach(s => {
     const marker = L.circleMarker([s.lat, s.lng], {
