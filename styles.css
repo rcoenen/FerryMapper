@@ -94,7 +94,12 @@
     padding: 1px 6px;
     border-radius: 6px;
     color: #30385c;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease, color 0.15s ease;
   }
+  .settings-version code:hover { background: #e7e9f0; }
+  .settings-version code.copied { background: #dcefdc; color: #1c5f1c; }
 
   /* iOS-style toggle switch */
   .location-toggle {
