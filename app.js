@@ -718,7 +718,7 @@
       return `<span style="background:${r.color};color:${textColor}">${r.name}</span>`;
     }).join('');
 
-    marker.bindPopup(`<strong>${s.name}</strong>${typeLabel}<div class="stop-popup-routes">${routeTags}</div><div class="popup-actions"><button class="popup-start" data-stop="${s.id}"><span class="ab-marker ab-a">A</span> From</button><button class="popup-end" data-stop="${s.id}"><span class="ab-marker ab-b">B</span> To</button></div>`);
+    marker.bindPopup(`<strong>${s.name}</strong>${typeLabel}<div class="stop-popup-routes">${routeTags}</div><div class="popup-actions"><button class="popup-start" data-stop="${s.id}">From</button><button class="popup-end" data-stop="${s.id}">To</button></div>`, { maxWidth: 280, minWidth: 240 });
     stopMarkers[s.id] = marker;
   });
 
