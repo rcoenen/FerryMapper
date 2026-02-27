@@ -202,6 +202,7 @@
     const tmp = fromSel.value;
     fromSel.value = toSel.value;
     toSel.value = tmp;
+    resetRoute();
     saveState();
   });
 
@@ -678,7 +679,7 @@
   try { activeStyleKey = localStorage.getItem(STYLE_STORAGE_KEY) || 'positron'; } catch {}
   if (!MAP_STYLES[activeStyleKey]) activeStyleKey = 'positron';
 
-  const map = L.map('map', { minZoom: 12 }).setView([DEFAULT_VIEW.lat, DEFAULT_VIEW.lng], DEFAULT_VIEW.zoom);
+  const map = L.map('map', { minZoom: 11 }).setView([DEFAULT_VIEW.lat, DEFAULT_VIEW.lng], DEFAULT_VIEW.zoom);
   let currentTileLayer = L.tileLayer(MAP_STYLES[activeStyleKey].url, {
     attribution: MAP_STYLES[activeStyleKey].attribution,
     maxZoom: MAP_STYLES[activeStyleKey].maxZoom
@@ -719,6 +720,7 @@
     document.querySelectorAll('.popup-start').forEach(btn => {
       btn.addEventListener('click', () => {
         fromSel.value = btn.dataset.stop;
+        resetRoute();
         saveState();
         map.closePopup();
       });
@@ -726,6 +728,7 @@
     document.querySelectorAll('.popup-end').forEach(btn => {
       btn.addEventListener('click', () => {
         toSel.value = btn.dataset.stop;
+        resetRoute();
         saveState();
         map.closePopup();
       });
@@ -988,11 +991,12 @@
       // Departure station
       const originClass = isFirst ? ' tl-origin' : '';
       const depTimeStr = leg.depTime !== null ? formatTime(leg.depTime) : '';
+      const depTimeClass = isFirst ? ' tl-station-time-strong' : '';
       const depDotFill = route.color;
       html += `<div class="tl-station${originClass}">` +
         `<div class="tl-dot" style="border-color:${route.color};background:${depDotFill}"></div>` +
         `<div class="tl-station-name">${boardStop}</div>` +
-        (depTimeStr ? `<div class="tl-station-time">${depTimeStr}</div>` : '') +
+        (depTimeStr ? `<div class="tl-station-time${depTimeClass}">${depTimeStr}</div>` : '') +
         `</div>`;
 
       // Leg connector with route info
@@ -1003,8 +1007,7 @@
         `</div>`;
       if (leg.depTime !== null) {
         html += `<div class="tl-stops-row">` +
-          `<span class="tl-stops-count">${numStops} stop${numStops !== 1 ? 's' : ''}</span>` +
-          `<span class="tl-leg-dur">${formatDuration(leg.rideMin)}</span>` +
+          `<span class="tl-stops-count">${numStops} stop${numStops !== 1 ? 's' : ''} (${formatDuration(leg.rideMin)})</span>` +
           `</div>`;
       } else {
         html += `<div class="tl-no-trips">No more trips today</div>`;
@@ -1014,11 +1017,12 @@
       // Arrival station
       const destClass = isLast ? ' tl-dest' : '';
       const arrTimeStr = leg.arrTime !== null ? formatTime(leg.arrTime) : '';
+      const arrTimeClass = isLast ? ' tl-station-time-strong' : '';
       const arrDotFill = route.color;
       html += `<div class="tl-station${destClass}">` +
         `<div class="tl-dot" style="border-color:${route.color};background:${arrDotFill}"></div>` +
         `<div class="tl-station-name">${alightStop}</div>` +
-        (arrTimeStr ? `<div class="tl-station-time">${arrTimeStr}</div>` : '') +
+        (arrTimeStr ? `<div class="tl-station-time${arrTimeClass}">${arrTimeStr}</div>` : '') +
         `</div>`;
     });
 
@@ -1033,7 +1037,7 @@
       const lastArr = resolvedLegs[lastLegIdx].arrTime;
       if (lastArr !== null) {
         const totalTime = lastArr - firstDep;
-        summaryParts.push(`<strong>${formatDuration(totalTime)} total</strong> (${formatTime(firstDep)} &rarr; ${formatTime(lastArr)})`);
+        summaryParts.push(`<strong>${formatDuration(totalTime)} total</strong>`);
       }
     }
     html += `<div class="dir-summary">${summaryParts.join(' \u00B7 ')}</div>`;
@@ -1048,7 +1052,8 @@
     const dep = getDeparture(option);
     const total = getTotalTime(option);
     const maxWait = getMaxWait(option);
-    const waitInfo = maxWait > 0 ? `<div class="tab-transfer">${maxWait} min transfer</div>` : '';
+    const transferClass = maxWait > 20 ? ' tab-transfer-long' : '';
+    const waitInfo = maxWait > 0 ? `<div class="tab-transfer${transferClass}">${maxWait} min transfer</div>` : '';
     return `${labelHtml}<div class="tab-time">${formatTime(dep)}</div><div class="tab-dur">${formatDuration(total)}</div>${waitInfo}`;
   }
 

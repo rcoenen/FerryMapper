@@ -524,6 +524,7 @@
   }
   .tl-station-name { flex: 1; font-size: 14px; font-weight: 600; color: #222; }
   .tl-station-time { font-size: 13px; color: #555; font-weight: 500; margin-left: 8px; white-space: nowrap; }
+  .tl-station-time-strong { font-weight: 700; color: #333; }
 
   .tl-leg {
     margin-left: 5px;
@@ -647,6 +648,7 @@
   .option-tab .tab-time { font-size: 15px; font-weight: 600; color: #333; margin: 2px 0; }
   .option-tab .tab-dur { font-size: 12px; color: #666; line-height: 1.5; }
   .option-tab .tab-transfer { font-size: 11px; color: #999; white-space: nowrap; }
+  .option-tab .tab-transfer.tab-transfer-long { color: #c62828; }
   .option-tab.active .tab-label { color: #1a237e; }
   .option-tab.active .tab-time { color: #1a237e; }
   .nav-btn {
