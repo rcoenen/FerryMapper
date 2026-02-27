@@ -1412,6 +1412,7 @@
   });
 
   // --- Geolocation toggle ---
+  const LOC_STORAGE_KEY = 'ferryMapperLocation';
   let geoWatchId = null;
   let geoMarker = null;
 
@@ -1436,32 +1437,48 @@
     }
   }
 
+  function enableGeolocation() {
+    if (!navigator.geolocation) {
+      locationToggle.checked = false;
+      try { localStorage.removeItem(LOC_STORAGE_KEY); } catch {}
+      return;
+    }
+    geoWatchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        if (geoMarker) {
+          geoMarker.setLatLng([latitude, longitude]);
+        } else {
+          geoMarker = createGeoMarker(latitude, longitude);
+        }
+      },
+      (err) => {
+        locationToggle.checked = false;
+        clearGeoLocation();
+        try { localStorage.removeItem(LOC_STORAGE_KEY); } catch {}
+        if (err.code === err.PERMISSION_DENIED) {
+          alert('Location access was denied. To re-enable it, click the lock/settings icon in your browser\'s address bar and allow location access, then try again.');
+        }
+      },
+      { enableHighAccuracy: true, maximumAge: 10000 }
+    );
+  }
+
   locationToggle.addEventListener('change', () => {
     if (locationToggle.checked) {
-      if (!navigator.geolocation) {
-        locationToggle.checked = false;
-        return;
-      }
-      geoWatchId = navigator.geolocation.watchPosition(
-        (pos) => {
-          const { latitude, longitude } = pos.coords;
-          if (geoMarker) {
-            geoMarker.setLatLng([latitude, longitude]);
-          } else {
-            geoMarker = createGeoMarker(latitude, longitude);
-          }
-        },
-        (err) => {
-          locationToggle.checked = false;
-          clearGeoLocation();
-          if (err.code === err.PERMISSION_DENIED) {
-            alert('Location access was denied. To re-enable it, click the lock/settings icon in your browser\'s address bar and allow location access, then try again.');
-          }
-        },
-        { enableHighAccuracy: true, maximumAge: 10000 }
-      );
+      try { localStorage.setItem(LOC_STORAGE_KEY, '1'); } catch {}
+      enableGeolocation();
     } else {
+      try { localStorage.removeItem(LOC_STORAGE_KEY); } catch {}
       clearGeoLocation();
     }
   });
+
+  // Restore location toggle on load
+  try {
+    if (localStorage.getItem(LOC_STORAGE_KEY) === '1') {
+      locationToggle.checked = true;
+      enableGeolocation();
+    }
+  } catch {}
 })();
