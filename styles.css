@@ -472,6 +472,16 @@
     padding-left: 6px;
     padding-right: 20px;
   }
+  .controls-time .time-dropdowns #time-ampm-select { display: none; }
+  body.use-12h .controls-time .time-dropdowns {
+    flex: 0 0 calc(13ch + 34px);
+    width: calc(13ch + 34px);
+    min-width: calc(13ch + 34px);
+  }
+  body.use-12h .controls-time .time-dropdowns #time-ampm-select {
+    display: block;
+    flex: 0 0 calc(4ch + 14px);
+  }
   .controls-time .time-input-shell input[type="time"] {
     position: absolute;
     inset: 0;
@@ -795,9 +805,9 @@
     #directions { flex: 1; min-height: 0; }
     #map { margin-right: 400px; }
 
-    /* Desktop/non-native: use explicit HH/MM dropdowns */
-    .controls-time .time-input-shell { display: none; }
-    .controls-time .time-dropdowns { display: flex; }
+    /* Desktop/non-native only when enabled via JS class */
+    body.desktop-time-dropdowns .controls-time .time-input-shell { display: none; }
+    body.desktop-time-dropdowns .controls-time .time-dropdowns { display: flex; }
   }
 
   /* ===========================
