@@ -175,6 +175,12 @@
     border-radius: 8px;
     text-align: left;
   }
+  .brand-logo {
+    width: 30px;
+    height: 30px;
+    display: block;
+    flex-shrink: 0;
+  }
   .brand-btn:hover { opacity: 0.95; }
   .brand-btn:focus-visible {
     outline: 2px solid rgba(255,255,255,0.9);
