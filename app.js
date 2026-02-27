@@ -170,6 +170,20 @@
   dateInput.addEventListener('change', syncDateDisplay);
   dateInput.addEventListener('input', syncDateDisplay);
 
+  function checkPastTime() {
+    const now = new Date();
+    const selDate = dateInput.value;
+    const today = now.toISOString().slice(0, 10);
+    const pastDate = selDate < today;
+    const pastTime = selDate === today && timeInput.value < now.toTimeString().slice(0, 5);
+    dateInput.style.color = dateDisplay.style.color = pastDate ? '#c62828' : '';
+    timeInput.style.color = (pastDate || pastTime) ? '#c62828' : '';
+  }
+  dateInput.addEventListener('change', checkPastTime);
+  timeInput.addEventListener('change', checkPastTime);
+  checkPastTime();
+  setInterval(checkPastTime, 30000);
+
 
   // When stop selection changes while a route is active, clear state and start fresh
   function resetRoute() {
@@ -178,7 +192,7 @@
     const dir = document.getElementById('directions');
     dir.classList.remove('visible');
     dir.innerHTML = '';
-    controls.classList.remove('collapsed');
+    controls.style.display = '';
     lastSearch = null;
     currentOptions = [null, null, null];
     shiftCount = 0;
@@ -187,15 +201,7 @@
   fromSel.addEventListener('change', resetRoute);
   toSel.addEventListener('change', resetRoute);
 
-  // Collapsible summary bar for mobile
   const controls = document.querySelector('.controls');
-  const controlsSummary = document.createElement('div');
-  controlsSummary.className = 'controls-summary';
-  controlsSummary.innerHTML = '<span class="summary-route"></span><button class="summary-edit" type="button" title="Edit search">&#9998;</button>';
-  controls.prepend(controlsSummary);
-  controlsSummary.addEventListener('click', () => {
-    controls.classList.remove('collapsed');
-  });
 
   // Swap button
   document.getElementById('swap-btn').addEventListener('click', () => {
@@ -1085,15 +1091,10 @@
       closeMapOverlay();
       setSheetSnap('full');
       if (hasRoute) {
-        // Collapse form to compact summary bar
-        const fromName = fromSel.options[fromSel.selectedIndex]?.text || '';
-        const toName = toSel.options[toSel.selectedIndex]?.text || '';
-        controlsSummary.querySelector('.summary-route').textContent = fromName + ' \u2192 ' + toName;
-        controls.classList.add('collapsed');
-        // Inject action buttons
-        html += '<div class="route-actions"><button class="route-action-btn" id="show-map-btn">Show full route</button><button class="route-action-btn" id="clear-route-btn">Clear route</button></div>';
+        controls.style.display = 'none';
+        html += '<div class="route-actions"><button class="route-action-btn" id="show-map-btn">Show full route</button><button class="route-action-btn" id="clear-route-btn">New route</button></div>';
       } else {
-        controls.classList.remove('collapsed');
+        controls.style.display = '';
       }
     }
     dir.innerHTML = html;
@@ -1159,6 +1160,38 @@
     });
     document.getElementById('nav-earlier')?.addEventListener('click', () => shiftOptions(-1));
     document.getElementById('nav-later')?.addEventListener('click', () => shiftOptions(1));
+
+    // Horizontal swipe on option tabs
+    const tabsEl = dir.querySelector('.option-tabs');
+    if (tabsEl) {
+      let startX = 0;
+      let currentX = 0;
+      let swiping = false;
+      const tabs = tabsEl.querySelectorAll('.option-tab');
+
+      tabsEl.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+        currentX = startX;
+        swiping = true;
+      }, { passive: true });
+
+      tabsEl.addEventListener('touchmove', e => {
+        if (!swiping) return;
+        currentX = e.touches[0].clientX;
+        const dx = currentX - startX;
+        tabs.forEach(t => t.style.transform = `translateX(${dx}px)`);
+      }, { passive: true });
+
+      tabsEl.addEventListener('touchend', () => {
+        if (!swiping) return;
+        swiping = false;
+        const dx = currentX - startX;
+        tabs.forEach(t => t.style.transform = '');
+        if (Math.abs(dx) > 50) {
+          shiftOptions(dx < 0 ? 1 : -1);
+        }
+      });
+    }
   }
 
   // --- Go button ---

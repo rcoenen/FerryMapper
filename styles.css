@@ -390,45 +390,6 @@
   }
   #swap-btn:hover { background: #f5f5f5; border-color: #aaa; color: #555; }
 
-  .controls-summary {
-    display: none;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    min-height: 44px;
-  }
-  .controls-summary .summary-route {
-    flex: 1;
-    font-size: 15px;
-    font-weight: 600;
-    color: #333;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .controls-summary .summary-edit {
-    flex-shrink: 0;
-    flex-grow: 0;
-    width: 32px;
-    min-width: 32px;
-    height: 32px;
-    min-height: 0;
-    max-height: 32px;
-    border-radius: 50%;
-    border: none;
-    background: #e8eaf6;
-    color: #1a237e;
-    font-size: 14px;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    align-self: center;
-  }
-  .controls-summary .summary-edit:hover { background: #c5cae9; }
-
   .controls-time {
     display: flex;
     align-items: center;
@@ -631,6 +592,7 @@
     border-bottom: 1px solid #eee;
     background: #fafafa;
     align-items: stretch;
+    touch-action: pan-y;
   }
   .option-tab {
     flex: 1;
@@ -858,11 +820,6 @@
     }
 
     .controls { padding: 8px 16px; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
-    .controls.collapsed .controls-stops,
-    .controls.collapsed .controls-time { display: none; }
-    .controls.collapsed .controls-summary { display: flex; }
-    .controls.collapsed { padding: 6px 16px; border-bottom: 1px solid #eee; }
-
     #directions {
       overflow-y: auto;
       flex: 1;
