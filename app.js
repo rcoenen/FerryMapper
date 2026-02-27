@@ -729,10 +729,11 @@
     zIndexOffset: -1
   }).addTo(map);
 
+  const LANDING_SIZE = 8;
   const stopMarkers = {};
   stops.forEach(s => {
     const marker = L.circleMarker([s.lat, s.lng], {
-      radius: 8, fillColor: '#fff', fillOpacity: 1,
+      radius: LANDING_SIZE, fillColor: '#fff', fillOpacity: 1,
       color: '#333', weight: 1.5
     }).addTo(map);
 
@@ -746,6 +747,39 @@
     marker.bindPopup(`<strong>${s.name}</strong>${typeLabel}<div class="stop-popup-routes">${routeTags}</div><div class="popup-actions"><button class="popup-start" data-stop="${s.id}">Start</button><button class="popup-end" data-stop="${s.id}">End</button></div>`, { maxWidth: 280, minWidth: 240 });
     stopMarkers[s.id] = marker;
   });
+
+  // Allow map panning by dragging the popup (Leaflet blocks touch propagation,
+  // but extra listeners on the same element still fire)
+  let popupDragCleanup = null;
+  map.on('popupopen', () => {
+    const wrapper = document.querySelector('.leaflet-popup-content-wrapper');
+    if (wrapper) {
+      let startX, startY, startCenter;
+      const onStart = e => {
+        if (e.target.closest('button')) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        startCenter = map.getCenter();
+      };
+      const onMove = e => {
+        if (startX === undefined) return;
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+        const origin = map.latLngToContainerPoint(startCenter);
+        map.panTo(map.containerPointToLatLng(L.point(origin.x - dx, origin.y - dy)), { animate: false });
+      };
+      const onEnd = () => { startX = undefined; };
+      wrapper.addEventListener('touchstart', onStart, { passive: true });
+      wrapper.addEventListener('touchmove', onMove, { passive: true });
+      wrapper.addEventListener('touchend', onEnd, { passive: true });
+      popupDragCleanup = () => {
+        wrapper.removeEventListener('touchstart', onStart);
+        wrapper.removeEventListener('touchmove', onMove);
+        wrapper.removeEventListener('touchend', onEnd);
+      };
+    }
+  });
+  map.on('popupclose', () => { if (popupDragCleanup) { popupDragCleanup(); popupDragCleanup = null; } });
 
   map.on('popupopen', () => {
     function flashField(sel) {
@@ -809,7 +843,7 @@
     highlightLayers = [];
     for (const rid in routeOutlines) routeOutlines[rid].setStyle({ weight: 5, opacity: 0.35 });
     for (const rid in routePolylines) routePolylines[rid].setStyle({ weight: 3, opacity: 0.35 });
-    for (const sid in stopMarkers) stopMarkers[sid].setStyle({ radius: 8, color: '#333', weight: 1.5, fillColor: '#fff' });
+    for (const sid in stopMarkers) stopMarkers[sid].setStyle({ radius: LANDING_SIZE, color: '#333', weight: 1.5, fillColor: '#fff' });
   }
 
   function addChevronToSegment(pts, color, lineWeight) {
