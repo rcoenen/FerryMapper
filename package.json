@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "prepare-data": "node prepare-data.mjs",
-    "start": "npx serve ."
+    "start": "node scripts/write-version.mjs && npx serve ."
   },
   "dependencies": {
     "unzipper": "^0.12.3"

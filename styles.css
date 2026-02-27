@@ -82,6 +82,19 @@
   .time-fmt-btn:first-child { border-right: 1px solid #ccc; }
   .time-fmt-btn.active { background: #1a237e; color: white; }
   .time-fmt-btn:hover:not(.active) { background: #f0f0f0; }
+  .settings-version {
+    font-size: 12px;
+    color: #666;
+    border-top: 1px solid #ececf2;
+    padding-top: 10px;
+  }
+  .settings-version code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    background: #f3f4f7;
+    padding: 1px 6px;
+    border-radius: 6px;
+    color: #30385c;
+  }
 
   /* iOS-style toggle switch */
   .location-toggle {
