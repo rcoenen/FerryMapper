@@ -1,6 +1,8 @@
 (async function() {
+  const DEBUG_MODE = !!window.FM_CONFIG?.debug;
   // --- Load data ---
-  const res = await fetch('data/ferry-data.json');
+  const dataUrl = 'data/ferry-data.json' + (DEBUG_MODE ? ('?ts=' + Date.now()) : '');
+  const res = await fetch(dataUrl, DEBUG_MODE ? { cache: 'no-store' } : undefined);
   const data = await res.json();
 
   // Filter out shuttle bus routes (RES/RWS) and their stops
@@ -1585,7 +1587,7 @@
   async function copyBuild() {
     if (!buildNumberEl) return;
     const txt = (buildNumberEl.textContent || '').trim();
-    if (!txt || txt === 'loading...' || txt === 'missing build.json') return;
+    if (!txt || txt === 'unknown') return;
     try {
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(txt);
@@ -1610,18 +1612,17 @@
   }
   buildNumberEl?.addEventListener('click', copyBuild);
 
-  async function loadBuild() {
-    try {
-      const resp = await fetch('build.json?ts=' + Date.now(), { cache: 'no-store' });
-      if (resp.ok) {
-        const v = await resp.json();
-        if (v && Number.isFinite(v.build)) {
-          showBuild(String(v.build));
-          return;
-        }
-      }
-    } catch {}
-    showBuild('missing build.json');
+  function loadBuild() {
+    if (!DEBUG_MODE) {
+      buildNumberEl?.closest('.settings-version')?.setAttribute('hidden', '');
+      return;
+    }
+    const embedded = Number(window.FM_CONFIG?.build || document.querySelector('meta[name="app-build"]')?.content);
+    if (Number.isFinite(embedded) && embedded >= 0) {
+      showBuild(String(embedded));
+      return;
+    }
+    showBuild('unknown');
   }
   loadBuild();
 

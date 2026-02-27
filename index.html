@@ -14,11 +14,53 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://rcoenen.github.io/FerryMapperNYC/favicon.png">
+<meta ">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 <link rel="icon" type="image/png" href="favicon.png">
-<link rel="stylesheet" href="styles.css" />
+<script>
+  (function() {
+    function parseEnv(text) {
+      const out = {};
+      const lines = text.split(/\r?\n/);
+      for (const raw of lines) {
+        const line = raw.trim();
+        if (!line || line.startsWith('#')) continue;
+        const idx = line.indexOf('=');
+        if (idx <= 0) continue;
+        const k = line.slice(0, idx).trim();
+        const v = line.slice(idx + 1).trim();
+        out[k] = v;
+      }
+      return out;
+    }
+    function toBool(v) {
+      return /^(1|true|yes|on)$/i.test(String(v || '').trim());
+    }
+    async function boot() {
+      let env = {};
+      try {
+        const res = await fetch('.env?ts=' + Date.now(), { cache: 'no-store' });
+        if (res.ok) env = parseEnv(await res.text());
+      } catch {}
+      const debug = toBool(env.DEBUG_MODE);
+      const build = document.querySelector('meta[name="app-build"]')?.content || '0';
+      window.FM_CONFIG = { debug, build };
+      const q = debug ? ('ts=' + Date.now()) : ('v=' + encodeURIComponent(build));
+
+      const css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = 'styles.css?' + q;
+      document.head.appendChild(css);
+
+      const js = document.createElement('script');
+      js.src = 'app.js?' + q;
+      document.body.appendChild(js);
+    }
+    boot();
+  })();
+</script>
 </head>
 <body>
 
@@ -53,7 +95,7 @@
       </div>
     </div>
     <div class="settings-version" aria-live="polite">
-      Build: <code id="build-number">loading...</code>
+      Build: <code </code>
     </div>
   </div>
 </header>
@@ -158,7 +200,6 @@
   </div>
 </div>
 
-<script src="app.js"></script>
 <!-- 100% privacy-first analytics -->
 <script data-collect-dnt="true" async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" alt="" referrerpolicy="no-referrer-when-downgrade"/></noscript>
