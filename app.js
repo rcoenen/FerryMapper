@@ -1552,8 +1552,8 @@
         showDirections(currentOptions, fromId, toId, idx);
       });
     });
-    document.getElementById('nav-earlier')?.addEventListener('click', () => shiftOptions(-1));
-    document.getElementById('nav-later')?.addEventListener('click', () => shiftOptions(1));
+    document.getElementById('nav-earlier')?.addEventListener('click', () => animateTabShift(-1));
+    document.getElementById('nav-later')?.addEventListener('click', () => animateTabShift(1));
 
     // Horizontal swipe/drag on option tabs (touch + mouse + pen)
     if (tabsEl) {
