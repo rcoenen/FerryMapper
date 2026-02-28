@@ -1515,6 +1515,14 @@
     dir.querySelectorAll('.option-tab:not(.disabled)').forEach(tab => {
       tab.addEventListener('click', () => {
         const idx = parseInt(tab.dataset.tab);
+        if (idx === 0) {
+          shiftOptions(-1);
+          return;
+        }
+        if (idx === 2) {
+          shiftOptions(1);
+          return;
+        }
         showRoute(currentOptions[idx]);
         showDirections(currentOptions, fromId, toId, idx);
       });
