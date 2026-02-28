@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://rcoenen.github.io/FerryMapperNYC/og-image.png">
-<meta name="app-build" content="17">
+<meta name="app-build" content="18">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
@@ -38,12 +38,18 @@
     function toBool(v) {
       return /^(1|true|yes|on)$/i.test(String(v || '').trim());
     }
+    function isLocalHost() {
+      const host = (window.location.hostname || '').toLowerCase();
+      return host === 'localhost' || host === '127.0.0.1' || host === '::1';
+    }
     async function boot() {
       let env = {};
-      try {
-        const res = await fetch('.env?ts=' + Date.now(), { cache: 'no-store' });
-        if (res.ok) env = parseEnv(await res.text());
-      } catch {}
+      if (isLocalHost()) {
+        try {
+          const res = await fetch('.env?ts=' + Date.now(), { cache: 'no-store' });
+          if (res.ok) env = parseEnv(await res.text());
+        } catch {}
+      }
       const debug = toBool(env.DEBUG_MODE);
       const build = document.querySelector('meta[name="app-build"]')?.content || '0';
       window.FM_CONFIG = { debug, build };
@@ -95,7 +101,7 @@
       </div>
     </div>
     <div class="settings-version" aria-live="polite">
-      Build: <code id="build-number">17</code>
+      Build: <code id="build-number">18</code>
     </div>
   </div>
 </header>
