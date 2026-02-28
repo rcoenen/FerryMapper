@@ -51,13 +51,6 @@
   const dateModalNow = document.getElementById('date-modal-now');
   const dateModalDone = document.getElementById('date-modal-done');
   const timeInput = document.getElementById('time-input');
-  const desktopDateTimePicker = document.getElementById('desktop-datetime-picker');
-  const desktopYearSelect = document.getElementById('desktop-year-select');
-  const desktopMonthSelect = document.getElementById('desktop-month-select');
-  const desktopDaySelect = document.getElementById('desktop-day-select');
-  const desktopHourSelect = document.getElementById('desktop-hour-select');
-  const desktopAmPmSelect = document.getElementById('desktop-ampm-select');
-  const desktopMinuteSelect = document.getElementById('desktop-minute-select');
   const TIME_FMT_KEY = 'ferryMapperNYCTimeFmt';
   let use12h = false;
   try { use12h = localStorage.getItem(TIME_FMT_KEY) === '12'; } catch {}
@@ -72,168 +65,33 @@
   const nerdClose = document.getElementById('nerd-close');
   const sorted = [...stops].sort((a, b) => a.name.localeCompare(b.name));
 
-  function shouldUseNativeDateTimeInputs() {
-    const ua = navigator.userAgent || '';
-    const mobileUa = /Android|iPhone|iPad|iPod/i.test(ua);
-    const maxTouchPoints = navigator.maxTouchPoints || 0;
-    const hasTouch = maxTouchPoints > 0 || 'ontouchstart' in window;
-    const coarsePointer = window.matchMedia?.('(pointer: coarse)')?.matches ?? false;
-    const finePointer = window.matchMedia?.('(pointer: fine)')?.matches ?? false;
-    const maxScreenSide = Math.max(window.screen?.width || 0, window.screen?.height || 0);
-    const likelyPhoneOrTablet = maxScreenSide > 0 && maxScreenSide <= 1366;
-    const smallViewport = window.matchMedia?.('(max-width: 640px)')?.matches ?? (window.innerWidth <= 640);
-    // Native picker only on genuinely small mobile contexts.
-    return smallViewport && mobileUa && hasTouch && coarsePointer && !finePointer && likelyPhoneOrTablet;
-  }
-
-  const useNativeDateTimeInputs = shouldUseNativeDateTimeInputs();
-  if (!useNativeDateTimeInputs) {
-    dateInput.type = 'text';
-    timeInput.type = 'text';
-    dateInput.placeholder = 'YYYY-MM-DD';
-    timeInput.placeholder = 'HH:MM';
-    dateInput.inputMode = 'numeric';
-    timeInput.inputMode = 'numeric';
-    dateInput.autocapitalize = 'off';
-    timeInput.autocapitalize = 'off';
-    dateInput.autocomplete = 'off';
-    timeInput.autocomplete = 'off';
-    dateInput.spellcheck = false;
-    timeInput.spellcheck = false;
-    document.body.classList.add('desktop-datetime-inputs');
-    if (desktopDateTimePicker) {
-      desktopDateTimePicker.hidden = false;
-      desktopDateTimePicker.removeAttribute('aria-hidden');
-    }
-  } else {
+  function applyDateTimeInputMode() {
+    restoreNativeInputs();
+    dateInput.type = 'date';
+    timeInput.type = 'time';
+    timeInput.step = '60';
+    dateInput.placeholder = '';
+    timeInput.placeholder = '';
+    dateInput.removeAttribute('inputmode');
+    timeInput.removeAttribute('inputmode');
+    dateInput.removeAttribute('autocapitalize');
+    timeInput.removeAttribute('autocapitalize');
+    dateInput.removeAttribute('autocomplete');
+    timeInput.removeAttribute('autocomplete');
+    dateInput.removeAttribute('spellcheck');
+    timeInput.removeAttribute('spellcheck');
+    const locale = use12h ? 'en-US' : 'en-GB';
+    dateInput.setAttribute('lang', locale);
+    timeInput.setAttribute('lang', locale);
     document.body.classList.add('native-datetime-inputs');
-    if (desktopDateTimePicker) {
-      desktopDateTimePicker.hidden = true;
-      desktopDateTimePicker.setAttribute('aria-hidden', 'true');
-    }
+    document.body.classList.remove('desktop-datetime-inputs');
   }
-
-  function pad2(n) { return String(n).padStart(2, '0'); }
+  applyDateTimeInputMode();
   function syncLocaleFormatClass() {
     document.body.classList.toggle('us-format', !!use12h);
     document.body.classList.toggle('eu-format', !use12h);
   }
   syncLocaleFormatClass();
-
-  function daysInMonth(year, month) {
-    return new Date(year, month, 0).getDate();
-  }
-
-  function rebuildDesktopDayOptions() {
-    if (!desktopDaySelect || !desktopYearSelect || !desktopMonthSelect) return;
-    const y = Number(desktopYearSelect.value);
-    const m = Number(desktopMonthSelect.value);
-    const prev = Number(desktopDaySelect.value) || 1;
-    const max = daysInMonth(y, m);
-    desktopDaySelect.innerHTML = '';
-    for (let d = 1; d <= max; d++) {
-      const opt = document.createElement('option');
-      opt.value = String(d);
-      opt.textContent = pad2(d);
-      desktopDaySelect.appendChild(opt);
-    }
-    desktopDaySelect.value = String(Math.min(prev, max));
-  }
-
-  function setDesktopPickerFromInputs() {
-    if (useNativeDateTimeInputs || !desktopYearSelect) return;
-    const d = normalizeDateValue(dateInput.value) || new Date().toISOString().slice(0, 10);
-    const t = normalizeTimeValue(timeInput.value) || new Date().toTimeString().slice(0, 5);
-    const [yy, mm, dd] = d.split('-').map(Number);
-    const [hh, mi] = t.split(':').map(Number);
-    desktopYearSelect.value = String(yy);
-    desktopMonthSelect.value = String(mm);
-    rebuildDesktopDayOptions();
-    desktopDaySelect.value = String(dd);
-    if (use12h) {
-      const ampm = hh >= 12 ? 'PM' : 'AM';
-      const h12 = hh % 12 || 12;
-      desktopHourSelect.value = String(h12);
-      if (desktopAmPmSelect) desktopAmPmSelect.value = ampm;
-    } else {
-      desktopHourSelect.value = String(hh);
-    }
-    desktopMinuteSelect.value = String(mi);
-  }
-
-  function setInputsFromDesktopPicker() {
-    if (useNativeDateTimeInputs || !desktopYearSelect) return;
-    const y = Number(desktopYearSelect.value);
-    const m = Number(desktopMonthSelect.value);
-    const d = Number(desktopDaySelect.value);
-    let h = Number(desktopHourSelect.value);
-    const mi = Number(desktopMinuteSelect.value);
-    if (use12h) {
-      const p = desktopAmPmSelect?.value || 'AM';
-      h = p === 'PM' ? ((h % 12) + 12) : (h % 12);
-    }
-    dateInput.value = `${String(y).padStart(4, '0')}-${pad2(m)}-${pad2(d)}`;
-    timeInput.value = `${pad2(h)}:${pad2(mi)}`;
-  }
-
-  function initDesktopDateTimePicker() {
-    if (useNativeDateTimeInputs || !desktopYearSelect) return;
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    desktopYearSelect.innerHTML = '';
-    for (let y = currentYear - 1; y <= currentYear + 2; y++) {
-      const opt = document.createElement('option');
-      opt.value = String(y);
-      opt.textContent = String(y);
-      desktopYearSelect.appendChild(opt);
-    }
-    desktopMonthSelect.innerHTML = '';
-    for (let m = 1; m <= 12; m++) {
-      const opt = document.createElement('option');
-      opt.value = String(m);
-      opt.textContent = pad2(m);
-      desktopMonthSelect.appendChild(opt);
-    }
-    desktopHourSelect.innerHTML = '';
-    const hourStart = use12h ? 1 : 0;
-    const hourEnd = use12h ? 12 : 23;
-    for (let h = hourStart; h <= hourEnd; h++) {
-      const opt = document.createElement('option');
-      opt.value = String(h);
-      opt.textContent = pad2(h);
-      desktopHourSelect.appendChild(opt);
-    }
-    if (desktopAmPmSelect) {
-      desktopAmPmSelect.innerHTML = '';
-      for (const p of ['AM', 'PM']) {
-        const opt = document.createElement('option');
-        opt.value = p;
-        opt.textContent = p;
-        desktopAmPmSelect.appendChild(opt);
-      }
-    }
-    desktopMinuteSelect.innerHTML = '';
-    for (let m = 0; m < 60; m++) {
-      const opt = document.createElement('option');
-      opt.value = String(m);
-      opt.textContent = pad2(m);
-      desktopMinuteSelect.appendChild(opt);
-    }
-    setDesktopPickerFromInputs();
-    const onDesktopPickerChange = (isDatePart) => {
-      if (isDatePart) rebuildDesktopDayOptions();
-      setInputsFromDesktopPicker();
-      syncDateTimeButton();
-      checkPastTime();
-      saveState();
-    };
-    desktopYearSelect.addEventListener('change', () => onDesktopPickerChange(true));
-    desktopMonthSelect.addEventListener('change', () => onDesktopPickerChange(true));
-    desktopDaySelect.addEventListener('change', () => onDesktopPickerChange(false));
-    desktopHourSelect.addEventListener('change', () => onDesktopPickerChange(false));
-    desktopMinuteSelect.addEventListener('change', () => onDesktopPickerChange(false));
-    desktopAmPmSelect?.addEventListener('change', () => onDesktopPickerChange(false));
-  }
   
   function syncModalBodyLock() {
     const hasOpenModal = !aboutModal.hidden || !nerdModal.hidden || !dateModal.hidden;
@@ -273,16 +131,12 @@
   function openDateModal() {
     dateModal.hidden = false;
     syncModalBodyLock();
-    if (useNativeDateTimeInputs) {
-      dateInput.focus();
-    } else {
-      setDesktopPickerFromInputs();
-      desktopYearSelect?.focus();
-    }
+    refreshModalDisplay();
   }
 
   function closeDateModal({ restoreFocus = true } = {}) {
     if (dateModal.hidden) return;
+    restoreNativeInputs();
     dateModal.hidden = true;
     syncModalBodyLock();
     if (restoreFocus) datePickerBtn.focus();
@@ -386,23 +240,27 @@
   }
 
   dateModalToday.addEventListener('click', () => {
+    restoreNativeInputs();
     dateInput.value = new Date().toISOString().slice(0, 10);
-    if (!useNativeDateTimeInputs) setDesktopPickerFromInputs();
+    dateInput.dataset.raw = dateInput.value;
     syncDateTimeButton();
     checkPastTime();
     saveState();
+    refreshModalDisplay();
   });
   dateModalNow.addEventListener('click', () => {
+    restoreNativeInputs();
     const now = new Date();
     dateInput.value = now.toISOString().slice(0, 10);
     timeInput.value = now.toTimeString().slice(0, 5);
-    if (!useNativeDateTimeInputs) setDesktopPickerFromInputs();
+    dateInput.dataset.raw = dateInput.value;
+    timeInput.dataset.raw = timeInput.value;
     syncDateTimeButton();
     saveState();
     closeDateModal();
   });
   dateModalDone.addEventListener('click', () => {
-    if (!useNativeDateTimeInputs) setInputsFromDesktopPicker();
+    restoreNativeInputs();
     const d = normalizeDateInput({ commit: true });
     const t = normalizeTimeInput({ commit: true });
     if (!d || !t) return;
@@ -420,7 +278,7 @@
   });
 
   function populateSelect(sel, placeholder) {
-    sel.innerHTML = `<option value="">${placeholder}</option>`;
+    sel.innerHTML = `<option value="" disabled hidden>${placeholder}</option>`;
     sorted.forEach(s => {
       const opt = document.createElement('option');
       opt.value = s.id;
@@ -428,8 +286,10 @@
       sel.appendChild(opt);
     });
   }
-  populateSelect(fromSel, 'From:');
-  populateSelect(toSel, 'To:');
+  populateSelect(fromSel, 'Start');
+  populateSelect(toSel, 'End');
+  fromSel.value = '';
+  toSel.value = '';
 
   function formatDateForDisplay(dateStr) {
     if (!dateStr) return '';
@@ -476,8 +336,53 @@
     timeInput.value = nowTime;
   }
   syncDateTimeButton();
-  initDesktopDateTimePicker();
-  if (!useNativeDateTimeInputs) setDesktopPickerFromInputs();
+
+  // Modal display: show formatted text over native date/time inputs
+  function restoreNativeInputs() {
+    if (timeInput.type === 'text') {
+      const raw = timeInput.dataset.raw || '';
+      timeInput.readOnly = false;
+      timeInput.type = 'time';
+      timeInput.step = '60';
+      timeInput.value = raw;
+    }
+    if (dateInput.type === 'text') {
+      const raw = dateInput.dataset.raw || '';
+      dateInput.readOnly = false;
+      dateInput.type = 'date';
+      dateInput.value = raw;
+    }
+  }
+  function refreshModalDisplay() {
+    if (dateModal.hidden) return;
+    if (document.activeElement !== timeInput) {
+      const raw = timeInput.type === 'time' ? timeInput.value : (timeInput.dataset.raw || '');
+      timeInput.dataset.raw = raw;
+      timeInput.type = 'text';
+      timeInput.readOnly = true;
+      if (raw) {
+        const [h, m] = raw.split(':').map(Number);
+        if (!isNaN(h) && !isNaN(m)) timeInput.value = formatTime(h * 60 + m);
+      }
+    }
+    if (document.activeElement !== dateInput) {
+      const raw = dateInput.type === 'date' ? dateInput.value : (dateInput.dataset.raw || '');
+      dateInput.dataset.raw = raw;
+      dateInput.type = 'text';
+      dateInput.readOnly = true;
+      if (raw) {
+        const locale = use12h ? 'en-US' : 'en-GB';
+        const dt = new Date(raw + 'T00:00:00');
+        if (!isNaN(dt.getTime())) {
+          dateInput.value = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric' }).format(dt);
+        }
+      }
+    }
+  }
+  timeInput.addEventListener('click', () => { restoreNativeInputs(); });
+  dateInput.addEventListener('click', () => { restoreNativeInputs(); });
+  timeInput.addEventListener('change', () => { if (timeInput.type === 'time') { timeInput.dataset.raw = timeInput.value; refreshModalDisplay(); } });
+  dateInput.addEventListener('change', () => { if (dateInput.type === 'date') { dateInput.dataset.raw = dateInput.value; refreshModalDisplay(); } });
 
   // Save on any change
   for (const el of [fromSel, toSel, dateInput, timeInput, document.getElementById('time-mode')]) {
@@ -562,12 +467,66 @@
   fromSel.addEventListener('change', updatePreviewMarkers);
   toSel.addEventListener('change', updatePreviewMarkers);
 
+  // Guard: Start and End cannot be the same stop
+  fromSel.addEventListener('change', () => {
+    if (fromSel.value && fromSel.value === toSel.value) {
+      toSel.value = '';
+      updateGoButtonState();
+      updatePreviewMarkers();
+      saveState();
+    }
+  });
+  toSel.addEventListener('change', () => {
+    if (toSel.value && toSel.value === fromSel.value) {
+      fromSel.value = '';
+      updateGoButtonState();
+      updatePreviewMarkers();
+      saveState();
+    }
+  });
+
   const controls = document.querySelector('.controls');
   const routeActions = document.getElementById('route-actions');
 
   // Swap button
   document.getElementById('clear-route-btn').addEventListener('click', newRoute);
   document.getElementById('show-map-btn').addEventListener('click', openMapOverlay);
+
+  function buildShareUrl() {
+    if (!lastSearch) return null;
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = '';
+    url.searchParams.set('from', lastSearch.fromId);
+    url.searchParams.set('to', lastSearch.toId);
+    url.searchParams.set('date', lastSearch.dateStr);
+    const h = Math.floor(lastSearch.startMin / 60) % 24;
+    const m = lastSearch.startMin % 60;
+    url.searchParams.set('time', `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
+    url.searchParams.set('mode', lastSearch.mode);
+    return url.toString();
+  }
+
+  const shareBtn = document.getElementById('share-route-btn');
+  shareBtn.addEventListener('click', async () => {
+    const url = buildShareUrl();
+    if (!url) return;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'FerryMapperNYC route', url });
+        return;
+      } catch (e) {
+        if (e.name === 'AbortError') return;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      shareBtn.textContent = 'Link copied!';
+      setTimeout(() => { shareBtn.textContent = 'Share route'; }, 2500);
+    } catch {
+      prompt('Copy this link:', url);
+    }
+  });
 
   document.getElementById('swap-btn').addEventListener('click', () => {
     const tmp = fromSel.value;
@@ -1145,7 +1104,7 @@
     document.querySelectorAll('.popup-start').forEach(btn => {
       btn.addEventListener('click', () => {
         fromSel.value = btn.dataset.stop;
-        if (lastSearch) toSel.value = '';
+        if (lastSearch || toSel.value === fromSel.value) toSel.value = '';
         resetRoute();
         updatePreviewMarkers();
         saveState();
@@ -1157,7 +1116,7 @@
     document.querySelectorAll('.popup-end').forEach(btn => {
       btn.addEventListener('click', () => {
         toSel.value = btn.dataset.stop;
-        if (lastSearch) fromSel.value = '';
+        if (lastSearch || fromSel.value === toSel.value) fromSel.value = '';
         resetRoute();
         updatePreviewMarkers();
         saveState();
@@ -1500,12 +1459,8 @@
     if (isMobile()) {
       closeMapOverlay();
       setSheetSnap('full');
-      if (hasRoute) {
-        controls.style.display = 'none';
-      } else {
-        controls.style.display = '';
-      }
     }
+    controls.style.display = hasRoute ? 'none' : '';
     if (routeActions) routeActions.classList.toggle('visible', !!hasRoute);
     dir.innerHTML = html;
     dir.classList.add('visible');
@@ -1607,7 +1562,7 @@
     const mode = document.getElementById('time-mode').value;
 
     if (!fromId || !toId) {
-      setDirections('<div class="error-msg">Please select both a From and To stop.</div>');
+      setDirections('<div class="error-msg">Please select both a Start and End stop.</div>');
       return;
     }
     if (fromId === toId) {
@@ -1789,8 +1744,7 @@
     sheet.style.transform = `translateY(${Math.min(newY, maxY)}px)`;
   }, { passive: true });
 
-  const FLICK_THRESHOLD = 0.4; // px/ms — above this, snap in throw direction
-  const snaps = ['full', 'peek', 'collapsed']; // ordered open → closed
+  const FLICK_THRESHOLD = 0.4; // px/ms
 
   document.addEventListener('touchend', () => {
     if (!isDragging) return;
@@ -1805,30 +1759,23 @@
       return;
     }
 
-    const currentIdx = snaps.indexOf(currentSnap);
-
-    // Fast flick: magnetic snap one step in the throw direction
+    // Fast flick: still snap back to visible peek state.
     if (Math.abs(velocity) > FLICK_THRESHOLD) {
       sheet.style.transform = '';
-      const dir = velocity > 0 ? 1 : -1; // positive = closing, negative = opening
-      const nextIdx = Math.max(0, Math.min(snaps.length - 1, currentIdx + dir));
-      setSheetSnap(snaps[nextIdx]);
+      setSheetSnap('peek');
       return;
     }
 
-    // Slow drag: stay exactly where released (keep current inline transform)
+    // Avoid partial hidden states; always return to peek.
+    sheet.style.transform = '';
+    setSheetSnap('peek');
   });
 
   function toggleSheetFromHandle() {
     if (!isMobile()) return;
-    const currentY = getSheetTranslateY();
-    // If partially dragged or collapsed, snap open; if already fully open, collapse
-    if (currentSnap === 'collapsed' || currentY > 10) {
-      sheet.style.transform = '';
-      setSheetSnap('peek');
-    } else {
-      setSheetSnap('collapsed');
-    }
+    // Keep controls visible; do not collapse below controls.
+    sheet.style.transform = '';
+    setSheetSnap('peek');
   }
 
   handle.addEventListener('touchend', (e) => {
@@ -1913,10 +1860,10 @@
       use12h = btn.dataset.fmt === '12';
       try { localStorage.setItem(TIME_FMT_KEY, btn.dataset.fmt); } catch {}
       syncLocaleFormatClass();
+      applyDateTimeInputMode();
       updateTimeFmtButtons();
-      if (!useNativeDateTimeInputs) initDesktopDateTimePicker();
-      if (!useNativeDateTimeInputs) setDesktopPickerFromInputs();
       syncDateTimeButton();
+      refreshModalDisplay();
       if (currentOptions && lastSearch) {
         showDirections(currentOptions, lastSearch.fromId, lastSearch.toId, currentActiveIdx);
       }
@@ -2033,4 +1980,26 @@
       enableGeolocation();
     }
   } catch {}
+
+  // Auto-search from shared URL params (?from=...&to=...&date=...&time=...&mode=...)
+  (function() {
+    const p = new URLSearchParams(window.location.search);
+    const fromId = p.get('from');
+    const toId = p.get('to');
+    const date = p.get('date');
+    const time = p.get('time');
+    const mode = p.get('mode');
+    if (!fromId || !toId || fromId === toId) return;
+    if (!stopById[fromId] || !stopById[toId]) return;
+    fromSel.value = fromId;
+    toSel.value = toId;
+    if (date) { dateInput.value = date; dateInput.dataset.raw = date; }
+    if (time) { timeInput.value = time; timeInput.dataset.raw = time; }
+    if (mode === 'arrive' || mode === 'depart') document.getElementById('time-mode').value = mode;
+    syncDateTimeButton();
+    updateGoButtonState();
+    // Clear the params from the address bar without reloading
+    history.replaceState(null, '', window.location.pathname);
+    goBtn.click();
+  })();
 })();

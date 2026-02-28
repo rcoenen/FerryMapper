@@ -406,6 +406,7 @@
     box-shadow: none;
   }
   .controls-stops .control-field select:focus { outline: none; box-shadow: none; border-color: transparent; }
+  .controls-stops .control-field select:has(option[value=""]:checked) { color: #aaa; }
   .controls-stops .control-field label {
     font-size: 11px;
     text-transform: uppercase;
@@ -491,72 +492,21 @@
     opacity: 1;
     cursor: pointer;
   }
-  .desktop-datetime-picker {
-    margin-top: 6px;
-    display: none;
-    flex-direction: column;
-    gap: 10px;
+  .date-modal-format-label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
   }
-  .desktop-datetime-picker[hidden] { display: none !important; }
-  .desktop-datetime-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  .date-modal-time-toggle {
+    width: 100%;
   }
-  .desktop-datetime-picker select {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background: white;
-    font-size: 16px;
-    font-family: inherit;
+  .date-modal-time-toggle .time-fmt-btn {
     min-height: 44px;
-    padding: 10px 12px;
-    -webkit-appearance: none;
-    appearance: none;
-    padding-right: 30px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-  }
-  .desktop-datetime-picker select:focus {
-    outline: none;
-    border-color: #1a237e;
-    box-shadow: 0 0 0 3px rgba(26,35,126,0.1);
-  }
-  #desktop-year-select { flex: 1.2; }
-  #desktop-month-select { flex: 1; }
-  #desktop-day-select { flex: 0.8; }
-  #desktop-hour-select,
-  #desktop-ampm-select,
-  #desktop-minute-select { flex: 1; }
-  body.eu-format #desktop-day-select { order: 1; }
-  body.eu-format #desktop-month-select { order: 2; }
-  body.eu-format #desktop-year-select { order: 3; }
-  body.us-format #desktop-month-select { order: 1; }
-  body.us-format #desktop-day-select { order: 2; }
-  body.us-format #desktop-year-select { order: 3; }
-  body.eu-format #desktop-ampm-select { display: none; }
-  body.us-format #desktop-ampm-select { display: block; }
-  .desktop-datetime-sep {
-    color: #666;
-    font-size: 20px;
-    line-height: 1;
-    font-weight: 700;
-    min-width: 10px;
-    text-align: center;
-  }
-  body.desktop-datetime-inputs .date-modal-card #date-input,
-  body.desktop-datetime-inputs .date-modal-card #time-input {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: 0.2px;
-  }
-  body.desktop-datetime-inputs .date-modal-card #date-input,
-  body.desktop-datetime-inputs .date-modal-card #time-input {
-    display: none;
-  }
-  body.desktop-datetime-inputs .date-modal-card #desktop-datetime-picker {
-    display: flex;
+    font-size: 16px;
+    font-weight: 600;
   }
   .date-modal-actions {
     display: flex;
@@ -951,7 +901,7 @@
     .bottom-sheet.dragging { transition: none; }
 
     /* Snap positions */
-    .bottom-sheet.snap-collapsed { transform: translateY(calc(100% - 52px)); }
+    .bottom-sheet.snap-collapsed { transform: translateY(0); }
     .bottom-sheet.snap-peek { transform: translateY(0); }
     .bottom-sheet.snap-full { transform: translateY(0); }
 

@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://rcoenen.github.io/FerryMapperNYC/og-image.png">
-<meta name="app-build" content="19">
+<meta name="app-build" content="20">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
@@ -93,15 +93,8 @@
         <input type="checkbox" id="location-toggle" class="location-toggle">
       </label>
     </div>
-    <div class="settings-section">
-      <label class="settings-label">Time Format</label>
-      <div class="time-format-toggle">
-        <button class="time-fmt-btn" data-fmt="24" id="fmt-24">🇪🇺 24h</button>
-        <button class="time-fmt-btn" data-fmt="12" id="fmt-12">🇺🇸 12h</button>
-      </div>
-    </div>
     <div class="settings-version" aria-live="polite">
-      Build: <code id="build-number">19</code>
+      Build: <code id="build-number">20</code>
     </div>
   </div>
 </header>
@@ -165,12 +158,12 @@
         <div class="controls-stops">
           <div class="control-field">
             <i class="fa-solid fa-arrow-right-to-bracket control-field-icon"></i>
-            <select id="from-select"><option value="">Loading...</option></select>
+            <select id="from-select" autocomplete="off"><option value="">Loading...</option></select>
           </div>
           <div class="stop-divider"></div>
           <div class="control-field">
             <i class="fa-solid fa-arrow-right-to-bracket fa-rotate-180 control-field-icon"></i>
-            <select id="to-select"><option value="">Loading...</option></select>
+            <select id="to-select" autocomplete="off"><option value="">Loading...</option></select>
           </div>
           <button id="swap-btn" title="Swap origin and destination"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 13.03 20 12.56 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg></button>
         </div>
@@ -186,7 +179,8 @@
       <div id="directions"></div>
       <div class="route-actions" id="route-actions">
         <button class="route-action-btn" id="clear-route-btn">New route</button>
-        <button class="route-action-btn" id="show-map-btn">Show full route</button>
+        <button class="route-action-btn" id="show-map-btn">Show full</button>
+        <button class="route-action-btn route-action-share" id="share-route-btn">Share</button>
       </div>
     </div>
   </div>
@@ -198,18 +192,10 @@
     <h2 id="date-modal-title">Select Date &amp; Time</h2>
     <input type="date" id="date-input" aria-label="Date">
     <input type="time" id="time-input" aria-label="Time">
-    <div id="desktop-datetime-picker" class="desktop-datetime-picker" hidden aria-hidden="true">
-      <div class="desktop-datetime-row">
-        <select id="desktop-year-select" aria-label="Year"></select>
-        <select id="desktop-month-select" aria-label="Month"></select>
-        <select id="desktop-day-select" aria-label="Day"></select>
-      </div>
-      <div class="desktop-datetime-row">
-        <select id="desktop-hour-select" aria-label="Hour"></select>
-        <select id="desktop-ampm-select" aria-label="AM or PM"></select>
-        <span class="desktop-datetime-sep">:</span>
-        <select id="desktop-minute-select" aria-label="Minute"></select>
-      </div>
+    <label class="date-modal-format-label" for="fmt-24">Time Format</label>
+    <div class="time-format-toggle date-modal-time-toggle">
+      <button class="time-fmt-btn" data-fmt="24" id="fmt-24" type="button">🇪🇺 24h</button>
+      <button class="time-fmt-btn" data-fmt="12" id="fmt-12" type="button">🇺🇸 12h</button>
     </div>
     <div class="date-modal-actions">
       <button id="date-modal-today" type="button">Today</button>
