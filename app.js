@@ -1704,7 +1704,7 @@
     }, 150);
   });
 
-  // Touch drag on handle (with velocity tracking for magnetic snap)
+  // Pointer drag on handle (touch + mouse + pen) with velocity tracking
   let dragStartY = 0;
   let dragStartTranslate = 0;
   let isDragging = false;
@@ -1712,6 +1712,7 @@
   let lastTouchTime = 0;
   let dragDistance = 0;
   let velocity = 0; // px/ms, positive = dragging down (closing)
+  let activePointerId = null;
 
   function getSheetTranslateY() {
     const style = window.getComputedStyle(sheet);
@@ -1719,10 +1720,9 @@
     return matrix.m42;
   }
 
-  handle.addEventListener('touchstart', (e) => {
-    if (!isMobile()) return;
+  function startDrag(clientY) {
     isDragging = true;
-    dragStartY = e.touches[0].clientY;
+    dragStartY = clientY;
     dragStartTranslate = getSheetTranslateY();
     lastTouchY = dragStartY;
     lastTouchTime = Date.now();
@@ -1730,28 +1730,23 @@
     velocity = 0;
     sheet.classList.add('dragging');
     handle.classList.add('pressed');
-  }, { passive: true });
+  }
 
-  document.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    const touchY = e.touches[0].clientY;
+  function moveDrag(clientY) {
     const now = Date.now();
     const dt = now - lastTouchTime;
-    if (dt > 0) velocity = (touchY - lastTouchY) / dt;
-    lastTouchY = touchY;
+    if (dt > 0) velocity = (clientY - lastTouchY) / dt;
+    lastTouchY = clientY;
     lastTouchTime = now;
-    const dy = touchY - dragStartY;
+    const dy = clientY - dragStartY;
     dragDistance = Math.max(dragDistance, Math.abs(dy));
     let newY = dragStartTranslate + dy;
     const maxY = sheet.offsetHeight - 52;
-    if (newY < 0) newY = newY * 0.3; // rubber band: follow finger with resistance
+    if (newY < 0) newY = newY * 0.3; // rubber band: follow pointer with resistance
     sheet.style.transform = `translateY(${Math.min(newY, maxY)}px)`;
-  }, { passive: true });
+  }
 
-  const FLICK_THRESHOLD = 0.4; // px/ms — above this, snap in throw direction
-  const snaps = ['full', 'peek', 'collapsed']; // ordered open → closed
-
-  document.addEventListener('touchend', () => {
+  function endDrag() {
     if (!isDragging) return;
     isDragging = false;
     sheet.classList.remove('dragging');
@@ -1779,6 +1774,34 @@
     const threshold = sheet.offsetHeight * 0.35;
     sheet.style.transform = '';
     setSheetSnap(translateY > threshold ? 'collapsed' : 'peek');
+  }
+
+  handle.addEventListener('pointerdown', (e) => {
+    if (!isMobile()) return;
+    activePointerId = e.pointerId;
+    handle.setPointerCapture?.(activePointerId);
+    startDrag(e.clientY);
+  });
+
+  document.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    if (activePointerId !== null && e.pointerId !== activePointerId) return;
+    moveDrag(e.clientY);
+  });
+
+  const FLICK_THRESHOLD = 0.4; // px/ms — above this, snap in throw direction
+  const snaps = ['full', 'peek', 'collapsed']; // ordered open → closed
+
+  document.addEventListener('pointerup', (e) => {
+    if (activePointerId !== null && e.pointerId !== activePointerId) return;
+    endDrag();
+    activePointerId = null;
+  });
+
+  document.addEventListener('pointercancel', (e) => {
+    if (activePointerId !== null && e.pointerId !== activePointerId) return;
+    endDrag();
+    activePointerId = null;
   });
 
   function toggleSheetFromHandle() {
@@ -1787,20 +1810,11 @@
     setSheetSnap(currentSnap === 'collapsed' ? 'peek' : 'collapsed');
   }
 
-  handle.addEventListener('touchend', (e) => {
-    if (!isMobile()) return;
-    // Treat small/no movement as tap — consume the event so document's touchend doesn't also snap.
-    if (dragDistance <= 6) {
-      isDragging = false;
-      sheet.classList.remove('dragging');
-      handle.classList.remove('pressed');
-      e.preventDefault();
-      toggleSheetFromHandle();
-    }
-  }, { passive: false });
-
-  // Click fallback (desktop/simulators and non-touch interactions)
-  handle.addEventListener('click', toggleSheetFromHandle);
+  // Click/tap fallback for small/no-movement interactions.
+  handle.addEventListener('click', () => {
+    if (dragDistance > 6) return;
+    toggleSheetFromHandle();
+  });
 
   // --- Settings drawer ---
   const settingsToggle = document.getElementById('settings-toggle');
