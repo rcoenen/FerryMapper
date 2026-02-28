@@ -62,7 +62,11 @@
 
       const js = document.createElement('script');
       js.src = 'app.js?' + q;
-      document.body.appendChild(js);
+      if (document.body) {
+        document.body.appendChild(js);
+      } else {
+        document.addEventListener('DOMContentLoaded', () => document.body.appendChild(js));
+      }
     }
     boot();
   })();
