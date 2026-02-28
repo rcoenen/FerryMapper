@@ -1637,6 +1637,9 @@
   const mapCloseBtn = document.getElementById('map-close');
   let currentSnap = 'peek';
 
+  // Apply initial snap class so CSS transition and toggle work from the start
+  if (isMobile()) sheet.classList.add('snap-peek');
+
   function setSheetSnap(snap) {
     currentSnap = snap;
     sheet.classList.remove('snap-collapsed', 'snap-peek', 'snap-full');
@@ -1744,7 +1747,8 @@
     sheet.style.transform = `translateY(${Math.min(newY, maxY)}px)`;
   }, { passive: true });
 
-  const FLICK_THRESHOLD = 0.4; // px/ms
+  const FLICK_THRESHOLD = 0.4; // px/ms — above this, snap in throw direction
+  const snaps = ['full', 'peek', 'collapsed']; // ordered open → closed
 
   document.addEventListener('touchend', () => {
     if (!isDragging) return;
@@ -1752,36 +1756,43 @@
     sheet.classList.remove('dragging');
     handle.classList.remove('pressed');
 
-    // Rubber band snap-back: if dragged above max expansion, spring back
+    // Rubber band snap-back: if dragged above natural position, spring back
     if (getSheetTranslateY() < 0) {
       sheet.style.transform = '';
       setSheetSnap('full');
       return;
     }
 
-    // Fast flick: still snap back to visible peek state.
+    // Fast flick: snap one step in the throw direction
     if (Math.abs(velocity) > FLICK_THRESHOLD) {
       sheet.style.transform = '';
-      setSheetSnap('peek');
+      const dir = velocity > 0 ? 1 : -1; // positive = closing, negative = opening
+      const currentIdx = snaps.indexOf(currentSnap);
+      const nextIdx = Math.max(0, Math.min(snaps.length - 1, currentIdx + dir));
+      setSheetSnap(snaps[nextIdx]);
       return;
     }
 
-    // Avoid partial hidden states; always return to peek.
+    // Slow drag: snap based on how far the sheet has moved
+    const translateY = getSheetTranslateY();
+    const threshold = sheet.offsetHeight * 0.35;
     sheet.style.transform = '';
-    setSheetSnap('peek');
+    setSheetSnap(translateY > threshold ? 'collapsed' : 'peek');
   });
 
   function toggleSheetFromHandle() {
     if (!isMobile()) return;
-    // Keep controls visible; do not collapse below controls.
     sheet.style.transform = '';
-    setSheetSnap('peek');
+    setSheetSnap(currentSnap === 'collapsed' ? 'peek' : 'collapsed');
   }
 
   handle.addEventListener('touchend', (e) => {
     if (!isMobile()) return;
-    // Treat small/no movement as tap for immediate toggle on mobile.
+    // Treat small/no movement as tap — consume the event so document's touchend doesn't also snap.
     if (dragDistance <= 6) {
+      isDragging = false;
+      sheet.classList.remove('dragging');
+      handle.classList.remove('pressed');
       e.preventDefault();
       toggleSheetFromHandle();
     }

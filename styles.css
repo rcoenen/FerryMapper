@@ -901,7 +901,7 @@
     .bottom-sheet.dragging { transition: none; }
 
     /* Snap positions */
-    .bottom-sheet.snap-collapsed { transform: translateY(0); }
+    .bottom-sheet.snap-collapsed { transform: translateY(calc(100% - 52px)); }
     .bottom-sheet.snap-peek { transform: translateY(0); }
     .bottom-sheet.snap-full { transform: translateY(0); }
 
