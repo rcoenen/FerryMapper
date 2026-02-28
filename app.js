@@ -1628,8 +1628,9 @@
     return (r * 299 + g * 587 + b * 114) / 1000 > 160;
   }
 
-  // --- Mobile bottom sheet ---
-  function isMobile() { return window.innerWidth <= 640; }
+  // --- Mobile/tablet bottom sheet ---
+  const SHEET_BREAKPOINT = 1024;
+  function isMobile() { return window.innerWidth <= SHEET_BREAKPOINT; }
 
   const sheet = document.getElementById('bottom-sheet');
   const handle = document.getElementById('sheet-handle');
