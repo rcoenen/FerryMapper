@@ -306,7 +306,7 @@
     padding: 8px 16px 16px;
     padding-bottom: max(16px, env(safe-area-inset-bottom));
   }
-  .route-actions.desktop { display: flex; padding-bottom: 16px; }
+  .route-actions.visible { display: flex; }
   .route-action-btn {
     flex: 1;
     padding: 12px 10px;
@@ -911,8 +911,6 @@
     .nav-btn { width: 52px; font-size: 26px; }
 
     .show-map-btn { display: block; }
-    .route-actions { display: flex; }
-    .route-actions.desktop { display: none; }
 
     .controls-time .date-picker-btn {
       width: auto;

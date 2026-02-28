@@ -245,6 +245,7 @@
 
   // When stop selection changes while a route is active, clear state and start fresh
   function resetRoute() {
+    routeActions?.classList.remove('visible');
     if (!lastSearch) return;
     clearHighlights();
     const dir = document.getElementById('directions');
@@ -295,6 +296,7 @@
   toSel.addEventListener('change', updatePreviewMarkers);
 
   const controls = document.querySelector('.controls');
+  const routeActions = document.getElementById('route-actions');
 
   // Swap button
   document.getElementById('clear-route-btn').addEventListener('click', newRoute);
@@ -1230,17 +1232,13 @@
       setSheetSnap('full');
       if (hasRoute) {
         controls.style.display = 'none';
-        html += '<div class="route-actions"><button class="route-action-btn" id="mobile-clear-route-btn">New route</button><button class="route-action-btn" id="mobile-show-map-btn">Show full route</button></div>';
       } else {
         controls.style.display = '';
       }
     }
+    if (routeActions) routeActions.classList.toggle('visible', !!hasRoute);
     dir.innerHTML = html;
     dir.classList.add('visible');
-    if (hasRoute) {
-      document.getElementById('mobile-show-map-btn')?.addEventListener('click', openMapOverlay);
-      document.getElementById('mobile-clear-route-btn')?.addEventListener('click', newRoute);
-    }
     map.invalidateSize();
   }
 
