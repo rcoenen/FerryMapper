@@ -56,6 +56,7 @@
   const desktopMonthSelect = document.getElementById('desktop-month-select');
   const desktopDaySelect = document.getElementById('desktop-day-select');
   const desktopHourSelect = document.getElementById('desktop-hour-select');
+  const desktopAmPmSelect = document.getElementById('desktop-ampm-select');
   const desktopMinuteSelect = document.getElementById('desktop-minute-select');
   const TIME_FMT_KEY = 'ferryMapperNYCTimeFmt';
   let use12h = false;
@@ -80,8 +81,9 @@
     const finePointer = window.matchMedia?.('(pointer: fine)')?.matches ?? false;
     const maxScreenSide = Math.max(window.screen?.width || 0, window.screen?.height || 0);
     const likelyPhoneOrTablet = maxScreenSide > 0 && maxScreenSide <= 1366;
-    // Desktop emulation usually still reports a fine pointer, while real mobile does not.
-    return mobileUa && hasTouch && coarsePointer && !finePointer && likelyPhoneOrTablet;
+    const smallViewport = window.matchMedia?.('(max-width: 640px)')?.matches ?? (window.innerWidth <= 640);
+    // Native picker only on genuinely small mobile contexts.
+    return smallViewport && mobileUa && hasTouch && coarsePointer && !finePointer && likelyPhoneOrTablet;
   }
 
   const useNativeDateTimeInputs = shouldUseNativeDateTimeInputs();
@@ -112,6 +114,11 @@
   }
 
   function pad2(n) { return String(n).padStart(2, '0'); }
+  function syncLocaleFormatClass() {
+    document.body.classList.toggle('us-format', !!use12h);
+    document.body.classList.toggle('eu-format', !use12h);
+  }
+  syncLocaleFormatClass();
 
   function daysInMonth(year, month) {
     return new Date(year, month, 0).getDate();
@@ -143,7 +150,14 @@
     desktopMonthSelect.value = String(mm);
     rebuildDesktopDayOptions();
     desktopDaySelect.value = String(dd);
-    desktopHourSelect.value = String(hh);
+    if (use12h) {
+      const ampm = hh >= 12 ? 'PM' : 'AM';
+      const h12 = hh % 12 || 12;
+      desktopHourSelect.value = String(h12);
+      if (desktopAmPmSelect) desktopAmPmSelect.value = ampm;
+    } else {
+      desktopHourSelect.value = String(hh);
+    }
     desktopMinuteSelect.value = String(mi);
   }
 
@@ -152,8 +166,12 @@
     const y = Number(desktopYearSelect.value);
     const m = Number(desktopMonthSelect.value);
     const d = Number(desktopDaySelect.value);
-    const h = Number(desktopHourSelect.value);
+    let h = Number(desktopHourSelect.value);
     const mi = Number(desktopMinuteSelect.value);
+    if (use12h) {
+      const p = desktopAmPmSelect?.value || 'AM';
+      h = p === 'PM' ? ((h % 12) + 12) : (h % 12);
+    }
     dateInput.value = `${String(y).padStart(4, '0')}-${pad2(m)}-${pad2(d)}`;
     timeInput.value = `${pad2(h)}:${pad2(mi)}`;
   }
@@ -177,11 +195,22 @@
       desktopMonthSelect.appendChild(opt);
     }
     desktopHourSelect.innerHTML = '';
-    for (let h = 0; h < 24; h++) {
+    const hourStart = use12h ? 1 : 0;
+    const hourEnd = use12h ? 12 : 23;
+    for (let h = hourStart; h <= hourEnd; h++) {
       const opt = document.createElement('option');
       opt.value = String(h);
       opt.textContent = pad2(h);
       desktopHourSelect.appendChild(opt);
+    }
+    if (desktopAmPmSelect) {
+      desktopAmPmSelect.innerHTML = '';
+      for (const p of ['AM', 'PM']) {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        desktopAmPmSelect.appendChild(opt);
+      }
     }
     desktopMinuteSelect.innerHTML = '';
     for (let m = 0; m < 60; m++) {
@@ -203,6 +232,7 @@
     desktopDaySelect.addEventListener('change', () => onDesktopPickerChange(false));
     desktopHourSelect.addEventListener('change', () => onDesktopPickerChange(false));
     desktopMinuteSelect.addEventListener('change', () => onDesktopPickerChange(false));
+    desktopAmPmSelect?.addEventListener('change', () => onDesktopPickerChange(false));
   }
   
   function syncModalBodyLock() {
@@ -1882,7 +1912,10 @@
     btn.addEventListener('click', () => {
       use12h = btn.dataset.fmt === '12';
       try { localStorage.setItem(TIME_FMT_KEY, btn.dataset.fmt); } catch {}
+      syncLocaleFormatClass();
       updateTimeFmtButtons();
+      if (!useNativeDateTimeInputs) initDesktopDateTimePicker();
+      if (!useNativeDateTimeInputs) setDesktopPickerFromInputs();
       syncDateTimeButton();
       if (currentOptions && lastSearch) {
         showDirections(currentOptions, lastSearch.fromId, lastSearch.toId, currentActiveIdx);

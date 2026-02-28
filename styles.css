@@ -527,7 +527,16 @@
   #desktop-month-select { flex: 1; }
   #desktop-day-select { flex: 0.8; }
   #desktop-hour-select,
+  #desktop-ampm-select,
   #desktop-minute-select { flex: 1; }
+  body.eu-format #desktop-day-select { order: 1; }
+  body.eu-format #desktop-month-select { order: 2; }
+  body.eu-format #desktop-year-select { order: 3; }
+  body.us-format #desktop-month-select { order: 1; }
+  body.us-format #desktop-day-select { order: 2; }
+  body.us-format #desktop-year-select { order: 3; }
+  body.eu-format #desktop-ampm-select { display: none; }
+  body.us-format #desktop-ampm-select { display: block; }
   .desktop-datetime-sep {
     color: #666;
     font-size: 20px;
