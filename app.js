@@ -1511,16 +1511,41 @@
     html += `<div id="option-detail">${renderLegs(options[activeIdx])}</div>`;
 
     setDirections(html, true);
+    const tabsEl = dir.querySelector('.option-tabs');
+    const tabs = tabsEl ? tabsEl.querySelectorAll('.option-tab') : [];
+    let tabShiftAnimating = false;
+    const animateTabShift = (direction) => {
+      if (tabShiftAnimating) return;
+      if (!tabs.length) {
+        shiftOptions(direction);
+        return;
+      }
+      tabShiftAnimating = true;
+      const tabWidth = tabs[1]?.offsetWidth || tabs[0]?.offsetWidth || 0;
+      const snapTarget = direction > 0 ? -tabWidth : tabWidth;
+      tabs.forEach((t) => {
+        t.style.transition = 'transform 140ms ease-out';
+        t.style.transform = `translateX(${snapTarget}px)`;
+      });
+      setTimeout(() => {
+        tabs.forEach((t) => {
+          t.style.transition = '';
+          t.style.transform = '';
+        });
+        tabShiftAnimating = false;
+        shiftOptions(direction);
+      }, 150);
+    };
 
     dir.querySelectorAll('.option-tab:not(.disabled)').forEach(tab => {
       tab.addEventListener('click', () => {
         const idx = parseInt(tab.dataset.tab);
         if (idx === 0) {
-          shiftOptions(-1);
+          animateTabShift(-1);
           return;
         }
         if (idx === 2) {
-          shiftOptions(1);
+          animateTabShift(1);
           return;
         }
         showRoute(currentOptions[idx]);
@@ -1531,14 +1556,13 @@
     document.getElementById('nav-later')?.addEventListener('click', () => shiftOptions(1));
 
     // Horizontal swipe/drag on option tabs (touch + mouse + pen)
-    const tabsEl = dir.querySelector('.option-tabs');
     if (tabsEl) {
       let startX = 0;
       let currentX = 0;
       let swiping = false;
       let pointerId = null;
       let dragged = false;
-      const tabs = tabsEl.querySelectorAll('.option-tab');
+      let didSwipe = false;
 
       tabsEl.addEventListener('pointerdown', e => {
         pointerId = e.pointerId;
@@ -1547,6 +1571,7 @@
         currentX = startX;
         swiping = true;
         dragged = false;
+        didSwipe = false;
       });
 
       tabsEl.addEventListener('pointermove', e => {
@@ -1563,6 +1588,7 @@
         pointerId = null;
         const dx = currentX - startX;
         const shouldShift = Math.abs(dx) > 50;
+        didSwipe = shouldShift;
         const shiftDir = dx < 0 ? 1 : -1;
         const tabWidth = tabs[1]?.offsetWidth || tabs[0]?.offsetWidth || 0;
         const snapTarget = shouldShift ? (dx < 0 ? -tabWidth : tabWidth) : 0;
@@ -1587,7 +1613,8 @@
 
       // Prevent click-activation when user was dragging/swiping.
       tabsEl.addEventListener('click', (e) => {
-        if (!dragged) return;
+        if (!didSwipe) return;
+        didSwipe = false;
         dragged = false;
         e.preventDefault();
         e.stopPropagation();
