@@ -51,9 +51,16 @@
   const dateModalNow = document.getElementById('date-modal-now');
   const dateModalDone = document.getElementById('date-modal-done');
   const timeInput = document.getElementById('time-input');
+  const desktopDateTimePicker = document.getElementById('desktop-datetime-picker');
+  const desktopYearSelect = document.getElementById('desktop-year-select');
+  const desktopMonthSelect = document.getElementById('desktop-month-select');
+  const desktopDaySelect = document.getElementById('desktop-day-select');
+  const desktopHourSelect = document.getElementById('desktop-hour-select');
+  const desktopMinuteSelect = document.getElementById('desktop-minute-select');
   const TIME_FMT_KEY = 'ferryMapperNYCTimeFmt';
   let use12h = false;
   try { use12h = localStorage.getItem(TIME_FMT_KEY) === '12'; } catch {}
+  const goBtn = document.getElementById('go-btn');
   const fromSel = document.getElementById('from-select');
   const toSel = document.getElementById('to-select');
   const aboutTrigger = document.getElementById('about-trigger');
@@ -63,6 +70,140 @@
   const nerdModal = document.getElementById('nerd-modal');
   const nerdClose = document.getElementById('nerd-close');
   const sorted = [...stops].sort((a, b) => a.name.localeCompare(b.name));
+
+  function shouldUseNativeDateTimeInputs() {
+    const ua = navigator.userAgent || '';
+    const mobileUa = /Android|iPhone|iPad|iPod/i.test(ua);
+    const maxTouchPoints = navigator.maxTouchPoints || 0;
+    const hasTouch = maxTouchPoints > 0 || 'ontouchstart' in window;
+    const coarsePointer = window.matchMedia?.('(pointer: coarse)')?.matches ?? false;
+    const finePointer = window.matchMedia?.('(pointer: fine)')?.matches ?? false;
+    const maxScreenSide = Math.max(window.screen?.width || 0, window.screen?.height || 0);
+    const likelyPhoneOrTablet = maxScreenSide > 0 && maxScreenSide <= 1366;
+    // Desktop emulation usually still reports a fine pointer, while real mobile does not.
+    return mobileUa && hasTouch && coarsePointer && !finePointer && likelyPhoneOrTablet;
+  }
+
+  const useNativeDateTimeInputs = shouldUseNativeDateTimeInputs();
+  if (!useNativeDateTimeInputs) {
+    dateInput.type = 'text';
+    timeInput.type = 'text';
+    dateInput.placeholder = 'YYYY-MM-DD';
+    timeInput.placeholder = 'HH:MM';
+    dateInput.inputMode = 'numeric';
+    timeInput.inputMode = 'numeric';
+    dateInput.autocapitalize = 'off';
+    timeInput.autocapitalize = 'off';
+    dateInput.autocomplete = 'off';
+    timeInput.autocomplete = 'off';
+    dateInput.spellcheck = false;
+    timeInput.spellcheck = false;
+    document.body.classList.add('desktop-datetime-inputs');
+    if (desktopDateTimePicker) {
+      desktopDateTimePicker.hidden = false;
+      desktopDateTimePicker.removeAttribute('aria-hidden');
+    }
+  } else {
+    document.body.classList.add('native-datetime-inputs');
+    if (desktopDateTimePicker) {
+      desktopDateTimePicker.hidden = true;
+      desktopDateTimePicker.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function pad2(n) { return String(n).padStart(2, '0'); }
+
+  function daysInMonth(year, month) {
+    return new Date(year, month, 0).getDate();
+  }
+
+  function rebuildDesktopDayOptions() {
+    if (!desktopDaySelect || !desktopYearSelect || !desktopMonthSelect) return;
+    const y = Number(desktopYearSelect.value);
+    const m = Number(desktopMonthSelect.value);
+    const prev = Number(desktopDaySelect.value) || 1;
+    const max = daysInMonth(y, m);
+    desktopDaySelect.innerHTML = '';
+    for (let d = 1; d <= max; d++) {
+      const opt = document.createElement('option');
+      opt.value = String(d);
+      opt.textContent = pad2(d);
+      desktopDaySelect.appendChild(opt);
+    }
+    desktopDaySelect.value = String(Math.min(prev, max));
+  }
+
+  function setDesktopPickerFromInputs() {
+    if (useNativeDateTimeInputs || !desktopYearSelect) return;
+    const d = normalizeDateValue(dateInput.value) || new Date().toISOString().slice(0, 10);
+    const t = normalizeTimeValue(timeInput.value) || new Date().toTimeString().slice(0, 5);
+    const [yy, mm, dd] = d.split('-').map(Number);
+    const [hh, mi] = t.split(':').map(Number);
+    desktopYearSelect.value = String(yy);
+    desktopMonthSelect.value = String(mm);
+    rebuildDesktopDayOptions();
+    desktopDaySelect.value = String(dd);
+    desktopHourSelect.value = String(hh);
+    desktopMinuteSelect.value = String(mi);
+  }
+
+  function setInputsFromDesktopPicker() {
+    if (useNativeDateTimeInputs || !desktopYearSelect) return;
+    const y = Number(desktopYearSelect.value);
+    const m = Number(desktopMonthSelect.value);
+    const d = Number(desktopDaySelect.value);
+    const h = Number(desktopHourSelect.value);
+    const mi = Number(desktopMinuteSelect.value);
+    dateInput.value = `${String(y).padStart(4, '0')}-${pad2(m)}-${pad2(d)}`;
+    timeInput.value = `${pad2(h)}:${pad2(mi)}`;
+  }
+
+  function initDesktopDateTimePicker() {
+    if (useNativeDateTimeInputs || !desktopYearSelect) return;
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    desktopYearSelect.innerHTML = '';
+    for (let y = currentYear - 1; y <= currentYear + 2; y++) {
+      const opt = document.createElement('option');
+      opt.value = String(y);
+      opt.textContent = String(y);
+      desktopYearSelect.appendChild(opt);
+    }
+    desktopMonthSelect.innerHTML = '';
+    for (let m = 1; m <= 12; m++) {
+      const opt = document.createElement('option');
+      opt.value = String(m);
+      opt.textContent = pad2(m);
+      desktopMonthSelect.appendChild(opt);
+    }
+    desktopHourSelect.innerHTML = '';
+    for (let h = 0; h < 24; h++) {
+      const opt = document.createElement('option');
+      opt.value = String(h);
+      opt.textContent = pad2(h);
+      desktopHourSelect.appendChild(opt);
+    }
+    desktopMinuteSelect.innerHTML = '';
+    for (let m = 0; m < 60; m++) {
+      const opt = document.createElement('option');
+      opt.value = String(m);
+      opt.textContent = pad2(m);
+      desktopMinuteSelect.appendChild(opt);
+    }
+    setDesktopPickerFromInputs();
+    const onDesktopPickerChange = (isDatePart) => {
+      if (isDatePart) rebuildDesktopDayOptions();
+      setInputsFromDesktopPicker();
+      syncDateTimeButton();
+      checkPastTime();
+      saveState();
+    };
+    desktopYearSelect.addEventListener('change', () => onDesktopPickerChange(true));
+    desktopMonthSelect.addEventListener('change', () => onDesktopPickerChange(true));
+    desktopDaySelect.addEventListener('change', () => onDesktopPickerChange(false));
+    desktopHourSelect.addEventListener('change', () => onDesktopPickerChange(false));
+    desktopMinuteSelect.addEventListener('change', () => onDesktopPickerChange(false));
+  }
   
   function syncModalBodyLock() {
     const hasOpenModal = !aboutModal.hidden || !nerdModal.hidden || !dateModal.hidden;
@@ -102,7 +243,12 @@
   function openDateModal() {
     dateModal.hidden = false;
     syncModalBodyLock();
-    dateInput.focus();
+    if (useNativeDateTimeInputs) {
+      dateInput.focus();
+    } else {
+      setDesktopPickerFromInputs();
+      desktopYearSelect?.focus();
+    }
   }
 
   function closeDateModal({ restoreFocus = true } = {}) {
@@ -110,6 +256,17 @@
     dateModal.hidden = true;
     syncModalBodyLock();
     if (restoreFocus) datePickerBtn.focus();
+  }
+
+  function hasValidRouteSelection() {
+    return !!fromSel.value && !!toSel.value && fromSel.value !== toSel.value;
+  }
+
+  function updateGoButtonState() {
+    if (!goBtn) return;
+    const enabled = hasValidRouteSelection();
+    goBtn.disabled = !enabled;
+    goBtn.setAttribute('aria-disabled', enabled ? 'false' : 'true');
   }
 
   aboutTrigger.setAttribute('aria-expanded', 'false');
@@ -130,8 +287,77 @@
   });
   datePickerBtn.addEventListener('click', openDateModal);
   dateModalClose.addEventListener('click', closeDateModal);
+  function normalizeDateValue(raw) {
+    const v = String(raw || '').trim();
+    if (!v) return '';
+    let y, m, d;
+    let hit = v.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (hit) {
+      y = Number(hit[1]); m = Number(hit[2]); d = Number(hit[3]);
+    } else {
+      hit = v.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/);
+      if (!hit) return '';
+      d = Number(hit[1]); m = Number(hit[2]); y = Number(hit[3]);
+    }
+    const dt = new Date(y, m - 1, d);
+    if (dt.getFullYear() !== y || (dt.getMonth() + 1) !== m || dt.getDate() !== d) return '';
+    return `${String(y).padStart(4, '0')}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+  }
+
+  function normalizeTimeValue(raw) {
+    const v = String(raw || '').trim().toUpperCase();
+    if (!v) return '';
+    const hit = v.match(/^(\d{1,2}):(\d{2})(?:\s*([AP]M))?$/);
+    if (!hit) return '';
+    let h = Number(hit[1]);
+    const m = Number(hit[2]);
+    const ap = hit[3] || '';
+    if (!Number.isFinite(h) || !Number.isFinite(m) || m < 0 || m > 59) return '';
+    if (ap) {
+      if (h < 1 || h > 12) return '';
+      if (ap === 'AM') h = h % 12;
+      if (ap === 'PM') h = (h % 12) + 12;
+    } else if (h < 0 || h > 23) {
+      return '';
+    }
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+  }
+
+  function normalizeDateInput({ commit = false } = {}) {
+    const parsed = normalizeDateValue(dateInput.value);
+    if (parsed) {
+      dateInput.value = parsed;
+      dateInput.setCustomValidity('');
+      return parsed;
+    }
+    if (commit && String(dateInput.value || '').trim()) {
+      dateInput.setCustomValidity('Use YYYY-MM-DD');
+      dateInput.reportValidity();
+    } else {
+      dateInput.setCustomValidity('');
+    }
+    return '';
+  }
+
+  function normalizeTimeInput({ commit = false } = {}) {
+    const parsed = normalizeTimeValue(timeInput.value);
+    if (parsed) {
+      timeInput.value = parsed;
+      timeInput.setCustomValidity('');
+      return parsed;
+    }
+    if (commit && String(timeInput.value || '').trim()) {
+      timeInput.setCustomValidity('Use HH:MM');
+      timeInput.reportValidity();
+    } else {
+      timeInput.setCustomValidity('');
+    }
+    return '';
+  }
+
   dateModalToday.addEventListener('click', () => {
     dateInput.value = new Date().toISOString().slice(0, 10);
+    if (!useNativeDateTimeInputs) setDesktopPickerFromInputs();
     syncDateTimeButton();
     checkPastTime();
     saveState();
@@ -140,11 +366,20 @@
     const now = new Date();
     dateInput.value = now.toISOString().slice(0, 10);
     timeInput.value = now.toTimeString().slice(0, 5);
+    if (!useNativeDateTimeInputs) setDesktopPickerFromInputs();
     syncDateTimeButton();
     saveState();
     closeDateModal();
   });
-  dateModalDone.addEventListener('click', closeDateModal);
+  dateModalDone.addEventListener('click', () => {
+    if (!useNativeDateTimeInputs) setInputsFromDesktopPicker();
+    const d = normalizeDateInput({ commit: true });
+    const t = normalizeTimeInput({ commit: true });
+    if (!d || !t) return;
+    checkPastTime();
+    saveState();
+    closeDateModal();
+  });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeDateModal();
@@ -179,13 +414,15 @@
 
   function syncDateTimeButton() {
     if (!datePickerBtn) return;
-    if (!dateInput.value || !timeInput.value) {
+    const d = normalizeDateInput();
+    const t = normalizeTimeInput();
+    if (!d || !t) {
       datePickerBtn.textContent = 'Date & Time';
       return;
     }
-    const [h, m] = timeInput.value.split(':').map(Number);
+    const [h, m] = t.split(':').map(Number);
     const mins = h * 60 + m;
-    datePickerBtn.textContent = `${formatDateForDisplay(dateInput.value)} ${formatTime(mins)}`;
+    datePickerBtn.textContent = `${formatDateForDisplay(d)} ${formatTime(mins)}`;
   }
 
   // Hydrate from saved state or default to now
@@ -198,44 +435,43 @@
   if (saved) {
     if (saved.mode) document.getElementById('time-mode').value = saved.mode;
   }
-  // For date/time: keep saved value only if it's still in the future, otherwise use now
-  const savedDateTime = saved?.date && saved?.time ? new Date(saved.date + 'T' + saved.time) : null;
-  if (savedDateTime && savedDateTime > now) {
-    dateInput.value = saved.date;
-    timeInput.value = saved.time;
+  // For date/time: restore saved value whenever valid; otherwise use now
+  const savedDate = normalizeDateValue(saved?.date || '');
+  const savedTime = normalizeTimeValue(saved?.time || '');
+  if (savedDate && savedTime) {
+    dateInput.value = savedDate;
+    timeInput.value = savedTime;
   } else {
     dateInput.value = todayStr;
     timeInput.value = nowTime;
   }
   syncDateTimeButton();
+  initDesktopDateTimePicker();
+  if (!useNativeDateTimeInputs) setDesktopPickerFromInputs();
 
   // Save on any change
   for (const el of [fromSel, toSel, dateInput, timeInput, document.getElementById('time-mode')]) {
     el.addEventListener('change', saveState);
   }
+  fromSel.addEventListener('change', updateGoButtonState);
+  toSel.addEventListener('change', updateGoButtonState);
   dateInput.addEventListener('change', syncDateTimeButton);
   dateInput.addEventListener('input', syncDateTimeButton);
   timeInput.addEventListener('change', syncDateTimeButton);
   timeInput.addEventListener('input', syncDateTimeButton);
 
   function checkPastTime() {
-    const now = new Date();
-    const selDate = dateInput.value;
-    const today = now.toISOString().slice(0, 10);
-    const pastDate = selDate < today;
-    const pastTime = selDate === today && timeInput.value < now.toTimeString().slice(0, 5);
-    if (pastDate || pastTime) {
-      dateInput.value = today;
-      timeInput.value = now.toTimeString().slice(0, 5);
-      syncDateTimeButton();
-      saveState();
-    }
+    const d = normalizeDateInput();
+    const t = normalizeTimeInput();
+    if (!d || !t) return;
+    // Keep user-selected past times as-is; only normalize format.
+    syncDateTimeButton();
     dateInput.style.color = '';
   }
   dateInput.addEventListener('change', checkPastTime);
   timeInput.addEventListener('change', checkPastTime);
   checkPastTime();
-  setInterval(checkPastTime, 30000);
+  updateGoButtonState();
 
 
   let lastSearch = null; // { legs, dateStr, startMin, mode, fromId, toId }
@@ -246,6 +482,7 @@
   // When stop selection changes while a route is active, clear state and start fresh
   function resetRoute() {
     routeActions?.classList.remove('visible');
+    updateGoButtonState();
     if (!lastSearch) return;
     clearHighlights();
     const dir = document.getElementById('directions');
@@ -308,6 +545,7 @@
     toSel.value = tmp;
     resetRoute();
     saveState();
+    updateGoButtonState();
   });
 
   // --- Schedule helpers ---
@@ -881,6 +1119,7 @@
         resetRoute();
         updatePreviewMarkers();
         saveState();
+        updateGoButtonState();
         map.closePopup();
         flashField(fromSel);
       });
@@ -892,6 +1131,7 @@
         resetRoute();
         updatePreviewMarkers();
         saveState();
+        updateGoButtonState();
         map.closePopup();
         flashField(toSel);
       });
@@ -1370,8 +1610,13 @@
       });
     }
 
-    const dateStr = dateInput.value;
-    const startMin = timeToMin(timeInput.value + ':00');
+    const dateStr = normalizeDateInput({ commit: true });
+    const timeStr = normalizeTimeInput({ commit: true });
+    if (!dateStr || !timeStr) {
+      setDirections('<div class="error-msg">Please enter a valid date/time.</div>');
+      return;
+    }
+    const startMin = timeToMin(timeStr + ':00');
     const options = findOptions(allLegs, dateStr, startMin, mode);
 
     lastSearch = { allLegs, dateStr, startMin, mode, fromId, toId };

@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://rcoenen.github.io/FerryMapperNYC/og-image.png">
-<meta name="app-build" content="16">
+<meta name="app-build" content="17">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
@@ -95,7 +95,7 @@
       </div>
     </div>
     <div class="settings-version" aria-live="polite">
-      Build: <code id="build-number">16</code>
+      Build: <code id="build-number">17</code>
     </div>
   </div>
 </header>
@@ -192,6 +192,18 @@
     <h2 id="date-modal-title">Select Date &amp; Time</h2>
     <input type="date" id="date-input" aria-label="Date">
     <input type="time" id="time-input" aria-label="Time">
+    <div id="desktop-datetime-picker" class="desktop-datetime-picker" hidden aria-hidden="true">
+      <div class="desktop-datetime-row">
+        <select id="desktop-year-select" aria-label="Year"></select>
+        <select id="desktop-month-select" aria-label="Month"></select>
+        <select id="desktop-day-select" aria-label="Day"></select>
+      </div>
+      <div class="desktop-datetime-row">
+        <select id="desktop-hour-select" aria-label="Hour"></select>
+        <span class="desktop-datetime-sep">:</span>
+        <select id="desktop-minute-select" aria-label="Minute"></select>
+      </div>
+    </div>
     <div class="date-modal-actions">
       <button id="date-modal-today" type="button">Today</button>
       <button id="date-modal-now" type="button">Now</button>

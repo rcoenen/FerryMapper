@@ -335,8 +335,8 @@
     flex-shrink: 0;
   }
   .controls label { font-size: 13px; font-weight: 500; color: #555; }
-  input[type="time"]::-webkit-calendar-picker-indicator,
-  input[type="date"]::-webkit-calendar-picker-indicator { display: none; }
+  .controls input[type="time"]::-webkit-calendar-picker-indicator,
+  .controls input[type="date"]::-webkit-calendar-picker-indicator { display: none; }
   .controls select, .controls input[type="time"], .controls .date-display {
     padding: 10px 12px;
     border: 1px solid #ccc;
@@ -472,7 +472,9 @@
     box-shadow: 0 0 0 3px rgba(26,35,126,0.1);
   }
   .date-modal-card input[type="date"],
-  .date-modal-card input[type="time"] {
+  .date-modal-card input[type="time"],
+  .date-modal-card #date-input,
+  .date-modal-card #time-input {
     width: 100%;
     margin-top: 6px;
     border: 1px solid #ccc;
@@ -481,6 +483,71 @@
     font-family: inherit;
     padding: 12px 10px;
     min-height: 44px;
+    display: block;
+  }
+  .date-modal-card input[type="date"]::-webkit-calendar-picker-indicator,
+  .date-modal-card input[type="time"]::-webkit-calendar-picker-indicator {
+    display: block;
+    opacity: 1;
+    cursor: pointer;
+  }
+  .desktop-datetime-picker {
+    margin-top: 6px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .desktop-datetime-picker[hidden] { display: none !important; }
+  .desktop-datetime-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .desktop-datetime-picker select {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: white;
+    font-size: 16px;
+    font-family: inherit;
+    min-height: 44px;
+    padding: 10px 12px;
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 30px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+  .desktop-datetime-picker select:focus {
+    outline: none;
+    border-color: #1a237e;
+    box-shadow: 0 0 0 3px rgba(26,35,126,0.1);
+  }
+  #desktop-year-select { flex: 1.2; }
+  #desktop-month-select { flex: 1; }
+  #desktop-day-select { flex: 0.8; }
+  #desktop-hour-select,
+  #desktop-minute-select { flex: 1; }
+  .desktop-datetime-sep {
+    color: #666;
+    font-size: 20px;
+    line-height: 1;
+    font-weight: 700;
+    min-width: 10px;
+    text-align: center;
+  }
+  body.desktop-datetime-inputs .date-modal-card #date-input,
+  body.desktop-datetime-inputs .date-modal-card #time-input {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.2px;
+  }
+  body.desktop-datetime-inputs .date-modal-card #date-input,
+  body.desktop-datetime-inputs .date-modal-card #time-input {
+    display: none;
+  }
+  body.desktop-datetime-inputs .date-modal-card #desktop-datetime-picker {
+    display: flex;
   }
   .date-modal-actions {
     display: flex;
@@ -512,6 +579,16 @@
   #go-btn { background: #1a237e; color: white; padding: 12px 20px; flex: 1 1 0; }
   #go-btn:hover { background: #283593; }
   #go-btn:active { background: #0d1452; }
+  #go-btn:disabled,
+  #go-btn[aria-disabled="true"] {
+    background: #a9afc9;
+    color: #e9ebf5;
+    cursor: not-allowed;
+  }
+  #go-btn:disabled:hover,
+  #go-btn:disabled:active {
+    background: #a9afc9;
+  }
 
   /* --- Bottom sheet (mobile) --- */
   .sheet-handle { display: none; }
