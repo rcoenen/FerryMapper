@@ -1586,6 +1586,10 @@
         if (!swiping || (pointerId !== null && e.pointerId !== pointerId)) return;
         swiping = false;
         pointerId = null;
+        if (!dragged) {
+          didSwipe = false;
+          return;
+        }
         const dx = currentX - startX;
         const shouldShift = Math.abs(dx) > 50;
         didSwipe = shouldShift;
