@@ -716,6 +716,8 @@
     border-bottom: 3px solid transparent;
     transition: all 0.15s;
     min-width: 0;
+    -webkit-user-select: none;
+    user-select: none;
   }
   .option-tab:hover { background: #f0f0f0; }
   .option-tab.active { border-bottom-color: #1a237e; background: white; }
@@ -927,6 +929,8 @@
       cursor: grab;
       z-index: 2;
       touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
     .sheet-handle span {
       width: 36px;
