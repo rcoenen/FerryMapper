@@ -1522,36 +1522,54 @@
     document.getElementById('nav-earlier')?.addEventListener('click', () => shiftOptions(-1));
     document.getElementById('nav-later')?.addEventListener('click', () => shiftOptions(1));
 
-    // Horizontal swipe on option tabs
+    // Horizontal swipe/drag on option tabs (touch + mouse + pen)
     const tabsEl = dir.querySelector('.option-tabs');
     if (tabsEl) {
       let startX = 0;
       let currentX = 0;
       let swiping = false;
+      let pointerId = null;
+      let dragged = false;
       const tabs = tabsEl.querySelectorAll('.option-tab');
 
-      tabsEl.addEventListener('touchstart', e => {
-        startX = e.touches[0].clientX;
+      tabsEl.addEventListener('pointerdown', e => {
+        pointerId = e.pointerId;
+        tabsEl.setPointerCapture?.(pointerId);
+        startX = e.clientX;
         currentX = startX;
         swiping = true;
-      }, { passive: true });
+        dragged = false;
+      });
 
-      tabsEl.addEventListener('touchmove', e => {
-        if (!swiping) return;
-        currentX = e.touches[0].clientX;
+      tabsEl.addEventListener('pointermove', e => {
+        if (!swiping || (pointerId !== null && e.pointerId !== pointerId)) return;
+        currentX = e.clientX;
         const dx = currentX - startX;
+        if (Math.abs(dx) > 6) dragged = true;
         tabs.forEach(t => t.style.transform = `translateX(${dx}px)`);
-      }, { passive: true });
+      });
 
-      tabsEl.addEventListener('touchend', () => {
-        if (!swiping) return;
+      const finishSwipe = (e) => {
+        if (!swiping || (pointerId !== null && e.pointerId !== pointerId)) return;
         swiping = false;
+        pointerId = null;
         const dx = currentX - startX;
         tabs.forEach(t => t.style.transform = '');
         if (Math.abs(dx) > 50) {
           shiftOptions(dx < 0 ? 1 : -1);
         }
-      });
+      };
+
+      tabsEl.addEventListener('pointerup', finishSwipe);
+      tabsEl.addEventListener('pointercancel', finishSwipe);
+
+      // Prevent click-activation when user was dragging/swiping.
+      tabsEl.addEventListener('click', (e) => {
+        if (!dragged) return;
+        dragged = false;
+        e.preventDefault();
+        e.stopPropagation();
+      }, true);
     }
   }
 
