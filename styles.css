@@ -549,6 +549,15 @@
     background: #a9afc9;
   }
 
+  /* Keep Go button compact and aligned right on tablet/desktop control rows */
+  @media (min-width: 641px) {
+    #go-btn {
+      flex: 0 0 auto;
+      width: min(220px, 42%);
+      margin-left: auto;
+    }
+  }
+
   /* --- Bottom sheet (mobile) --- */
   .sheet-handle { display: none; }
 
