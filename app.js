@@ -1562,10 +1562,24 @@
         swiping = false;
         pointerId = null;
         const dx = currentX - startX;
-        tabs.forEach(t => t.style.transform = '');
-        if (Math.abs(dx) > 50) {
-          shiftOptions(dx < 0 ? 1 : -1);
-        }
+        const shouldShift = Math.abs(dx) > 50;
+        const shiftDir = dx < 0 ? 1 : -1;
+        const tabWidth = tabs[1]?.offsetWidth || tabs[0]?.offsetWidth || 0;
+        const snapTarget = shouldShift ? (dx < 0 ? -tabWidth : tabWidth) : 0;
+
+        tabs.forEach((t) => {
+          t.style.transition = 'transform 140ms ease-out';
+          t.style.transform = `translateX(${snapTarget}px)`;
+        });
+
+        setTimeout(() => {
+          tabs.forEach((t) => { t.style.transition = ''; });
+          if (shouldShift) {
+            shiftOptions(shiftDir);
+          } else {
+            tabs.forEach((t) => { t.style.transform = ''; });
+          }
+        }, 150);
       };
 
       tabsEl.addEventListener('pointerup', finishSwipe);
