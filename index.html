@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://rcoenen.github.io/FerryMapperNYC/og-image.png">
-<meta name="app-build" content="34">
+<meta name="app-build" content="37">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
@@ -59,9 +59,60 @@
       css.rel = 'stylesheet';
       css.href = 'styles.css?' + q;
       document.head.appendChild(css);
+      
+      // Add Google Maps style location dot CSS
+      const locationStyle = document.createElement('style');
+      locationStyle.textContent = `
+        .gm-style-location {
+          position: relative;
+          width: 32px;
+          height: 32px;
+        }
+        
+        .gm-style-pulse {
+          position: absolute;
+          width: 32px;
+          height: 32px;
+          border: 2px solid rgba(66, 133, 244, 0.3);
+          border-radius: 50%;
+          background-color: rgba(66, 133, 244, 0.1);
+          animation: gm-pulse 2s infinite;
+          z-index: 1;
+        }
+        
+        .gm-style-dot {
+          position: absolute;
+          top: 8px;
+          left: 8px;
+          width: 16px;
+          height: 16px;
+          background-color: #4285F4;
+          border-radius: 50%;
+          border: 2px solid white;
+          box-shadow: 0 0 2px rgba(0,0,0,0.3);
+          z-index: 2;
+        }
+        
+        @keyframes gm-pulse {
+          0% {
+            transform: scale(0.5);
+            opacity: 0.5;
+          }
+          50% {
+            transform: scale(1.2);
+            opacity: 0;
+          }
+          100% {
+            transform: scale(0.5);
+            opacity: 0.5;
+          }
+        }
+      `;
+      document.head.appendChild(locationStyle);
 
       const js = document.createElement('script');
-      js.src = 'app.js?' + q;
+      js.src = 'src/main.js?' + q;
+      js.type = 'module';
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
           document.body.appendChild(js);
@@ -100,7 +151,7 @@
       </label>
     </div>
     <div class="settings-version" aria-live="polite">
-      Build: <code id="build-number">34</code>
+      Build: <code id="build-number">37</code>
     </div>
   </div>
 </header>
