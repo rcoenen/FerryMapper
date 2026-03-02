@@ -14,7 +14,7 @@ import {
   normalizeDateInput, normalizeTimeInput,
   syncDateTimeButton, restoreNativeInputs, refreshModalDisplay, checkPastTime
 } from './js/datetime-input.js';
-import { initModals, closeAboutModal, closeNerdModal, closeDateModal } from './js/modals.js';
+import { initModals, closeAboutModal, closeNerdModal, closeDateModal, closeTransferModal } from './js/modals.js';
 import { initSheet, isMobile, setSheetSnap, openMapOverlay, closeMapOverlay } from './js/sheet.js';
 import { initSettings } from './js/settings.js';
 import { initDOM, getEl, getAll } from './js/dom.js';
@@ -40,7 +40,7 @@ try { state.use12h = localStorage.getItem(TIME_FMT_KEY) === '12'; } catch {}
 // --- State change listeners ---
 // Auto-recalculate route when transfer time changes
 subscribeState((action, payload) => {
-  if (action === 'SET_TRANSFER_TIME' && state.lastSearch && goBtn) {
+  if ((action === 'SET_TRANSFER_TIME' || action === 'RESTORE_DEFAULT_TRANSFER_TIME') && state.lastSearch && goBtn) {
     goBtn.click(); // Re-run search with new transfer time
   }
 });
@@ -122,6 +122,7 @@ document.addEventListener('keydown', (e) => {
     closeDateModal();
     closeNerdModal();
     closeAboutModal();
+    closeTransferModal();
     closeMapOverlay();
   }
 });

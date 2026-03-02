@@ -1,8 +1,9 @@
 // Settings drawer, map style switching, time format, geolocation
 
-import { state, TIME_FMT_KEY, STYLE_STORAGE_KEY, LOC_STORAGE_KEY, TRANSFER_TIME_KEY, setMapStyle, setGeolocation, clearGeolocation, setTransferTime, restoreDefaultTransferTime } from './state.js';
+import { state, subscribeState, TIME_FMT_KEY, STYLE_STORAGE_KEY, LOC_STORAGE_KEY, TRANSFER_TIME_KEY, setMapStyle, setGeolocation, clearGeolocation, setTransferTime } from './state.js';
 import { map, MAP_STYLES } from './map-core.js';
 import { applyDateTimeInputMode, syncLocaleFormatClass, syncDateTimeButton, refreshModalDisplay } from './datetime-input.js';
+import { openTransferModal } from './modals.js';
 
 export function initSettings({ onTimeFormatChange }) {
   const settingsToggle = document.getElementById('settings-toggle');
@@ -10,8 +11,8 @@ export function initSettings({ onTimeFormatChange }) {
   const mapStyleSelect = document.getElementById('map-style-select');
   const locationToggle = document.getElementById('location-toggle');
   const buildNumberEl = document.getElementById('build-number');
-  const transferTimeInput = document.getElementById('transfer-time-input');
-  const restoreDefaultTransferBtn = document.getElementById('restore-default-transfer');
+  const transferTimeRow = document.getElementById('transfer-time-row');
+  const transferTimeDisplay = document.getElementById('transfer-time-display');
   let buildCopyTimer = null;
 
   // Build number
@@ -68,11 +69,17 @@ export function initSettings({ onTimeFormatChange }) {
   // Map style
   mapStyleSelect.value = state.activeStyleKey;
 
-  // Transfer time
-  function updateTransferTimeInput() {
-    transferTimeInput.value = state.transferTime;
+  // Transfer time display
+  function updateTransferTimeDisplay() {
+    transferTimeDisplay.textContent = state.transferTime + ' min';
   }
-  updateTransferTimeInput();
+  updateTransferTimeDisplay();
+  transferTimeRow.addEventListener('click', openTransferModal);
+  subscribeState((action) => {
+    if (action === 'SET_TRANSFER_TIME' || action === 'RESTORE_DEFAULT_TRANSFER_TIME') {
+      updateTransferTimeDisplay();
+    }
+  });
 
   // Time format toggle
   function updateTimeFmtButtons() {
@@ -129,23 +136,6 @@ export function initSettings({ onTimeFormatChange }) {
     state.currentTileLayer.bringToBack();
     setMapStyle(key);
     try { localStorage.setItem(STYLE_STORAGE_KEY, key); } catch {}
-  });
-
-  // Transfer time controls
-  transferTimeInput.addEventListener('change', () => {
-    const value = parseInt(transferTimeInput.value);
-    if (isNaN(value) || value < 1 || value > 60) {
-      transferTimeInput.value = state.transferTime;
-      return;
-    }
-    setTransferTime(value);
-    try { localStorage.setItem(TRANSFER_TIME_KEY, String(value)); } catch {}
-  });
-
-  restoreDefaultTransferBtn.addEventListener('click', () => {
-    restoreDefaultTransferTime();
-    updateTransferTimeInput();
-    try { localStorage.setItem(TRANSFER_TIME_KEY, String(state.transferTime)); } catch {}
   });
 
   // Geolocation
@@ -224,7 +214,7 @@ export function initSettings({ onTimeFormatChange }) {
       const value = parseInt(savedTransferTime);
       if (!isNaN(value) && value >= 1 && value <= 60) {
         setTransferTime(value);
-        updateTransferTimeInput();
+        updateTransferTimeDisplay();
       }
     }
   } catch {}

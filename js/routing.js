@@ -302,12 +302,12 @@ function resolveScheduleAt(legs, dateStr, startMin) {
       leg.route = trip.routeId;
     }
 
-    const waitMin = trip.depTime - currentMin;
+    const prevArr = resolved.length > 0 ? resolved[resolved.length - 1].arrTime : null;
     resolved.push({
       ...leg,
       depTime: trip.depTime,
       arrTime: trip.arrTime,
-      waitMin: i === 0 ? null : waitMin,
+      waitMin: prevArr !== null ? trip.depTime - prevArr : null,
       rideMin: trip.arrTime - trip.depTime,
       tripStops: trip.stops,
       toward: trip.toward

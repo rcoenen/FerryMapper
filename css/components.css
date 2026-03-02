@@ -57,47 +57,51 @@
 }
 .settings-drawer select:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1); }
 
-/* --- Transfer time controls --- */
-.transfer-time-controls {
+/* --- Settings value row (clickable summary) --- */
+.settings-value-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.transfer-time-input {
-  width: 60px;
-  padding: 6px 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  background: none;
   font-size: 13px;
-  text-align: center;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  text-align: left;
 }
+.settings-value-row span:last-child {
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+}
+.settings-value-row:hover span:last-child { text-decoration: underline; }
 
-.transfer-time-input:focus {
+/* --- Transfer modal input --- */
+.transfer-modal-card input[type="number"] {
+  width: 100%;
+  margin-top: 6px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  padding: 12px 10px;
+  min-height: 44px;
+  display: block;
+}
+.transfer-modal-card input[type="number"]:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
 }
-
-.restore-default-btn {
-  padding: 6px 10px;
-  background: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #666;
-  cursor: pointer;
-  transition: background 0.2s;
+#transfer-modal-save {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
 }
-
-.restore-default-btn:hover {
-  background: #ececec;
-}
-
-.restore-default-btn:active {
-  background: #e0e0e0;
-}
+#transfer-modal-save:hover { background: #283593; }
+#transfer-modal-save:active { background: #0d1452; }
 
 /* --- Time format toggle --- */
 .time-format-toggle { display: flex; gap: 0; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; }
