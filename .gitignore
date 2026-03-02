@@ -1,2 +1,6 @@
 node_modules/
 gtfs_tmp/
+
+# Development/automation directories
+openspec/
+.claude/
