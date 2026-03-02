@@ -227,7 +227,7 @@ async function main() {
 
   // Merge nearby stops (<200m) with different names
   // This connects shuttle bus stops to nearby ferry stops
-  const MERGE_DISTANCE = 200; // meters
+  const MERGE_DISTANCE = 200; // meters - see CONFIG.STOP_MERGE_DISTANCE_M
   let merged = true;
   while (merged) {
     merged = false;

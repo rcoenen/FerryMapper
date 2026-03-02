@@ -6,9 +6,13 @@
   "type": "module",
   "scripts": {
     "prepare-data": "node prepare-data.mjs",
-    "start": "npx serve ."
+    "start": "npx serve .",
+    "lint": "node --check app.js && node --check prepare-data.mjs"
   },
   "dependencies": {
     "unzipper": "^0.12.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
   }
 }

@@ -1,7 +1,7 @@
 // Directions display: timeline HTML, tab bar, swipe handler
 
 import { stopById, routeById } from './data.js';
-import { state } from './state.js';
+import { state, shiftRoute, setSearchResult, setActiveRouteIdx } from './state.js';
 import { formatTime, formatDuration } from './time-utils.js';
 import { getArrival, getDeparture, getTotalTime, getMaxWait, isComplete, findOptions } from './routing.js';
 import { showRoute, clearHighlights } from './route-drawing.js';
@@ -106,7 +106,7 @@ export function shiftOptions(direction) {
   state.lastSearch.startMin = newStartMin;
   const options = findOptions(allLegs, dateStr, newStartMin, mode);
   const activeIdx = 1;
-  state.shiftCount += direction;
+  shiftRoute(direction);
   if (options[activeIdx] && isComplete(options[activeIdx])) {
     showRoute(options[activeIdx]);
   } else {
@@ -133,8 +133,7 @@ export function setDirections(html, hasRoute) {
 
 export function showDirections(options, fromId, toId, activeIdx) {
   const dir = document.getElementById('directions');
-  state.currentOptions = options;
-  state.currentActiveIdx = activeIdx;
+  setSearchResult(options, activeIdx);
 
   if (!options[0] && !options[1] && !options[2]) {
     setDirections('<div class="error-msg">No route found between these stops.</div>');
@@ -211,6 +210,7 @@ export function showDirections(options, fromId, toId, activeIdx) {
         return;
       }
       showRoute(state.currentOptions[idx]);
+      setActiveRouteIdx(idx);
       showDirections(state.currentOptions, fromId, toId, idx);
     });
   });

@@ -2,7 +2,7 @@
 // Orchestrates module initialization and wires event handlers.
 
 import { loadData, sorted, stopById } from './js/data.js';
-import { state, saveState, loadState, TIME_FMT_KEY } from './js/state.js';
+import { state, saveState, loadState, TIME_FMT_KEY, setSearchResult, setLastSearch, clearSearch, shiftRoute, setActiveRouteIdx } from './js/state.js';
 import { timeToMin } from './js/time-utils.js';
 import { findRoutes, expandLegStops, findOptions, isComplete } from './js/routing.js';
 import { initMap, map, updatePreviewMarkers } from './js/map-core.js';
@@ -17,11 +17,19 @@ import {
 import { initModals, closeAboutModal, closeNerdModal, closeDateModal } from './js/modals.js';
 import { initSheet, isMobile, setSheetSnap, openMapOverlay, closeMapOverlay } from './js/sheet.js';
 import { initSettings } from './js/settings.js';
+import { initDOM, getEl, getAll } from './js/dom.js';
+import { initErrorHandling, wrapAsync, AppError } from './js/errors.js';
+
+// --- Initialize error handling ---
+initErrorHandling();
 
 // --- Load data ---
-await loadData();
+await wrapAsync(loadData, (err) => {
+  throw new AppError('Failed to load ferry data. Please refresh the page.', false);
+})();
 
 // --- Initialize modules ---
+initDOM();
 initMap();
 initSheet();
 initModals();
@@ -29,14 +37,14 @@ initModals();
 // --- Time format ---
 try { state.use12h = localStorage.getItem(TIME_FMT_KEY) === '12'; } catch {}
 
-// --- DOM refs ---
-const dateInput = document.getElementById('date-input');
-const timeInput = document.getElementById('time-input');
-const fromSel = document.getElementById('from-select');
-const toSel = document.getElementById('to-select');
-const goBtn = document.getElementById('go-btn');
-const controls = document.querySelector('.controls');
-const routeActions = document.getElementById('route-actions');
+// --- DOM refs (from centralized module) ---
+const dateInput = getEl('date-input');
+const timeInput = getEl('time-input');
+const fromSel = getEl('from-select');
+const toSel = getEl('to-select');
+const goBtn = getEl('go-btn');
+const controls = getEl('controlsContainer');
+const routeActions = getEl('route-actions');
 
 // --- Date/time input setup ---
 applyDateTimeInputMode();
@@ -49,7 +57,8 @@ const todayStr = now.toISOString().slice(0, 10);
 const nowTime = now.toTimeString().slice(0, 5);
 
 if (saved) {
-  if (saved.mode) document.getElementById('time-mode').value = saved.mode;
+  const timeMode = getEl('time-mode');
+  if (saved.mode && timeMode) timeMode.value = saved.mode;
 }
 const savedDate = normalizeDateValue(saved?.date || '');
 const savedTime = normalizeTimeValue(saved?.time || '');
@@ -63,7 +72,7 @@ if (savedDate && savedTime) {
 syncDateTimeButton();
 
 // Date modal buttons
-document.getElementById('date-modal-today').addEventListener('click', () => {
+getEl('date-modal-today').addEventListener('click', () => {
   restoreNativeInputs();
   dateInput.value = new Date().toISOString().slice(0, 10);
   dateInput.dataset.raw = dateInput.value;
@@ -72,7 +81,7 @@ document.getElementById('date-modal-today').addEventListener('click', () => {
   saveState();
   refreshModalDisplay();
 });
-document.getElementById('date-modal-now').addEventListener('click', () => {
+getEl('date-modal-now').addEventListener('click', () => {
   restoreNativeInputs();
   const n = new Date();
   dateInput.value = n.toISOString().slice(0, 10);
@@ -83,7 +92,7 @@ document.getElementById('date-modal-now').addEventListener('click', () => {
   saveState();
   closeDateModal();
 });
-document.getElementById('date-modal-done').addEventListener('click', () => {
+getEl('date-modal-done').addEventListener('click', () => {
   restoreNativeInputs();
   const d = normalizeDateInput({ commit: true });
   const t = normalizeTimeInput({ commit: true });
@@ -141,13 +150,11 @@ function resetRoute() {
   updateGoButtonState();
   if (!state.lastSearch) return;
   clearHighlights();
-  const dir = document.getElementById('directions');
+  const dir = getEl('directions');
   dir.classList.remove('visible');
   dir.innerHTML = '';
   controls.style.display = '';
-  state.lastSearch = null;
-  state.currentOptions = [null, null, null];
-  state.shiftCount = 0;
+  clearSearch();
   if (isMobile()) setSheetSnap('peek');
   updatePreviewMarkers();
 }
@@ -160,7 +167,8 @@ function newRoute() {
 }
 
 // --- Save on any change ---
-for (const el of [fromSel, toSel, dateInput, timeInput, document.getElementById('time-mode')]) {
+const timeMode = getEl('time-mode');
+for (const el of [fromSel, toSel, dateInput, timeInput, timeMode]) {
   el.addEventListener('change', saveState);
 }
 fromSel.addEventListener('change', updateGoButtonState);
@@ -199,8 +207,8 @@ toSel.addEventListener('change', () => {
 });
 
 // --- Route action buttons ---
-document.getElementById('clear-route-btn').addEventListener('click', newRoute);
-document.getElementById('show-map-btn').addEventListener('click', openMapOverlay);
+getEl('clear-route-btn').addEventListener('click', newRoute);
+getEl('show-map-btn').addEventListener('click', openMapOverlay);
 
 // --- Share button ---
 function buildShareUrl() {
@@ -218,7 +226,7 @@ function buildShareUrl() {
   return url.toString();
 }
 
-const shareBtn = document.getElementById('share-route-btn');
+const shareBtn = getEl('share-route-btn');
 shareBtn.addEventListener('click', async () => {
   const url = buildShareUrl();
   if (!url) return;
@@ -240,7 +248,7 @@ shareBtn.addEventListener('click', async () => {
 });
 
 // Swap button
-document.getElementById('swap-btn').addEventListener('click', () => {
+getEl('swap-btn').addEventListener('click', () => {
   const tmp = fromSel.value;
   fromSel.value = toSel.value;
   toSel.value = tmp;
@@ -288,65 +296,70 @@ map.on('popupopen', (e) => {
 
 // --- GO button ---
 goBtn.addEventListener('click', () => {
-  const fromId = fromSel.value;
-  const toId = toSel.value;
-  const mode = document.getElementById('time-mode').value;
+  try {
+    const fromId = fromSel.value;
+    const toId = toSel.value;
+    const mode = timeMode.value;
 
-  if (!fromId || !toId) {
-    setDirections('<div class="error-msg">Please select both a Start and End stop.</div>');
-    return;
-  }
-  if (fromId === toId) {
-    setDirections('<div class="error-msg">Origin and destination are the same stop.</div>');
-    return;
-  }
+    if (!fromId || !toId) {
+      setDirections('<div class="error-msg">Please select both a Start and End stop.</div>');
+      return;
+    }
+    if (fromId === toId) {
+      setDirections('<div class="error-msg">Origin and destination are the same stop.</div>');
+      return;
+    }
 
-  const allLegs = findRoutes(fromId, toId);
-  if (!allLegs || allLegs.length === 0) {
-    clearHighlights();
-    setDirections('<div class="error-msg">No route found between these stops.</div>');
-    return;
-  }
+    const allLegs = findRoutes(fromId, toId);
+    if (!allLegs || allLegs.length === 0) {
+      clearHighlights();
+      setDirections('<div class="error-msg">No route found between these stops.</div>');
+      return;
+    }
 
-  // Expand intermediate stops for all candidate topologies
-  for (const legs of allLegs) {
-    legs.forEach(leg => {
-      const full = [];
-      for (let i = 0; i < leg.stops.length - 1; i++) {
-        const seg = expandLegStops(leg.stops[i], leg.stops[i + 1], leg.route);
-        if (seg) {
-          if (i === 0) full.push(...seg);
-          else full.push(...seg.slice(1));
-        } else {
-          if (i === 0) full.push(leg.stops[i]);
-          full.push(leg.stops[i + 1]);
+    // Expand intermediate stops for all candidate topologies
+    for (const legs of allLegs) {
+      legs.forEach(leg => {
+        const full = [];
+        for (let i = 0; i < leg.stops.length - 1; i++) {
+          const seg = expandLegStops(leg.stops[i], leg.stops[i + 1], leg.route);
+          if (seg) {
+            if (i === 0) full.push(...seg);
+            else full.push(...seg.slice(1));
+          } else {
+            if (i === 0) full.push(leg.stops[i]);
+            full.push(leg.stops[i + 1]);
+          }
         }
-      }
-      if (full.length > leg.stops.length) leg.stops = full;
-    });
-  }
+        if (full.length > leg.stops.length) leg.stops = full;
+      });
+    }
 
-  const dateStr = normalizeDateInput({ commit: true });
-  const timeStr = normalizeTimeInput({ commit: true });
-  if (!dateStr || !timeStr) {
-    setDirections('<div class="error-msg">Please enter a valid date/time.</div>');
-    return;
-  }
-  const startMin = timeToMin(timeStr + ':00');
-  const options = findOptions(allLegs, dateStr, startMin, mode);
+    const dateStr = normalizeDateInput({ commit: true });
+    const timeStr = normalizeTimeInput({ commit: true });
+    if (!dateStr || !timeStr) {
+      setDirections('<div class="error-msg">Please enter a valid date/time.</div>');
+      return;
+    }
+    const startMin = timeToMin(timeStr + ':00');
+    const options = findOptions(allLegs, dateStr, startMin, mode);
 
-  state.lastSearch = { allLegs, dateStr, startMin, mode, fromId, toId };
-  state.shiftCount = 0;
+    setLastSearch({ allLegs, dateStr, startMin, mode, fromId, toId });
 
-  const activeIdx = 1;
-  if (options[activeIdx] && isComplete(options[activeIdx])) {
-    showRoute(options[activeIdx]);
-  } else {
-    const fb = options.findIndex(o => o && isComplete(o));
-    if (fb >= 0) showRoute(options[fb]);
-    else clearHighlights();
+    const activeIdx = 1;
+    if (options[activeIdx] && isComplete(options[activeIdx])) {
+      showRoute(options[activeIdx]);
+    } else {
+      const fb = options.findIndex(o => o && isComplete(o));
+      if (fb >= 0) showRoute(options[fb]);
+      else clearHighlights();
+    }
+    setSearchResult(options, activeIdx);
+    showDirections(options, fromId, toId, activeIdx);
+  } catch (err) {
+    console.error('[FerryMapper] Route search error:', err);
+    setDirections(`<div class="error-msg">Error finding route: ${err.message}</div>`);
   }
-  showDirections(options, fromId, toId, activeIdx);
 });
 
 // --- Settings ---
@@ -372,7 +385,7 @@ initSettings({
   toSel.value = toId;
   if (date) { dateInput.value = date; dateInput.dataset.raw = date; }
   if (time) { timeInput.value = time; timeInput.dataset.raw = time; }
-  if (mode === 'arrive' || mode === 'depart') document.getElementById('time-mode').value = mode;
+  if (mode === 'arrive' || mode === 'depart') timeMode.value = mode;
   syncDateTimeButton();
   updateGoButtonState();
   history.replaceState(null, '', window.location.pathname);

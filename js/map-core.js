@@ -2,6 +2,7 @@
 
 import { stops, routes, stopById, routeById } from './data.js';
 import { state, STYLE_STORAGE_KEY } from './state.js';
+import { CONFIG } from './config.js';
 
 export const DEFAULT_VIEW = { lat: 40.6989, lng: -73.9922, zoom: 13 };
 export const MAP_STYLES = {

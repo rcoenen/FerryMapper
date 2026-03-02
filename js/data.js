@@ -1,5 +1,7 @@
 // Ferry data loading, shuttle filtering, and lookup tables
 
+import { CONFIG } from './config.js';
+
 export let stops, routes, graph, routeStopSequences, services, schedules;
 export let stopById = {};
 export let routeById = {};
@@ -13,7 +15,7 @@ export async function loadData() {
   const data = await res.json();
 
   // Filter out shuttle bus routes (RES/RWS) and their stops
-  const shuttleRouteIds = new Set(['RES', 'RWS']);
+  const shuttleRouteIds = new Set(CONFIG.SHUTTLE_ROUTE_IDS);
   const keepStopName = 'Beach Channel Dr/Beach 108th Street';
   data.routes = data.routes.filter(r => !shuttleRouteIds.has(r.id));
   data.schedules = data.schedules.filter(s => !shuttleRouteIds.has(s.r));

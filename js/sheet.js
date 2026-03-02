@@ -1,18 +1,17 @@
 // Mobile bottom sheet (drag, snap, resize) and map overlay
 
-import { state } from './state.js';
+import { state, setSheetSnapState } from './state.js';
 import { map } from './map-core.js';
+import { CONFIG } from './config.js';
 
-const SHEET_BREAKPOINT = 1024;
-const FLICK_THRESHOLD = 0.4; // px/ms
 const snaps = ['full', 'peek', 'collapsed'];
 
 let sheet, handle, mapOverlay, mapCloseBtn;
 
-export function isMobile() { return window.innerWidth <= SHEET_BREAKPOINT; }
+export function isMobile() { return window.innerWidth <= CONFIG.SHEET_BREAKPOINT_PX; }
 
 export function setSheetSnap(snap) {
-  state.currentSnap = snap;
+  setSheetSnapState(snap);
   sheet.classList.remove('snap-collapsed', 'snap-peek', 'snap-full');
   sheet.classList.add('snap-' + snap);
   setTimeout(() => map.invalidateSize(), 320);
@@ -133,7 +132,7 @@ export function initSheet() {
       return;
     }
 
-    if (Math.abs(velocity) > FLICK_THRESHOLD) {
+    if (Math.abs(velocity) > CONFIG.FLICK_VELOCITY_THRESHOLD) {
       sheet.style.transform = '';
       const dir = velocity > 0 ? 1 : -1;
       const currentIdx = snaps.indexOf(state.currentSnap);
@@ -143,7 +142,7 @@ export function initSheet() {
     }
 
     const translateY = getSheetTranslateY();
-    const threshold = sheet.offsetHeight * 0.35;
+    const threshold = sheet.offsetHeight * (CONFIG.DRAG_TOGGLE_PERCENT / 100);
     sheet.style.transform = '';
     setSheetSnap(translateY > threshold ? 'collapsed' : 'peek');
   }

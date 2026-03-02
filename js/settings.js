@@ -1,6 +1,6 @@
 // Settings drawer, map style switching, time format, geolocation
 
-import { state, TIME_FMT_KEY, STYLE_STORAGE_KEY, LOC_STORAGE_KEY } from './state.js';
+import { state, TIME_FMT_KEY, STYLE_STORAGE_KEY, LOC_STORAGE_KEY, setMapStyle, setGeolocation, clearGeolocation } from './state.js';
 import { map, MAP_STYLES } from './map-core.js';
 import { applyDateTimeInputMode, syncLocaleFormatClass, syncDateTimeButton, refreshModalDisplay } from './datetime-input.js';
 
@@ -118,7 +118,7 @@ export function initSettings({ onTimeFormatChange }) {
     map.removeLayer(state.currentTileLayer);
     state.currentTileLayer = L.tileLayer(s.url, { attribution: s.attribution, maxZoom: s.maxZoom }).addTo(map);
     state.currentTileLayer.bringToBack();
-    state.activeStyleKey = key;
+    setMapStyle(key);
     try { localStorage.setItem(STYLE_STORAGE_KEY, key); } catch {}
   });
 
@@ -145,6 +145,7 @@ export function initSettings({ onTimeFormatChange }) {
       map.removeLayer(geoMarker);
       geoMarker = null;
     }
+    clearGeolocation();
   }
 
   function enableGeolocation() {
@@ -160,6 +161,7 @@ export function initSettings({ onTimeFormatChange }) {
           geoMarker.setLatLng([latitude, longitude]);
         } else {
           geoMarker = createGeoMarker(latitude, longitude);
+          setGeolocation(geoMarker, geoWatchId);
         }
       },
       (err) => {

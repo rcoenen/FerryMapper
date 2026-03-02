@@ -2,9 +2,41 @@
 
 import { stopById, graph, routeStopSequences, schedulesByRoute } from './data.js';
 import { timeToMin, serviceRunsOn } from './time-utils.js';
+import { CONFIG } from './config.js';
 
-const MAX_CANDIDATES = 3;
+/**
+ * @typedef {Object} TripInfo
+ * @property {string} tripId - Trip identifier
+ * @property {string} routeId - Route identifier
+ * @property {number} boardIdx - Boarding stop index
+ * @property {number} alightIdx - Alighting stop index
+ * @property {number} depTime - Departure time in minutes
+ * @property {number} arrTime - Arrival time in minutes
+ * @property {any[]} stops - Stop objects
+ * @property {string} toward - Destination name
+ */
 
+/**
+ * @typedef {Object} RouteLeg
+ * @property {string} route - Route ID
+ * @property {string[]} stops - Stop IDs
+ * @property {number|null} depTime - Departure time in minutes
+ * @property {number|null} arrTime - Arrival time in minutes
+ * @property {number|null} waitMin - Wait time before this leg
+ * @property {number|null} rideMin - Ride duration
+ * @property {any[]|null} tripStops - Trip stop objects
+ * @property {string} toward - Destination name
+ */
+
+/**
+ * Find next trip for a route after a given time
+ * @param {string} routeId - Route ID
+ * @param {string} boardStopId - Boarding stop ID
+ * @param {string} alightStopId - Alighting stop ID
+ * @param {string} dateStr - Date string (YYYY-MM-DD)
+ * @param {number} departMin - Departure time in minutes
+ * @returns {TripInfo|null} Trip info or null
+ */
 function findNextTrip(routeId, boardStopId, alightStopId, dateStr, departMin) {
   const trips = (schedulesByRoute[routeId] || []).filter(t => serviceRunsOn(t.s, dateStr));
   let best = null;
@@ -33,6 +65,14 @@ function findNextTrip(routeId, boardStopId, alightStopId, dateStr, departMin) {
   return best;
 }
 
+/**
+ * Find next trip on any route between two stops
+ * @param {string} boardStopId - Boarding stop ID
+ * @param {string} alightStopId - Alighting stop ID
+ * @param {string} dateStr - Date string (YYYY-MM-DD)
+ * @param {number} departMin - Departure time in minutes
+ * @returns {TripInfo|null} Trip info or null
+ */
 function findNextTripAnyRoute(boardStopId, alightStopId, dateStr, departMin) {
   const boardRoutes = stopById[boardStopId].routes;
   const alightRoutes = stopById[alightStopId].routes;
@@ -63,6 +103,11 @@ function reconstructSinglePath(prev, endStop, endRoute, startStop) {
   return path;
 }
 
+/**
+ * Convert BFS path to route legs
+ * @param {Array<{stop: string, route: string|null}>} path - BFS path
+ * @returns {RouteLeg[]} Array of route legs
+ */
 export function pathToLegs(path) {
   const legs = [];
   let currentLeg = null;
@@ -165,6 +210,13 @@ function bfsRoute(fromId, toId, penaltyStops) {
   return null;
 }
 
+/**
+ * Expand leg stops using route sequence
+ * @param {string} fromId - Origin stop ID
+ * @param {string} toId - Destination stop ID
+ * @param {string} routeId - Route ID
+ * @returns {string[]|null} Array of stop IDs or null
+ */
 export function expandLegStops(fromId, toId, routeId) {
   const seq = routeStopSequences[routeId];
   if (seq) {
@@ -197,12 +249,18 @@ export function expandLegStops(fromId, toId, routeId) {
   return null;
 }
 
+/**
+ * Find routes between two stops using 0-1 BFS
+ * @param {string} fromId - Origin stop ID
+ * @param {string} toId - Destination stop ID
+ * @returns {RouteLeg[][]|null} Array of route options, or null if none found
+ */
 export function findRoutes(fromId, toId) {
   const results = [];
   const seen = new Set();
   const penaltyStops = new Set();
 
-  for (let i = 0; i < MAX_CANDIDATES; i++) {
+  for (let i = 0; i < CONFIG.MAX_CANDIDATE_ROUTES; i++) {
     const result = bfsRoute(fromId, toId, penaltyStops);
     if (!result) break;
 
@@ -253,23 +311,51 @@ function resolveScheduleAt(legs, dateStr, startMin) {
       toward: trip.toward
     });
 
-    const MIN_TRANSFER = 10;
-    currentMin = trip.arrTime + (i < legs.length - 1 ? MIN_TRANSFER : 0);
+    currentMin = trip.arrTime + (i < legs.length - 1 ? CONFIG.MIN_TRANSFER_TIME_MIN : 0);
   }
   return resolved;
 }
 
+/**
+ * Get arrival time from route option
+ * @param {RouteLeg[]} r - Route legs
+ * @returns {number|null} Arrival time in minutes
+ */
 export function getArrival(r) { return r[r.length - 1].arrTime; }
+
+/**
+ * Get departure time from route option
+ * @param {RouteLeg[]} r - Route legs
+ * @returns {number|null} Departure time in minutes
+ */
 export function getDeparture(r) { return r[0].depTime; }
+
+/**
+ * Get total travel time
+ * @param {RouteLeg[]} r - Route legs
+ * @returns {number|null} Total time in minutes
+ */
 export function getTotalTime(r) {
   const a = getArrival(r), d = getDeparture(r);
   return (a !== null && d !== null) ? a - d : null;
 }
+
+/**
+ * Get maximum wait time between legs
+ * @param {RouteLeg[]} r - Route legs
+ * @returns {number} Maximum wait time in minutes
+ */
 export function getMaxWait(r) {
   let max = 0;
   for (const l of r) if (l.waitMin !== null && l.waitMin > max) max = l.waitMin;
   return max;
 }
+
+/**
+ * Check if route option is complete (has valid times)
+ * @param {RouteLeg[]} r - Route legs
+ * @returns {boolean} True if complete
+ */
 export function isComplete(r) { return getArrival(r) !== null; }
 
 function resolveBest(allLegs, dateStr, tryMin, mode) {
@@ -289,12 +375,20 @@ function resolveBest(allLegs, dateStr, tryMin, mode) {
   return best || resolveScheduleAt(allLegs[0], dateStr, tryMin);
 }
 
+/**
+ * Find route options in a time window
+ * @param {RouteLeg[][]} allLegs - All route topologies
+ * @param {string} dateStr - Date string (YYYY-MM-DD)
+ * @param {number} startMin - Start time in minutes
+ * @param {'depart'|'arrive'} mode - Search mode
+ * @returns {RouteLeg[][]} Array of [earlier, best, later] options
+ */
 export function findOptions(allLegs, dateStr, startMin, mode) {
   const candidates = [];
-  const backRange = mode === 'arrive' ? 360 : 120;
-  const fwdRange = mode === 'arrive' ? 120 : 180;
+  const backRange = mode === 'arrive' ? CONFIG.SCHEDULE_SEARCH_BACK_ARRIVE_MIN : CONFIG.SCHEDULE_SEARCH_BACK_DEPART_MIN;
+  const fwdRange = mode === 'arrive' ? CONFIG.SCHEDULE_SEARCH_FWD_ARRIVE_MIN : CONFIG.SCHEDULE_SEARCH_FWD_DEPART_MIN;
 
-  for (let offset = -backRange; offset <= fwdRange; offset += 5) {
+  for (let offset = -backRange; offset <= fwdRange; offset += CONFIG.SCHEDULE_SEARCH_STEP_MIN) {
     const tryMin = startMin + offset;
     if (tryMin < 0 || tryMin >= 24 * 60) continue;
     const c = resolveBest(allLegs, dateStr, tryMin, mode);
