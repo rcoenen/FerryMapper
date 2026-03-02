@@ -1,7 +1,6 @@
 import { createWriteStream, mkdirSync, existsSync, readFileSync, unlinkSync } from 'fs';
 import { writeFile } from 'fs/promises';
 import { pipeline } from 'stream/promises';
-import { createUnzip } from 'zlib';
 import { Extract } from 'unzipper';
 import path from 'path';
 
@@ -272,6 +271,13 @@ async function main() {
     }
   }
 
+  // Pre-build stop_times lookup by trip_id (avoids O(n*m) filter in loops below)
+  const stopTimesByTrip = {};
+  for (const st of rawStopTimes) {
+    if (!stopTimesByTrip[st.trip_id]) stopTimesByTrip[st.trip_id] = [];
+    stopTimesByTrip[st.trip_id].push(st);
+  }
+
   // Build stop sequences per route from ALL trips (not just one representative)
   // Some routes have multiple trip patterns that serve different stops
   const routeStopSequences = {};
@@ -282,8 +288,7 @@ async function main() {
     const routeId = t.route_id;
     if (!routeEdges[routeId]) routeEdges[routeId] = new Set();
 
-    const times = rawStopTimes
-      .filter(st => st.trip_id === t.trip_id)
+    const times = (stopTimesByTrip[t.trip_id] || [])
       .sort((a, b) => parseInt(a.stop_sequence) - parseInt(b.stop_sequence));
 
     const seq = [];
@@ -384,12 +389,7 @@ async function main() {
   console.log(`${Object.keys(services).length} service schedules`);
 
   // --- Build trip schedules with canonical stop IDs ---
-  // Group stop_times by trip_id
-  const stopTimesByTrip = {};
-  for (const st of rawStopTimes) {
-    if (!stopTimesByTrip[st.trip_id]) stopTimesByTrip[st.trip_id] = [];
-    stopTimesByTrip[st.trip_id].push(st);
-  }
+  // (stopTimesByTrip already built above)
 
   // Build trip -> service_id mapping
   const tripService = {};

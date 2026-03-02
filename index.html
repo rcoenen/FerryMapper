@@ -111,8 +111,8 @@
       document.head.appendChild(locationStyle);
 
       const js = document.createElement('script');
-      js.src = 'src/main.js?' + q;
       js.type = 'module';
+      js.src = 'app.js?' + q;
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
           document.body.appendChild(js);
