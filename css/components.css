@@ -79,9 +79,19 @@
 .settings-value-row:hover span:last-child { text-decoration: underline; }
 
 /* --- Transfer modal input --- */
+.transfer-modal-input-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.transfer-modal-unit {
+  font-size: 16px;
+  color: #555;
+}
 .transfer-modal-card input[type="number"] {
   width: 5ch;
-  margin-top: 6px;
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 20px;

@@ -2,7 +2,7 @@
 // Orchestrates module initialization and wires event handlers.
 
 import { loadData, sorted, stopById } from './js/data.js';
-import { state, saveState, loadState, TIME_FMT_KEY, setSearchResult, setLastSearch, clearSearch, shiftRoute, setActiveRouteIdx, subscribeState } from './js/state.js';
+import { state, saveState, loadState, TIME_FMT_KEY, setSearchResult, setLastSearch, clearSearch, shiftRoute, setActiveRouteIdx, subscribeState, setTransferTime } from './js/state.js';
 import { timeToMin } from './js/time-utils.js';
 import { findRoutes, expandLegStops, findOptions, isComplete } from './js/routing.js';
 import { initMap, map, updatePreviewMarkers } from './js/map-core.js';
@@ -232,6 +232,7 @@ function buildShareUrl() {
   const m = state.lastSearch.startMin % 60;
   url.searchParams.set('time', `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
   url.searchParams.set('mode', state.lastSearch.mode);
+  url.searchParams.set('tt', String(state.transferTime));
   return url.toString();
 }
 
@@ -395,6 +396,8 @@ initSettings({
   if (date) { dateInput.value = date; dateInput.dataset.raw = date; }
   if (time) { timeInput.value = time; timeInput.dataset.raw = time; }
   if (mode === 'arrive' || mode === 'depart') timeMode.value = mode;
+  const tt = parseInt(p.get('tt'));
+  if (tt >= 1 && tt <= 60) setTransferTime(tt);
   syncDateTimeButton();
   updateGoButtonState();
   history.replaceState(null, '', window.location.pathname);

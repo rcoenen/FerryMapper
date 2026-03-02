@@ -3,7 +3,7 @@
 export const CONFIG = {
   // === Routing Algorithm ===
   MAX_CANDIDATE_ROUTES: 3,        // Number of alternative routes to show
-  MIN_TRANSFER_TIME_MIN: 10,      // Minimum transfer time between ferries (minutes)
+  MIN_TRANSFER_TIME_MIN: 5,       // Minimum transfer time between ferries (minutes)
   TRANSFER_PENALTY_COST: 2,       // Extra penalty cost for transfers at busy stops
   
   // === Data Processing ===

@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://rcoenen.github.io/FerryMapperNYC/img/og-image.png">
-<meta name="app-build" content="65">
+<meta name="app-build" content="66">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
@@ -152,11 +152,11 @@
     </div>
     <div class="settings-section">
       <button id="transfer-time-row" class="settings-value-row" type="button">
-        <span>Min. Transfer Time</span><span id="transfer-time-display">10 min</span>
+        <span>Min. Transfer Time</span><span id="transfer-time-display">5 min</span>
       </button>
     </div>
     <div class="settings-version" aria-live="polite">
-      Build: <code id="build-number">65</code>
+      Build: <code id="build-number">66</code>
     </div>
   </div>
 </header>
@@ -272,9 +272,12 @@
     <button id="transfer-modal-close" class="modal-close" type="button" aria-label="Close dialog">&times;</button>
     <h2 id="transfer-modal-title">Minimum Transfer Time</h2>
     <p>Minutes to allow between arriving on one ferry and departing on the next.</p>
-    <input type="number" id="transfer-modal-input" min="1" max="60" step="1" aria-label="Transfer time in minutes">
+    <div class="transfer-modal-input-row">
+      <input type="number" id="transfer-modal-input" min="1" max="60" step="1" aria-label="Transfer time in minutes">
+      <span class="transfer-modal-unit">minutes</span>
+    </div>
     <div class="date-modal-actions">
-      <button id="transfer-modal-reset" type="button">Reset</button>
+      <button id="transfer-modal-reset" type="button">Default</button>
       <button id="transfer-modal-save" type="button">Save</button>
     </div>
   </div>
