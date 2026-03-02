@@ -117,10 +117,9 @@ header h1 { font-size: 17px; font-weight: 600; }
 /* --- Controls & directions --- */
 .controls { padding: 8px 16px; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
 #directions {
-  overflow-y: auto;
+  overflow-y: hidden;
   flex: 1;
   min-height: 0;
-  -webkit-overflow-scrolling: touch;
 }
 
 /* --- Nav buttons --- */
@@ -214,7 +213,7 @@ header h1 { font-size: 17px; font-weight: 600; }
     padding-top: 0;
   }
 
-  #directions { flex: 1; min-height: 0; }
+  #directions { flex: 1; min-height: 0; overflow-y: auto; }
 
   .nav-btn { width: auto; font-size: inherit; }
 

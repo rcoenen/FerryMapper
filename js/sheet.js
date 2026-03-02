@@ -6,7 +6,7 @@ import { CONFIG } from './config.js';
 
 const snaps = ['full', 'peek', 'collapsed'];
 
-let sheet, handle, mapOverlay, mapCloseBtn;
+let sheet, handle, sheetContent, mapOverlay, mapCloseBtn;
 
 export function isMobile() { return window.innerWidth <= CONFIG.SHEET_BREAKPOINT_PX; }
 
@@ -60,6 +60,7 @@ function initSheetPosition() {
 export function initSheet() {
   sheet = document.getElementById('bottom-sheet');
   handle = document.getElementById('sheet-handle');
+  sheetContent = sheet.querySelector('.sheet-content');
   mapOverlay = document.getElementById('map-overlay');
   mapCloseBtn = document.getElementById('map-close');
 
@@ -181,5 +182,14 @@ export function initSheet() {
   handle.addEventListener('click', () => {
     if (dragDistance > 6) return;
     toggleSheetFromHandle();
+  });
+
+  // Full-panel drag — content area drags the whole sheet (like handle)
+  sheetContent.addEventListener('pointerdown', (e) => {
+    if (!isMobile()) return;
+    if (e.target === handle || handle.contains(e.target)) return;
+    activePointerId = e.pointerId;
+    sheetContent.setPointerCapture?.(e.pointerId);
+    startDrag(e.clientY);
   });
 }
