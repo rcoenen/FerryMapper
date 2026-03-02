@@ -49,16 +49,17 @@ export function initSettings({ onTimeFormatChange }) {
 
   const DEBUG_MODE = !!window.FM_CONFIG?.debug;
   function loadBuild() {
-    if (!DEBUG_MODE) {
-      buildNumberEl?.closest('.settings-version')?.setAttribute('hidden', '');
-      return;
-    }
+    // Always show build number, but fetch version.json only in debug mode
     const embedded = Number(window.FM_CONFIG?.build || document.querySelector('meta[name="app-build"]')?.content);
     if (Number.isFinite(embedded) && embedded >= 0) {
       showBuild(String(embedded));
       return;
     }
-    showBuild('unknown');
+    
+    // In debug mode, try to fetch version.json for git commit info
+    if (DEBUG_MODE) {
+      showBuild('unknown');
+    }
   }
   loadBuild();
 
