@@ -80,15 +80,15 @@
 
 /* --- Transfer modal input --- */
 .transfer-modal-card input[type="number"] {
-  width: 100%;
+  width: 5ch;
   margin-top: 6px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 20px;
   font-family: inherit;
-  padding: 12px 10px;
+  padding: 10px 12px;
   min-height: 44px;
-  display: block;
+  text-align: center;
 }
 .transfer-modal-card input[type="number"]:focus {
   outline: none;
