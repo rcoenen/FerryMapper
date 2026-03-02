@@ -92,9 +92,12 @@ export function initMap() {
   }).addTo(map).bindPopup('Regular ferry to the Statue?<br>Not happening. That\'s <a href="https://www.cityexperiences.com/new-york/city-cruises/statue/" target="_blank" rel="noopener">Statue City Cruises</a>.<br><br>\u26A0\uFE0F Skip the scammers \u2014 buy tickets at the official desk only.');
 
   // Stop markers with popups
+  // Canvas renderer with tolerance gives a bigger invisible tap target on touch devices
+  const stopRenderer = L.canvas({ tolerance: 14 });
   stopMarkers = {};
   stops.forEach(s => {
     const marker = L.circleMarker([s.lat, s.lng], {
+      renderer: stopRenderer,
       radius: LANDING_SIZE, fillColor: '#fff', fillOpacity: 1,
       color: '#333', weight: 1.5
     }).addTo(map);
