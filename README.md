@@ -4,7 +4,10 @@
 
 A lightweight, no-framework trip planner for the NYC Ferry system. Plan routes across all active ferry lines with real schedule data, transfer times, and multiple trip options.
 
-![Screenshot](screenshot.png)
+<table>
+<tr>
+<td width="300"><img src="screenshot.png" width="300" alt="FerryMapperNYC mobile screenshot"></td>
+<td valign="top">
 
 ## Features
 
@@ -16,6 +19,10 @@ A lightweight, no-framework trip planner for the NYC Ferry system. Plan routes a
 - **Interactive map** with route highlighting, stop popups, and clickable A/B markers
 - **Mobile-friendly** — responsive layout with map overlay and touch-optimized controls
 - **Persists search state** in localStorage across sessions
+
+</td>
+</tr>
+</table>
 
 ## How it works
 
