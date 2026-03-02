@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://rcoenen.github.io/FerryMapperNYC/img/og-image.png">
-<meta name="app-build" content="45">
+<meta name="app-build" content="46">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
@@ -151,7 +151,7 @@
       </label>
     </div>
     <div class="settings-version" aria-live="polite">
-      Build: <code id="build-number">45</code>
+      Build: <code id="build-number">46</code>
     </div>
   </div>
 </header>
@@ -183,7 +183,7 @@
     <button id="nerd-close" class="modal-close" type="button" aria-label="Close dialog">&times;</button>
     <h2 id="nerd-title">You Asked For It: Nerd Mode</h2>
     <p>
-      No React. No build step. No server. Just one <code>app.js</code> that does everything in the browser.
+      No React. No build step. No server. Just vanilla ES modules that do everything in the browser.
     </p>
     <p>
       <strong>Routing</strong> went through several iterations. We started with <strong><a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm" target="_blank">Dijkstra</a></strong>, but for a graph of ~39 stops where transfers matter more than distance, it was overkill. We landed on <strong><a href="https://cp-algorithms.com/graph/01_bfs.html" target="_blank">0-1 BFS</a></strong> &mdash; riding the same line costs 0, transferring costs 1. Fewest transfers first, then shortest path. Solves in under a millisecond.
