@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://rcoenen.github.io/FerryMapperNYC/img/og-image.png">
-<meta name="app-build" content="57">
+<meta name="app-build" content="58">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
@@ -57,7 +57,26 @@
 
       const css = document.createElement('link');
       css.rel = 'stylesheet';
-      css.href = 'css/styles.css?' + q;
+      css.href = 'css/base.css?' + q;
+      var layoutCss = document.createElement('link');
+      layoutCss.rel = 'stylesheet';
+      layoutCss.href = 'css/layout.css?' + q;
+      document.head.appendChild(layoutCss);
+      
+      var componentsCss = document.createElement('link');
+      componentsCss.rel = 'stylesheet';
+      componentsCss.href = 'css/components.css?' + q;
+      document.head.appendChild(componentsCss);
+      
+      var mapCss = document.createElement('link');
+      mapCss.rel = 'stylesheet';
+      mapCss.href = 'css/map.css?' + q;
+      document.head.appendChild(mapCss);
+      
+      var themeCss = document.createElement('link');
+      themeCss.rel = 'stylesheet';
+      themeCss.href = 'css/theme.css?' + q;
+      document.head.appendChild(themeCss);
       document.head.appendChild(css);
       
       // Add Google Maps style location dot CSS
@@ -151,7 +170,7 @@
       </label>
     </div>
     <div class="settings-version" aria-live="polite">
-      Build: <code id="build-number">57</code>
+      Build: <code id="build-number">58</code>
     </div>
   </div>
 </header>
