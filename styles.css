@@ -11,7 +11,7 @@
   header {
     background: var(--color-primary);
     color: white;
-    padding: 12px 20px;
+    padding: max(12px, env(safe-area-inset-top)) 20px 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -860,7 +860,7 @@
      Mobile/tablet layout (<= 1024px)
      =========================== */
   @media (max-width: 1024px) {
-    header { padding: 10px 16px; }
+    header { padding: max(10px, env(safe-area-inset-top)) 16px 10px; }
     header h1 { font-size: 17px; }
 
     #main {
