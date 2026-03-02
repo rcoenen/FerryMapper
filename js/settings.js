@@ -1,6 +1,6 @@
 // Settings drawer, map style switching, time format, geolocation
 
-import { state, TIME_FMT_KEY, STYLE_STORAGE_KEY, LOC_STORAGE_KEY, setMapStyle, setGeolocation, clearGeolocation } from './state.js';
+import { state, TIME_FMT_KEY, STYLE_STORAGE_KEY, LOC_STORAGE_KEY, TRANSFER_TIME_KEY, setMapStyle, setGeolocation, clearGeolocation, setTransferTime, restoreDefaultTransferTime } from './state.js';
 import { map, MAP_STYLES } from './map-core.js';
 import { applyDateTimeInputMode, syncLocaleFormatClass, syncDateTimeButton, refreshModalDisplay } from './datetime-input.js';
 
@@ -10,6 +10,8 @@ export function initSettings({ onTimeFormatChange }) {
   const mapStyleSelect = document.getElementById('map-style-select');
   const locationToggle = document.getElementById('location-toggle');
   const buildNumberEl = document.getElementById('build-number');
+  const transferTimeInput = document.getElementById('transfer-time-input');
+  const restoreDefaultTransferBtn = document.getElementById('restore-default-transfer');
   let buildCopyTimer = null;
 
   // Build number
@@ -66,6 +68,12 @@ export function initSettings({ onTimeFormatChange }) {
   // Map style
   mapStyleSelect.value = state.activeStyleKey;
 
+  // Transfer time
+  function updateTransferTimeInput() {
+    transferTimeInput.value = state.transferTime;
+  }
+  updateTransferTimeInput();
+
   // Time format toggle
   function updateTimeFmtButtons() {
     document.getElementById('fmt-24').classList.toggle('active', !state.use12h);
@@ -121,6 +129,23 @@ export function initSettings({ onTimeFormatChange }) {
     state.currentTileLayer.bringToBack();
     setMapStyle(key);
     try { localStorage.setItem(STYLE_STORAGE_KEY, key); } catch {}
+  });
+
+  // Transfer time controls
+  transferTimeInput.addEventListener('change', () => {
+    const value = parseInt(transferTimeInput.value);
+    if (isNaN(value) || value < 1 || value > 60) {
+      transferTimeInput.value = state.transferTime;
+      return;
+    }
+    setTransferTime(value);
+    try { localStorage.setItem(TRANSFER_TIME_KEY, String(value)); } catch {}
+  });
+
+  restoreDefaultTransferBtn.addEventListener('click', () => {
+    restoreDefaultTransferTime();
+    updateTransferTimeInput();
+    try { localStorage.setItem(TRANSFER_TIME_KEY, String(state.transferTime)); } catch {}
   });
 
   // Geolocation
@@ -191,6 +216,16 @@ export function initSettings({ onTimeFormatChange }) {
     if (localStorage.getItem(LOC_STORAGE_KEY) === '1') {
       locationToggle.checked = true;
       enableGeolocation();
+    }
+    
+    // Load transfer time from localStorage
+    const savedTransferTime = localStorage.getItem(TRANSFER_TIME_KEY);
+    if (savedTransferTime !== null) {
+      const value = parseInt(savedTransferTime);
+      if (!isNaN(value) && value >= 1 && value <= 60) {
+        setTransferTime(value);
+        updateTransferTimeInput();
+      }
     }
   } catch {}
 }

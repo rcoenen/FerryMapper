@@ -2,7 +2,7 @@
 // Orchestrates module initialization and wires event handlers.
 
 import { loadData, sorted, stopById } from './js/data.js';
-import { state, saveState, loadState, TIME_FMT_KEY, setSearchResult, setLastSearch, clearSearch, shiftRoute, setActiveRouteIdx } from './js/state.js';
+import { state, saveState, loadState, TIME_FMT_KEY, setSearchResult, setLastSearch, clearSearch, shiftRoute, setActiveRouteIdx, subscribeState } from './js/state.js';
 import { timeToMin } from './js/time-utils.js';
 import { findRoutes, expandLegStops, findOptions, isComplete } from './js/routing.js';
 import { initMap, map, updatePreviewMarkers } from './js/map-core.js';
@@ -36,6 +36,14 @@ initModals();
 
 // --- Time format ---
 try { state.use12h = localStorage.getItem(TIME_FMT_KEY) === '12'; } catch {}
+
+// --- State change listeners ---
+// Auto-recalculate route when transfer time changes
+subscribeState((action, payload) => {
+  if (action === 'SET_TRANSFER_TIME' && state.lastSearch && goBtn) {
+    goBtn.click(); // Re-run search with new transfer time
+  }
+});
 
 // --- DOM refs (from centralized module) ---
 const dateInput = getEl('date-input');

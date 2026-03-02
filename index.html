@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://rcoenen.github.io/FerryMapperNYC/img/og-image.png">
-<meta name="app-build" content="62">
+<meta name="app-build" content="63">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
@@ -150,8 +150,17 @@
         <input type="checkbox" id="location-toggle" class="location-toggle">
       </label>
     </div>
+    <div class="settings-section">
+      <label class="settings-label">
+        <span>Minimum Transfer Time (minutes)</span>
+        <div class="transfer-time-controls">
+          <input type="number" id="transfer-time-input" min="1" max="60" step="1" class="transfer-time-input">
+          <button id="restore-default-transfer" class="restore-default-btn" title="Restore default">Reset</button>
+        </div>
+      </label>
+    </div>
     <div class="settings-version" aria-live="polite">
-      Build: <code id="build-number">62</code>
+      Build: <code id="build-number">63</code>
     </div>
   </div>
 </header>

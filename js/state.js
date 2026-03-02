@@ -53,6 +53,7 @@ export const state = {
 
   // Preferences
   use12h: false,
+  transferTime: CONFIG.MIN_TRANSFER_TIME_MIN,
 
   // Map visualization
   highlightLayers: [],
@@ -76,6 +77,7 @@ export const STORAGE_KEY = CONFIG.STORAGE_KEY;
 export const TIME_FMT_KEY = CONFIG.STORAGE_KEY_TIME_FMT;
 export const STYLE_STORAGE_KEY = CONFIG.STORAGE_KEY_STYLE;
 export const LOC_STORAGE_KEY = CONFIG.STORAGE_KEY_LOCATION;
+export const TRANSFER_TIME_KEY = CONFIG.STORAGE_KEY + '_transferTime';
 
 export function saveState() {
   const s = {
@@ -176,4 +178,21 @@ export function clearGeolocation() {
   state.geoMarker = null;
   state.geoWatchId = null;
   notify('CLEAR_GEOLOCATION', null);
+}
+
+/**
+ * Set transfer time
+ * @param {number} minutes - Transfer time in minutes
+ */
+export function setTransferTime(minutes) {
+  state.transferTime = minutes;
+  notify('SET_TRANSFER_TIME', { minutes });
+}
+
+/**
+ * Restore default transfer time
+ */
+export function restoreDefaultTransferTime() {
+  state.transferTime = CONFIG.MIN_TRANSFER_TIME_MIN;
+  notify('RESTORE_DEFAULT_TRANSFER_TIME', { defaultMinutes: CONFIG.MIN_TRANSFER_TIME_MIN });
 }

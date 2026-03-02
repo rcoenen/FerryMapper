@@ -3,6 +3,7 @@
 import { stopById, graph, routeStopSequences, schedulesByRoute } from './data.js';
 import { timeToMin, serviceRunsOn } from './time-utils.js';
 import { CONFIG } from './config.js';
+import { state } from './state.js';
 
 /**
  * @typedef {Object} TripInfo
@@ -70,7 +71,7 @@ function findNextTrip(routeId, boardStopId, alightStopId, dateStr, departMin) {
  * @param {string} boardStopId - Boarding stop ID
  * @param {string} alightStopId - Alighting stop ID
  * @param {string} dateStr - Date string (YYYY-MM-DD)
- * @param {number} departMin - Departure time in minutes
+ * @param {number} departMin - Departure time in minutes (already includes transfer time if applicable)
  * @returns {TripInfo|null} Trip info or null
  */
 function findNextTripAnyRoute(boardStopId, alightStopId, dateStr, departMin) {
@@ -286,6 +287,7 @@ function resolveScheduleAt(legs, dateStr, startMin) {
     const boardStop = leg.stops[0];
     const alightStop = leg.stops[leg.stops.length - 1];
 
+    // Pass currentMin which already includes transfer time from previous leg
     const trip = findNextTripAnyRoute(boardStop, alightStop, dateStr, currentMin);
     if (!trip) {
       resolved.push({
@@ -311,7 +313,7 @@ function resolveScheduleAt(legs, dateStr, startMin) {
       toward: trip.toward
     });
 
-    currentMin = trip.arrTime + (i < legs.length - 1 ? CONFIG.MIN_TRANSFER_TIME_MIN : 0);
+    currentMin = trip.arrTime + (i < legs.length - 1 ? state.transferTime : 0);
   }
   return resolved;
 }

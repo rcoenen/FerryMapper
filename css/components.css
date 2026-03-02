@@ -57,6 +57,48 @@
 }
 .settings-drawer select:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1); }
 
+/* --- Transfer time controls --- */
+.transfer-time-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.transfer-time-input {
+  width: 60px;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.transfer-time-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+.restore-default-btn {
+  padding: 6px 10px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #666;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.restore-default-btn:hover {
+  background: #ececec;
+}
+
+.restore-default-btn:active {
+  background: #e0e0e0;
+}
+
 /* --- Time format toggle --- */
 .time-format-toggle { display: flex; gap: 0; border: 1px solid #ccc; border-radius: 8px; overflow: hidden; }
 .time-fmt-btn {
