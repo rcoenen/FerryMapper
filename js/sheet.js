@@ -127,6 +127,12 @@ export function initSheet() {
     sheet.classList.remove('dragging');
     handle.classList.remove('pressed');
 
+    // Tap (no real drag) — let click handler deal with it
+    if (dragDistance <= 6) {
+      sheet.style.transform = '';
+      return;
+    }
+
     if (getSheetTranslateY() < 0) {
       sheet.style.transform = '';
       setSheetSnap('full');
