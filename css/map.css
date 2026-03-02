@@ -1,0 +1,128 @@
+/* === Map: Leaflet overrides, map container, overlays, route markers === */
+
+/* --- Leaflet overrides --- */
+.leaflet-control-attribution { font-size: 10px; opacity: 0.5; }
+.leaflet-control-attribution:hover { opacity: 1; }
+
+/* --- Map container --- */
+#map-overlay.open {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+}
+#map-overlay.open #map { height: 100%; width: 100%; }
+#map { flex: 1; min-height: 0; }
+
+/* --- Map close button --- */
+.map-close-btn {
+  display: none;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.55);
+  color: white;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1001;
+}
+.map-close-btn:hover { background: rgba(0,0,0,0.7); }
+#map-overlay.open .map-close-btn { display: flex; align-items: center; justify-content: center; }
+
+/* --- Geolocation blue dot --- */
+.location-dot {
+  width: 16px;
+  height: 16px;
+  position: relative;
+}
+.location-dot-inner {
+  width: 16px;
+  height: 16px;
+  background: #4285F4;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.location-dot-pulse {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(66,133,244,0.3);
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: loc-pulse 2s ease-out infinite;
+}
+
+/* --- Return to NYC overlay --- */
+.return-nyc-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 800;
+  background: rgba(255,255,255,0.8);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 20px;
+}
+.return-nyc-overlay.visible { display: flex; }
+.return-nyc-overlay .nyc-icon { font-size: 56px; line-height: 1; }
+.return-nyc-overlay .nyc-msg {
+  font-size: 17px;
+  font-weight: 600;
+  color: #333;
+}
+.return-nyc-overlay .nyc-back-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 24px;
+  background: var(--color-primary);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  margin-top: 4px;
+}
+.return-nyc-overlay .nyc-back-btn:hover { background: #283593; }
+.return-nyc-overlay .nyc-back-btn:active { background: #0d1452; }
+
+/* --- Start/End route markers --- */
+.start-end-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #4caf50;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 14px;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  position: relative;
+  min-height: 28px;
+}
+.start-end-marker::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #4caf50;
+}
