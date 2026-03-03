@@ -198,22 +198,6 @@ export function showDirections(options, fromId, toId, activeIdx) {
     }, 150);
   };
 
-  dir.querySelectorAll('.option-tab:not(.disabled)').forEach(tab => {
-    tab.addEventListener('click', () => {
-      const idx = parseInt(tab.dataset.tab);
-      if (idx === 0) {
-        animateTabShift(-1);
-        return;
-      }
-      if (idx === 2) {
-        animateTabShift(1);
-        return;
-      }
-      showRoute(state.currentOptions[idx]);
-      setActiveRouteIdx(idx);
-      showDirections(state.currentOptions, fromId, toId, idx);
-    });
-  });
   document.getElementById('nav-earlier')?.addEventListener('click', () => animateTabShift(-1));
   document.getElementById('nav-later')?.addEventListener('click', () => animateTabShift(1));
 
@@ -225,9 +209,11 @@ export function showDirections(options, fromId, toId, activeIdx) {
     let pointerId = null;
     let dragged = false;
     let didSwipe = false;
+    let pointerDownTarget = null;
 
     tabsEl.addEventListener('pointerdown', e => {
       if (e.target.closest('.nav-btn')) return;
+      pointerDownTarget = e.target;
       pointerId = e.pointerId;
       tabsEl.setPointerCapture?.(pointerId);
       startX = e.clientX;
@@ -278,12 +264,26 @@ export function showDirections(options, fromId, toId, activeIdx) {
     tabsEl.addEventListener('pointerup', finishSwipe);
     tabsEl.addEventListener('pointercancel', finishSwipe);
 
+    // Handle tab clicks here (not on individual tabs) because
+    // setPointerCapture redirects click targets to tabsEl on desktop
     tabsEl.addEventListener('click', (e) => {
-      if (!didSwipe) return;
-      didSwipe = false;
-      dragged = false;
-      e.preventDefault();
-      e.stopPropagation();
+      if (didSwipe) {
+        didSwipe = false;
+        dragged = false;
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      const target = pointerDownTarget || e.target;
+      pointerDownTarget = null;
+      const tab = target.closest('.option-tab:not(.disabled)');
+      if (!tab) return;
+      const idx = parseInt(tab.dataset.tab);
+      if (idx === 0) { animateTabShift(-1); return; }
+      if (idx === 2) { animateTabShift(1); return; }
+      showRoute(state.currentOptions[idx]);
+      setActiveRouteIdx(idx);
+      showDirections(state.currentOptions, fromId, toId, idx);
     }, true);
   }
 }

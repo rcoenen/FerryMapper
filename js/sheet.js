@@ -194,6 +194,7 @@ export function initSheet() {
   sheetContent.addEventListener('pointerdown', (e) => {
     if (!isMobile()) return;
     if (e.target === handle || handle.contains(e.target)) return;
+    if (e.target.closest('button, select, input, a, .option-tab, .nav-btn')) return;
     activePointerId = e.pointerId;
     sheetContent.setPointerCapture?.(e.pointerId);
     startDrag(e.clientY);
