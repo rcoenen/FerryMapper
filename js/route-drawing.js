@@ -46,18 +46,35 @@ function addChevronToSegment(pts, color, lineWeight) {
   }
 }
 
-function smoothLine(pts, iterations = 3) {
+function smoothLine(pts, iterations = 3, pinIndices) {
   if (pts.length < 3) return pts;
   let result = pts.map(p => [p[0], p[1]]);
+  // Track which indices are pinned (should not be moved by smoothing)
+  let pins = new Set(pinIndices || []);
   for (let iter = 0; iter < iterations; iter++) {
     const smooth = [result[0]];
+    const newPins = new Set([0]);
     for (let i = 0; i < result.length - 1; i++) {
       const [ax, ay] = result[i], [bx, by] = result[i + 1];
-      smooth.push([ax * 0.75 + bx * 0.25, ay * 0.75 + by * 0.25]);
-      smooth.push([ax * 0.25 + bx * 0.75, ay * 0.25 + by * 0.75]);
+      if (pins.has(i)) {
+        // Pinned point: keep original and add one interpolated point after
+        smooth.push([ax, ay]);
+        smooth.push([ax * 0.25 + bx * 0.75, ay * 0.25 + by * 0.75]);
+        newPins.add(smooth.length - 2);
+      } else if (pins.has(i + 1)) {
+        // Next point is pinned: add one interpolated point before it
+        smooth.push([ax * 0.75 + bx * 0.25, ay * 0.75 + by * 0.25]);
+        smooth.push([bx, by]);
+        newPins.add(smooth.length - 1);
+      } else {
+        smooth.push([ax * 0.75 + bx * 0.25, ay * 0.75 + by * 0.25]);
+        smooth.push([ax * 0.25 + bx * 0.75, ay * 0.25 + by * 0.75]);
+      }
     }
     smooth.push(result[result.length - 1]);
+    newPins.add(smooth.length - 1);
     result = smooth;
+    pins = newPins;
   }
   return result;
 }
@@ -118,7 +135,7 @@ export function showRoute(legs) {
       }
       segBoundaries.push(allRaw.length - 1);
     }
-    const smoothed = smoothLine(allRaw);
+    const smoothed = smoothLine(allRaw, 3, segBoundaries);
     const noTrips = leg.depTime === null;
     const outline = L.polyline(smoothed, {
       color: '#fff', weight: noTrips ? 8 : 10,

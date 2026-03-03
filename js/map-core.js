@@ -1,6 +1,6 @@
 // Leaflet map initialization, markers, popups, and return-to-NYC overlay
 
-import { stops, routes, stopById, routeById } from './data.js';
+import { stops, routes, stopById, routeById, routeStopSequences } from './data.js';
 import { state, STYLE_STORAGE_KEY } from './state.js';
 import { CONFIG } from './config.js';
 
@@ -76,10 +76,37 @@ export function initMap() {
   routePolylines = {};
   routes.forEach(r => {
     if (r.shape.length > 0) {
-      routeOutlines[r.id] = L.polyline(r.shape, {
+      let shape = r.shape.map(p => [p[0], p[1]]);
+      const seq = routeStopSequences[r.id];
+      if (seq) {
+        // Insert stop coordinates into the shape so lines pass through each stop.
+        // Process in reverse order so splice indices stay valid.
+        const inserts = [];
+        for (const sid of seq) {
+          const s = stopById[sid];
+          if (!s) continue;
+          let minDist = Infinity, bestIdx = 0;
+          for (let i = 0; i < shape.length - 1; i++) {
+            const [ax, ay] = shape[i], [bx, by] = shape[i + 1];
+            const dx = bx - ax, dy = by - ay;
+            const len2 = dx * dx + dy * dy;
+            let t = len2 > 0 ? ((s.lat - ax) * dx + (s.lng - ay) * dy) / len2 : 0;
+            t = Math.max(0, Math.min(1, t));
+            const px = ax + t * dx, py = ay + t * dy;
+            const d = (px - s.lat) ** 2 + (py - s.lng) ** 2;
+            if (d < minDist) { minDist = d; bestIdx = i; }
+          }
+          inserts.push({ idx: bestIdx + 1, coord: [s.lat, s.lng] });
+        }
+        inserts.sort((a, b) => b.idx - a.idx);
+        for (const ins of inserts) {
+          shape.splice(ins.idx, 0, ins.coord);
+        }
+      }
+      routeOutlines[r.id] = L.polyline(shape, {
         color: '#fff', weight: 5, opacity: 0.35, interactive: false
       }).addTo(map);
-      routePolylines[r.id] = L.polyline(r.shape, {
+      routePolylines[r.id] = L.polyline(shape, {
         color: r.color, weight: 3, opacity: 0.35, interactive: false
       }).addTo(map);
     }
