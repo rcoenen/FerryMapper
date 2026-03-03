@@ -140,14 +140,14 @@ export function showRoute(legs) {
     const outline = L.polyline(smoothed, {
       color: '#fff', weight: noTrips ? 8 : 10,
       opacity: 1,
-      interactive: false
+      interactive: false, pane: 'routeLines'
     }).addTo(map);
     state.highlightLayers.push(outline);
     const line = L.polyline(smoothed, {
       color: route.color, weight: noTrips ? 4 : 6,
       opacity: noTrips ? 0.5 : 0.9,
       dashArray: noTrips ? '8 6' : null,
-      interactive: false
+      interactive: false, pane: 'routeLines'
     }).addTo(map);
     state.highlightLayers.push(line);
     smoothed.forEach(p => bounds.push(p));
@@ -164,7 +164,6 @@ export function showRoute(legs) {
     });
   });
 
-  for (const sid in stopMarkers) stopMarkers[sid].bringToFront();
 
   const originStop = stopById[originId];
   const destStop = stopById[destId];

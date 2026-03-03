@@ -71,6 +71,11 @@ export function initMap() {
     maxZoom: MAP_STYLES[state.activeStyleKey].maxZoom
   }).addTo(map);
 
+  // Custom pane for route lines — below overlayPane (400) so stop markers always appear on top
+  map.createPane('routeLines');
+  map.getPane('routeLines').style.zIndex = 350;
+  map.getPane('routeLines').style.pointerEvents = 'none';
+
   // Route outlines and lines
   routeOutlines = {};
   routePolylines = {};
@@ -104,10 +109,10 @@ export function initMap() {
         }
       }
       routeOutlines[r.id] = L.polyline(shape, {
-        color: '#fff', weight: 5, opacity: 0.35, interactive: false
+        color: '#fff', weight: 5, opacity: 0.35, interactive: false, pane: 'routeLines'
       }).addTo(map);
       routePolylines[r.id] = L.polyline(shape, {
-        color: r.color, weight: 3, opacity: 0.35, interactive: false
+        color: r.color, weight: 3, opacity: 0.35, interactive: false, pane: 'routeLines'
       }).addTo(map);
     }
   });
