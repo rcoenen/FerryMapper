@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://rcoenen.github.io/FerryMapperNYC/img/og-image.png">
-<meta name="app-build" content="70">
+<meta name="app-build" content="71">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
@@ -113,12 +113,10 @@
       const js = document.createElement('script');
       js.type = 'module';
       js.src = 'app.js?' + q;
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-          document.body.appendChild(js);
-        }, { once: true });
-      } else {
+      if (document.body) {
         document.body.appendChild(js);
+      } else {
+        document.addEventListener('DOMContentLoaded', () => document.body.appendChild(js));
       }
     }
     boot();
@@ -156,7 +154,7 @@
       </button>
     </div>
     <div class="settings-version" aria-live="polite">
-      Build: <code id="build-number">70</code>
+      Build: <code id="build-number">71</code>
     </div>
   </div>
 </header>
