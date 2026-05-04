@@ -2467,7 +2467,7 @@
         0,
         0
       ],
-      "start": "20260426",
+      "start": "20260504",
       "end": "20271231",
       "added": [],
       "removed": []
@@ -2482,7 +2482,7 @@
         1,
         1
       ],
-      "start": "20260426",
+      "start": "20260504",
       "end": "20271231",
       "added": [],
       "removed": []
@@ -2658,43 +2658,6 @@
       ]
     },
     {
-      "t": "607",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "10:18:00",
-          "dep": "10:18:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "10:30:00",
-          "dep": "10:30:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "10:39:00",
-          "dep": "10:39:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "10:46:00",
-          "dep": "10:46:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "10:54:00",
-          "dep": "10:54:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "10:58:00",
-          "dep": "10:58:00"
-        }
-      ]
-    },
-    {
       "t": "622",
       "s": "1",
       "r": "SB",
@@ -2797,43 +2760,6 @@
           "id": "east-34th-street",
           "arr": "10:12:00",
           "dep": "10:12:00"
-        }
-      ]
-    },
-    {
-      "t": "628",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "11:03:00",
-          "dep": "11:03:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "11:10:00",
-          "dep": "11:10:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "11:18:00",
-          "dep": "11:18:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "11:26:00",
-          "dep": "11:26:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "11:33:00",
-          "dep": "11:33:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "11:42:00",
-          "dep": "11:42:00"
         }
       ]
     },
@@ -14953,1564 +14879,6 @@
       ]
     },
     {
-      "t": "2158",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "06:46:00",
-          "dep": "06:46:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "06:58:00",
-          "dep": "06:58:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "07:07:00",
-          "dep": "07:07:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "07:14:00",
-          "dep": "07:14:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "07:19:00",
-          "dep": "07:19:00"
-        }
-      ]
-    },
-    {
-      "t": "2159",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "11:03:00",
-          "dep": "11:03:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "11:15:00",
-          "dep": "11:15:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "11:24:00",
-          "dep": "11:24:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "11:31:00",
-          "dep": "11:31:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "11:39:00",
-          "dep": "11:39:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "11:43:00",
-          "dep": "11:43:00"
-        }
-      ]
-    },
-    {
-      "t": "2160",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "11:48:00",
-          "dep": "11:48:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "12:00:00",
-          "dep": "12:00:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "12:09:00",
-          "dep": "12:09:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "12:16:00",
-          "dep": "12:16:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "12:24:00",
-          "dep": "12:24:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "12:28:00",
-          "dep": "12:28:00"
-        }
-      ]
-    },
-    {
-      "t": "2161",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "12:33:00",
-          "dep": "12:33:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "12:45:00",
-          "dep": "12:45:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "12:54:00",
-          "dep": "12:54:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "13:01:00",
-          "dep": "13:01:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "13:09:00",
-          "dep": "13:09:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "13:13:00",
-          "dep": "13:13:00"
-        }
-      ]
-    },
-    {
-      "t": "2162",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "13:18:00",
-          "dep": "13:18:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "13:30:00",
-          "dep": "13:30:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "13:39:00",
-          "dep": "13:39:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "13:46:00",
-          "dep": "13:46:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "13:54:00",
-          "dep": "13:54:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "13:58:00",
-          "dep": "13:58:00"
-        }
-      ]
-    },
-    {
-      "t": "2163",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "14:03:00",
-          "dep": "14:03:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "14:15:00",
-          "dep": "14:15:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "14:24:00",
-          "dep": "14:24:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "14:31:00",
-          "dep": "14:31:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "14:39:00",
-          "dep": "14:39:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "14:43:00",
-          "dep": "14:43:00"
-        }
-      ]
-    },
-    {
-      "t": "2164",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "14:48:00",
-          "dep": "14:48:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "15:00:00",
-          "dep": "15:00:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "15:09:00",
-          "dep": "15:09:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "15:16:00",
-          "dep": "15:16:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "15:24:00",
-          "dep": "15:24:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "15:28:00",
-          "dep": "15:28:00"
-        }
-      ]
-    },
-    {
-      "t": "2165",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "15:33:00",
-          "dep": "15:33:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "15:45:00",
-          "dep": "15:45:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "15:54:00",
-          "dep": "15:54:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "16:01:00",
-          "dep": "16:01:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "16:09:00",
-          "dep": "16:09:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "16:13:00",
-          "dep": "16:13:00"
-        }
-      ]
-    },
-    {
-      "t": "2166",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "16:18:00",
-          "dep": "16:18:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "16:30:00",
-          "dep": "16:30:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "16:39:00",
-          "dep": "16:39:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "16:46:00",
-          "dep": "16:46:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "16:54:00",
-          "dep": "16:54:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "16:58:00",
-          "dep": "16:58:00"
-        }
-      ]
-    },
-    {
-      "t": "2167",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "17:03:00",
-          "dep": "17:03:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "17:15:00",
-          "dep": "17:15:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "17:24:00",
-          "dep": "17:24:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "17:31:00",
-          "dep": "17:31:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "17:39:00",
-          "dep": "17:39:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "17:43:00",
-          "dep": "17:43:00"
-        }
-      ]
-    },
-    {
-      "t": "2168",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "17:48:00",
-          "dep": "17:48:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "18:00:00",
-          "dep": "18:00:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "18:09:00",
-          "dep": "18:09:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "18:16:00",
-          "dep": "18:16:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "18:21:00",
-          "dep": "18:21:00"
-        }
-      ]
-    },
-    {
-      "t": "2169",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "18:33:00",
-          "dep": "18:33:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "18:45:00",
-          "dep": "18:45:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "18:54:00",
-          "dep": "18:54:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "19:01:00",
-          "dep": "19:01:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "19:06:00",
-          "dep": "19:06:00"
-        }
-      ]
-    },
-    {
-      "t": "2170",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "19:18:00",
-          "dep": "19:18:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "19:30:00",
-          "dep": "19:30:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "19:39:00",
-          "dep": "19:39:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "19:46:00",
-          "dep": "19:46:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "19:51:00",
-          "dep": "19:51:00"
-        }
-      ]
-    },
-    {
-      "t": "2171",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "20:03:00",
-          "dep": "20:03:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "20:15:00",
-          "dep": "20:15:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "20:24:00",
-          "dep": "20:24:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "20:31:00",
-          "dep": "20:31:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "20:36:00",
-          "dep": "20:36:00"
-        }
-      ]
-    },
-    {
-      "t": "2172",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "20:48:00",
-          "dep": "20:48:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "21:00:00",
-          "dep": "21:00:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "21:09:00",
-          "dep": "21:09:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "21:16:00",
-          "dep": "21:16:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "21:21:00",
-          "dep": "21:21:00"
-        }
-      ]
-    },
-    {
-      "t": "2173",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "11:48:00",
-          "dep": "11:48:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "11:55:00",
-          "dep": "11:55:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "12:03:00",
-          "dep": "12:03:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "12:11:00",
-          "dep": "12:11:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "12:18:00",
-          "dep": "12:18:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "12:27:00",
-          "dep": "12:27:00"
-        }
-      ]
-    },
-    {
-      "t": "2174",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "12:33:00",
-          "dep": "12:33:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "12:40:00",
-          "dep": "12:40:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "12:48:00",
-          "dep": "12:48:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "12:56:00",
-          "dep": "12:56:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "13:03:00",
-          "dep": "13:03:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "13:12:00",
-          "dep": "13:12:00"
-        }
-      ]
-    },
-    {
-      "t": "2175",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "13:18:00",
-          "dep": "13:18:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "13:25:00",
-          "dep": "13:25:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "13:33:00",
-          "dep": "13:33:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "13:41:00",
-          "dep": "13:41:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "13:48:00",
-          "dep": "13:48:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "13:57:00",
-          "dep": "13:57:00"
-        }
-      ]
-    },
-    {
-      "t": "2176",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "14:03:00",
-          "dep": "14:03:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "14:10:00",
-          "dep": "14:10:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "14:18:00",
-          "dep": "14:18:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "14:26:00",
-          "dep": "14:26:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "14:33:00",
-          "dep": "14:33:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "14:42:00",
-          "dep": "14:42:00"
-        }
-      ]
-    },
-    {
-      "t": "2177",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "14:48:00",
-          "dep": "14:48:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "14:55:00",
-          "dep": "14:55:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "15:03:00",
-          "dep": "15:03:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "15:11:00",
-          "dep": "15:11:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "15:18:00",
-          "dep": "15:18:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "15:27:00",
-          "dep": "15:27:00"
-        }
-      ]
-    },
-    {
-      "t": "2178",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "15:33:00",
-          "dep": "15:33:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "15:40:00",
-          "dep": "15:40:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "15:48:00",
-          "dep": "15:48:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "15:56:00",
-          "dep": "15:56:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "16:03:00",
-          "dep": "16:03:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "16:12:00",
-          "dep": "16:12:00"
-        }
-      ]
-    },
-    {
-      "t": "2179",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "16:18:00",
-          "dep": "16:18:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "16:25:00",
-          "dep": "16:25:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "16:33:00",
-          "dep": "16:33:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "16:41:00",
-          "dep": "16:41:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "16:48:00",
-          "dep": "16:48:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "16:57:00",
-          "dep": "16:57:00"
-        }
-      ]
-    },
-    {
-      "t": "2180",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "17:03:00",
-          "dep": "17:03:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "17:10:00",
-          "dep": "17:10:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "17:18:00",
-          "dep": "17:18:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "17:26:00",
-          "dep": "17:26:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "17:33:00",
-          "dep": "17:33:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "17:42:00",
-          "dep": "17:42:00"
-        }
-      ]
-    },
-    {
-      "t": "2181",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "17:48:00",
-          "dep": "17:48:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "17:55:00",
-          "dep": "17:55:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "18:03:00",
-          "dep": "18:03:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "18:11:00",
-          "dep": "18:11:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "18:18:00",
-          "dep": "18:18:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "18:27:00",
-          "dep": "18:27:00"
-        }
-      ]
-    },
-    {
-      "t": "2182",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "18:31:00",
-          "dep": "18:31:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "18:39:00",
-          "dep": "18:39:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "18:47:00",
-          "dep": "18:47:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "18:54:00",
-          "dep": "18:54:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "19:03:00",
-          "dep": "19:03:00"
-        }
-      ]
-    },
-    {
-      "t": "2183",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "19:16:00",
-          "dep": "19:16:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "19:24:00",
-          "dep": "19:24:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "19:32:00",
-          "dep": "19:32:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "19:39:00",
-          "dep": "19:39:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "19:48:00",
-          "dep": "19:48:00"
-        }
-      ]
-    },
-    {
-      "t": "2184",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "20:01:00",
-          "dep": "20:01:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "20:09:00",
-          "dep": "20:09:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "20:17:00",
-          "dep": "20:17:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "20:24:00",
-          "dep": "20:24:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "20:33:00",
-          "dep": "20:33:00"
-        }
-      ]
-    },
-    {
-      "t": "2185",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "20:46:00",
-          "dep": "20:46:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "20:54:00",
-          "dep": "20:54:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "21:02:00",
-          "dep": "21:02:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "21:09:00",
-          "dep": "21:09:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "21:18:00",
-          "dep": "21:18:00"
-        }
-      ]
-    },
-    {
-      "t": "2186",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "09:14:00",
-          "dep": "09:14:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "09:26:00",
-          "dep": "09:26:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "09:35:00",
-          "dep": "09:35:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "09:42:00",
-          "dep": "09:42:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "09:50:00",
-          "dep": "09:50:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "09:56:00",
-          "dep": "09:56:00"
-        }
-      ]
-    },
-    {
-      "t": "2188",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "10:46:00",
-          "dep": "10:46:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "10:58:00",
-          "dep": "10:58:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "11:07:00",
-          "dep": "11:07:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "11:14:00",
-          "dep": "11:14:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "11:22:00",
-          "dep": "11:22:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "11:28:00",
-          "dep": "11:28:00"
-        }
-      ]
-    },
-    {
-      "t": "2190",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "12:18:00",
-          "dep": "12:18:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "12:30:00",
-          "dep": "12:30:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "12:39:00",
-          "dep": "12:39:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "12:46:00",
-          "dep": "12:46:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "12:54:00",
-          "dep": "12:54:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "13:00:00",
-          "dep": "13:00:00"
-        }
-      ]
-    },
-    {
-      "t": "2192",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "13:50:00",
-          "dep": "13:50:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "14:02:00",
-          "dep": "14:02:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "14:11:00",
-          "dep": "14:11:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "14:18:00",
-          "dep": "14:18:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "14:26:00",
-          "dep": "14:26:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "14:32:00",
-          "dep": "14:32:00"
-        }
-      ]
-    },
-    {
-      "t": "2194",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "15:22:00",
-          "dep": "15:22:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "15:34:00",
-          "dep": "15:34:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "15:43:00",
-          "dep": "15:43:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "15:50:00",
-          "dep": "15:50:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "15:58:00",
-          "dep": "15:58:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "16:04:00",
-          "dep": "16:04:00"
-        }
-      ]
-    },
-    {
-      "t": "2196",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "16:54:00",
-          "dep": "16:54:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "17:06:00",
-          "dep": "17:06:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "17:15:00",
-          "dep": "17:15:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "17:22:00",
-          "dep": "17:22:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "17:30:00",
-          "dep": "17:30:00"
-        },
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "17:36:00",
-          "dep": "17:36:00"
-        }
-      ]
-    },
-    {
-      "t": "2198",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "18:26:00",
-          "dep": "18:26:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "18:38:00",
-          "dep": "18:38:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "18:47:00",
-          "dep": "18:47:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "18:54:00",
-          "dep": "18:54:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "18:59:00",
-          "dep": "18:59:00"
-        }
-      ]
-    },
-    {
-      "t": "2200",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "east-34th-street",
-          "arr": "19:58:00",
-          "dep": "19:58:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "20:10:00",
-          "dep": "20:10:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "20:19:00",
-          "dep": "20:19:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "20:26:00",
-          "dep": "20:26:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "20:31:00",
-          "dep": "20:31:00"
-        }
-      ]
-    },
-    {
-      "t": "2203",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "10:01:00",
-          "dep": "10:01:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "10:08:00",
-          "dep": "10:08:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "10:16:00",
-          "dep": "10:16:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "10:24:00",
-          "dep": "10:24:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "10:31:00",
-          "dep": "10:31:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "10:40:00",
-          "dep": "10:40:00"
-        }
-      ]
-    },
-    {
-      "t": "2205",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "11:33:00",
-          "dep": "11:33:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "11:40:00",
-          "dep": "11:40:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "11:48:00",
-          "dep": "11:48:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "11:56:00",
-          "dep": "11:56:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "12:03:00",
-          "dep": "12:03:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "12:12:00",
-          "dep": "12:12:00"
-        }
-      ]
-    },
-    {
-      "t": "2207",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "13:05:00",
-          "dep": "13:05:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "13:12:00",
-          "dep": "13:12:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "13:20:00",
-          "dep": "13:20:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "13:28:00",
-          "dep": "13:28:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "13:35:00",
-          "dep": "13:35:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "13:44:00",
-          "dep": "13:44:00"
-        }
-      ]
-    },
-    {
-      "t": "2209",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "14:37:00",
-          "dep": "14:37:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "14:44:00",
-          "dep": "14:44:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "14:52:00",
-          "dep": "14:52:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "15:00:00",
-          "dep": "15:00:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "15:07:00",
-          "dep": "15:07:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "15:16:00",
-          "dep": "15:16:00"
-        }
-      ]
-    },
-    {
-      "t": "2211",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "16:09:00",
-          "dep": "16:09:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "16:16:00",
-          "dep": "16:16:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "16:24:00",
-          "dep": "16:24:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "16:32:00",
-          "dep": "16:32:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "16:39:00",
-          "dep": "16:39:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "16:48:00",
-          "dep": "16:48:00"
-        }
-      ]
-    },
-    {
-      "t": "2213",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "17:41:00",
-          "dep": "17:41:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "17:48:00",
-          "dep": "17:48:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "17:56:00",
-          "dep": "17:56:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "18:04:00",
-          "dep": "18:04:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "18:11:00",
-          "dep": "18:11:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "18:20:00",
-          "dep": "18:20:00"
-        }
-      ]
-    },
-    {
-      "t": "2215",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "19:09:00",
-          "dep": "19:09:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "19:17:00",
-          "dep": "19:17:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "19:25:00",
-          "dep": "19:25:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "19:32:00",
-          "dep": "19:32:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "19:41:00",
-          "dep": "19:41:00"
-        }
-      ]
-    },
-    {
-      "t": "2217",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "20:41:00",
-          "dep": "20:41:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "20:49:00",
-          "dep": "20:49:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "20:57:00",
-          "dep": "20:57:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "21:04:00",
-          "dep": "21:04:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "21:13:00",
-          "dep": "21:13:00"
-        }
-      ]
-    },
-    {
       "t": "2218",
       "s": "1",
       "r": "RES",
@@ -17609,167 +15977,1343 @@
       ]
     },
     {
-      "t": "2340",
-      "s": "2",
+      "t": "2356",
+      "s": "1",
       "r": "SB",
       "stops": [
         {
           "id": "east-34th-street",
-          "arr": "10:00:00",
-          "dep": "10:00:00"
+          "arr": "06:33:00",
+          "dep": "06:33:00"
         },
         {
           "id": "corlears-hook",
-          "arr": "10:12:00",
-          "dep": "10:12:00"
+          "arr": "06:45:00",
+          "dep": "06:45:00"
         },
         {
           "id": "wall-st-pier-11",
-          "arr": "10:21:00",
-          "dep": "10:21:00"
+          "arr": "06:54:00",
+          "dep": "06:54:00"
         },
         {
           "id": "atlantic-ave-bbp-pier-6",
-          "arr": "10:28:00",
-          "dep": "10:28:00"
+          "arr": "07:01:00",
+          "dep": "07:01:00"
         },
         {
           "id": "red-hook-atlantic-basin",
-          "arr": "10:36:00",
-          "dep": "10:36:00"
+          "arr": "07:09:00",
+          "dep": "07:09:00"
         },
         {
           "id": "gov-island-yankee-pier",
-          "arr": "10:42:00",
-          "dep": "10:42:00"
+          "arr": "07:13:00",
+          "dep": "07:13:00"
         }
       ]
     },
     {
-      "t": "2341",
-      "s": "2",
+      "t": "2357",
+      "s": "1",
       "r": "SB",
       "stops": [
         {
           "id": "east-34th-street",
-          "arr": "11:32:00",
-          "dep": "11:32:00"
+          "arr": "10:18:00",
+          "dep": "10:18:00"
         },
         {
           "id": "corlears-hook",
+          "arr": "10:30:00",
+          "dep": "10:30:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "10:41:00",
+          "dep": "10:41:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "10:48:00",
+          "dep": "10:48:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "10:56:00",
+          "dep": "10:56:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "11:00:00",
+          "dep": "11:00:00"
+        }
+      ]
+    },
+    {
+      "t": "2358",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "11:06:00",
+          "dep": "11:06:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "11:18:00",
+          "dep": "11:18:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "11:29:00",
+          "dep": "11:29:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "11:36:00",
+          "dep": "11:36:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
           "arr": "11:44:00",
           "dep": "11:44:00"
         },
         {
-          "id": "wall-st-pier-11",
-          "arr": "11:53:00",
-          "dep": "11:53:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "12:00:00",
-          "dep": "12:00:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "12:08:00",
-          "dep": "12:08:00"
-        },
-        {
           "id": "gov-island-yankee-pier",
-          "arr": "12:14:00",
-          "dep": "12:14:00"
+          "arr": "11:48:00",
+          "dep": "11:48:00"
         }
       ]
     },
     {
-      "t": "2342",
-      "s": "2",
+      "t": "2359",
+      "s": "1",
       "r": "SB",
       "stops": [
         {
           "id": "east-34th-street",
-          "arr": "13:04:00",
-          "dep": "13:04:00"
+          "arr": "11:54:00",
+          "dep": "11:54:00"
         },
         {
           "id": "corlears-hook",
-          "arr": "13:16:00",
-          "dep": "13:16:00"
+          "arr": "12:06:00",
+          "dep": "12:06:00"
         },
         {
           "id": "wall-st-pier-11",
-          "arr": "13:25:00",
-          "dep": "13:25:00"
+          "arr": "12:17:00",
+          "dep": "12:17:00"
         },
         {
           "id": "atlantic-ave-bbp-pier-6",
-          "arr": "13:32:00",
-          "dep": "13:32:00"
+          "arr": "12:24:00",
+          "dep": "12:24:00"
         },
         {
           "id": "red-hook-atlantic-basin",
-          "arr": "13:40:00",
-          "dep": "13:40:00"
+          "arr": "12:32:00",
+          "dep": "12:32:00"
         },
         {
           "id": "gov-island-yankee-pier",
-          "arr": "13:46:00",
-          "dep": "13:46:00"
+          "arr": "12:36:00",
+          "dep": "12:36:00"
         }
       ]
     },
     {
-      "t": "2343",
-      "s": "2",
+      "t": "2360",
+      "s": "1",
       "r": "SB",
       "stops": [
         {
           "id": "east-34th-street",
-          "arr": "14:36:00",
-          "dep": "14:36:00"
+          "arr": "12:42:00",
+          "dep": "12:42:00"
         },
         {
           "id": "corlears-hook",
-          "arr": "14:48:00",
-          "dep": "14:48:00"
+          "arr": "12:54:00",
+          "dep": "12:54:00"
         },
         {
           "id": "wall-st-pier-11",
-          "arr": "14:57:00",
-          "dep": "14:57:00"
+          "arr": "13:05:00",
+          "dep": "13:05:00"
         },
         {
           "id": "atlantic-ave-bbp-pier-6",
+          "arr": "13:12:00",
+          "dep": "13:12:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "13:20:00",
+          "dep": "13:20:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "13:24:00",
+          "dep": "13:24:00"
+        }
+      ]
+    },
+    {
+      "t": "2361",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "13:51:00",
+          "dep": "13:51:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "14:03:00",
+          "dep": "14:03:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "14:14:00",
+          "dep": "14:14:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "14:21:00",
+          "dep": "14:21:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "14:29:00",
+          "dep": "14:29:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "14:33:00",
+          "dep": "14:33:00"
+        }
+      ]
+    },
+    {
+      "t": "2362",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "14:41:00",
+          "dep": "14:41:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "14:53:00",
+          "dep": "14:53:00"
+        },
+        {
+          "id": "wall-st-pier-11",
           "arr": "15:04:00",
           "dep": "15:04:00"
         },
         {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "15:11:00",
+          "dep": "15:11:00"
+        },
+        {
           "id": "red-hook-atlantic-basin",
-          "arr": "15:12:00",
-          "dep": "15:12:00"
+          "arr": "15:19:00",
+          "dep": "15:19:00"
         },
         {
           "id": "gov-island-yankee-pier",
-          "arr": "15:18:00",
-          "dep": "15:18:00"
+          "arr": "15:23:00",
+          "dep": "15:23:00"
         }
       ]
     },
     {
-      "t": "2344",
+      "t": "2363",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "15:29:00",
+          "dep": "15:29:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "15:41:00",
+          "dep": "15:41:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "15:52:00",
+          "dep": "15:52:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "15:59:00",
+          "dep": "15:59:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "16:07:00",
+          "dep": "16:07:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "16:11:00",
+          "dep": "16:11:00"
+        }
+      ]
+    },
+    {
+      "t": "2364",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "16:17:00",
+          "dep": "16:17:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "16:29:00",
+          "dep": "16:29:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "16:40:00",
+          "dep": "16:40:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "16:47:00",
+          "dep": "16:47:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "16:55:00",
+          "dep": "16:55:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "16:59:00",
+          "dep": "16:59:00"
+        }
+      ]
+    },
+    {
+      "t": "2365",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "17:05:00",
+          "dep": "17:05:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "17:17:00",
+          "dep": "17:17:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "17:28:00",
+          "dep": "17:28:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "17:35:00",
+          "dep": "17:35:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "17:43:00",
+          "dep": "17:43:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "17:47:00",
+          "dep": "17:47:00"
+        }
+      ]
+    },
+    {
+      "t": "2366",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "17:54:00",
+          "dep": "17:54:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "18:06:00",
+          "dep": "18:06:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "18:17:00",
+          "dep": "18:17:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "18:24:00",
+          "dep": "18:24:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "18:29:00",
+          "dep": "18:29:00"
+        }
+      ]
+    },
+    {
+      "t": "2367",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "18:43:00",
+          "dep": "18:43:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "18:55:00",
+          "dep": "18:55:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "19:06:00",
+          "dep": "19:06:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "19:13:00",
+          "dep": "19:13:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "19:18:00",
+          "dep": "19:18:00"
+        }
+      ]
+    },
+    {
+      "t": "2368",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "19:32:00",
+          "dep": "19:32:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "19:44:00",
+          "dep": "19:44:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "19:55:00",
+          "dep": "19:55:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "20:02:00",
+          "dep": "20:02:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "20:07:00",
+          "dep": "20:07:00"
+        }
+      ]
+    },
+    {
+      "t": "2369",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "20:21:00",
+          "dep": "20:21:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "20:33:00",
+          "dep": "20:33:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "20:44:00",
+          "dep": "20:44:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "20:51:00",
+          "dep": "20:51:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "20:56:00",
+          "dep": "20:56:00"
+        }
+      ]
+    },
+    {
+      "t": "2370",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "20:58:00",
+          "dep": "20:58:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "21:10:00",
+          "dep": "21:10:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "21:21:00",
+          "dep": "21:21:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "21:28:00",
+          "dep": "21:28:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "21:33:00",
+          "dep": "21:33:00"
+        }
+      ]
+    },
+    {
+      "t": "2371",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "07:18:00",
+          "dep": "07:18:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "07:25:00",
+          "dep": "07:25:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "07:33:00",
+          "dep": "07:33:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "07:41:00",
+          "dep": "07:41:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "07:48:00",
+          "dep": "07:48:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "07:57:00",
+          "dep": "07:57:00"
+        }
+      ]
+    },
+    {
+      "t": "2372",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "11:05:00",
+          "dep": "11:05:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "11:12:00",
+          "dep": "11:12:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "11:21:00",
+          "dep": "11:21:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "11:30:00",
+          "dep": "11:30:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "11:38:00",
+          "dep": "11:38:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "11:47:00",
+          "dep": "11:47:00"
+        }
+      ]
+    },
+    {
+      "t": "2373",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "11:53:00",
+          "dep": "11:53:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "12:00:00",
+          "dep": "12:00:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "12:09:00",
+          "dep": "12:09:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "12:18:00",
+          "dep": "12:18:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "12:26:00",
+          "dep": "12:26:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "12:35:00",
+          "dep": "12:35:00"
+        }
+      ]
+    },
+    {
+      "t": "2374",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "13:03:00",
+          "dep": "13:03:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "13:10:00",
+          "dep": "13:10:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "13:19:00",
+          "dep": "13:19:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "13:28:00",
+          "dep": "13:28:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "13:36:00",
+          "dep": "13:36:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "13:45:00",
+          "dep": "13:45:00"
+        }
+      ]
+    },
+    {
+      "t": "2375",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "13:53:00",
+          "dep": "13:53:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "14:00:00",
+          "dep": "14:00:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "14:09:00",
+          "dep": "14:09:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "14:18:00",
+          "dep": "14:18:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "14:26:00",
+          "dep": "14:26:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "14:35:00",
+          "dep": "14:35:00"
+        }
+      ]
+    },
+    {
+      "t": "2376",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "14:38:00",
+          "dep": "14:38:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "14:45:00",
+          "dep": "14:45:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "14:54:00",
+          "dep": "14:54:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "15:03:00",
+          "dep": "15:03:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "15:11:00",
+          "dep": "15:11:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "15:20:00",
+          "dep": "15:20:00"
+        }
+      ]
+    },
+    {
+      "t": "2377",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "15:28:00",
+          "dep": "15:28:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "15:35:00",
+          "dep": "15:35:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "15:44:00",
+          "dep": "15:44:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "15:53:00",
+          "dep": "15:53:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "16:01:00",
+          "dep": "16:01:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "16:10:00",
+          "dep": "16:10:00"
+        }
+      ]
+    },
+    {
+      "t": "2378",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "16:16:00",
+          "dep": "16:16:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "16:23:00",
+          "dep": "16:23:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "16:32:00",
+          "dep": "16:32:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "16:41:00",
+          "dep": "16:41:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "16:49:00",
+          "dep": "16:49:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "16:58:00",
+          "dep": "16:58:00"
+        }
+      ]
+    },
+    {
+      "t": "2379",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "17:05:00",
+          "dep": "17:05:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "17:13:00",
+          "dep": "17:13:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "17:22:00",
+          "dep": "17:22:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "17:31:00",
+          "dep": "17:31:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "17:39:00",
+          "dep": "17:39:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "17:48:00",
+          "dep": "17:48:00"
+        }
+      ]
+    },
+    {
+      "t": "2380",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "17:53:00",
+          "dep": "17:53:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "18:01:00",
+          "dep": "18:01:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "18:10:00",
+          "dep": "18:10:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "18:19:00",
+          "dep": "18:19:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "18:27:00",
+          "dep": "18:27:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "18:36:00",
+          "dep": "18:36:00"
+        }
+      ]
+    },
+    {
+      "t": "2381",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "18:40:00",
+          "dep": "18:40:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "18:49:00",
+          "dep": "18:49:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "18:58:00",
+          "dep": "18:58:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "19:06:00",
+          "dep": "19:06:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "19:15:00",
+          "dep": "19:15:00"
+        }
+      ]
+    },
+    {
+      "t": "2382",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "19:29:00",
+          "dep": "19:29:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "19:38:00",
+          "dep": "19:38:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "19:47:00",
+          "dep": "19:47:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "19:55:00",
+          "dep": "19:55:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "20:04:00",
+          "dep": "20:04:00"
+        }
+      ]
+    },
+    {
+      "t": "2383",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "20:17:00",
+          "dep": "20:17:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "20:26:00",
+          "dep": "20:26:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "20:35:00",
+          "dep": "20:35:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "20:43:00",
+          "dep": "20:43:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "20:52:00",
+          "dep": "20:52:00"
+        }
+      ]
+    },
+    {
+      "t": "2384",
+      "s": "1",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "21:06:00",
+          "dep": "21:06:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "21:15:00",
+          "dep": "21:15:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "21:24:00",
+          "dep": "21:24:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "21:32:00",
+          "dep": "21:32:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "21:41:00",
+          "dep": "21:41:00"
+        }
+      ]
+    },
+    {
+      "t": "2385",
       "s": "2",
       "r": "SB",
       "stops": [
         {
           "id": "east-34th-street",
-          "arr": "16:08:00",
-          "dep": "16:08:00"
+          "arr": "09:14:00",
+          "dep": "09:14:00"
         },
         {
           "id": "corlears-hook",
-          "arr": "16:20:00",
-          "dep": "16:20:00"
+          "arr": "09:26:00",
+          "dep": "09:26:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "09:37:00",
+          "dep": "09:37:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "09:45:00",
+          "dep": "09:45:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "09:55:00",
+          "dep": "09:55:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "10:01:00",
+          "dep": "10:01:00"
+        }
+      ]
+    },
+    {
+      "t": "2386",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "10:06:00",
+          "dep": "10:06:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "10:18:00",
+          "dep": "10:18:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "10:29:00",
+          "dep": "10:29:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "10:37:00",
+          "dep": "10:37:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "10:47:00",
+          "dep": "10:47:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "10:53:00",
+          "dep": "10:53:00"
+        }
+      ]
+    },
+    {
+      "t": "2387",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "10:57:00",
+          "dep": "10:57:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "11:09:00",
+          "dep": "11:09:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "11:20:00",
+          "dep": "11:20:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "11:28:00",
+          "dep": "11:28:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "11:38:00",
+          "dep": "11:38:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "11:44:00",
+          "dep": "11:44:00"
+        }
+      ]
+    },
+    {
+      "t": "2388",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "11:49:00",
+          "dep": "11:49:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "12:01:00",
+          "dep": "12:01:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "12:12:00",
+          "dep": "12:12:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "12:20:00",
+          "dep": "12:20:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "12:30:00",
+          "dep": "12:30:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "12:36:00",
+          "dep": "12:36:00"
+        }
+      ]
+    },
+    {
+      "t": "2389",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "12:40:00",
+          "dep": "12:40:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "12:52:00",
+          "dep": "12:52:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "13:03:00",
+          "dep": "13:03:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "13:11:00",
+          "dep": "13:11:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "13:21:00",
+          "dep": "13:21:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "13:27:00",
+          "dep": "13:27:00"
+        }
+      ]
+    },
+    {
+      "t": "2390",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "13:32:00",
+          "dep": "13:32:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "13:44:00",
+          "dep": "13:44:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "13:55:00",
+          "dep": "13:55:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "14:03:00",
+          "dep": "14:03:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "14:13:00",
+          "dep": "14:13:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "14:19:00",
+          "dep": "14:19:00"
+        }
+      ]
+    },
+    {
+      "t": "2391",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "14:23:00",
+          "dep": "14:23:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "14:35:00",
+          "dep": "14:35:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "14:46:00",
+          "dep": "14:46:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "14:54:00",
+          "dep": "14:54:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "15:04:00",
+          "dep": "15:04:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "15:10:00",
+          "dep": "15:10:00"
+        }
+      ]
+    },
+    {
+      "t": "2392",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "15:15:00",
+          "dep": "15:15:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "15:27:00",
+          "dep": "15:27:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "15:38:00",
+          "dep": "15:38:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "15:46:00",
+          "dep": "15:46:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "15:56:00",
+          "dep": "15:56:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "16:02:00",
+          "dep": "16:02:00"
+        }
+      ]
+    },
+    {
+      "t": "2393",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "16:06:00",
+          "dep": "16:06:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "16:18:00",
+          "dep": "16:18:00"
         },
         {
           "id": "wall-st-pier-11",
@@ -17778,119 +17322,220 @@
         },
         {
           "id": "atlantic-ave-bbp-pier-6",
-          "arr": "16:36:00",
-          "dep": "16:36:00"
+          "arr": "16:37:00",
+          "dep": "16:37:00"
         },
         {
           "id": "red-hook-atlantic-basin",
-          "arr": "16:44:00",
-          "dep": "16:44:00"
+          "arr": "16:47:00",
+          "dep": "16:47:00"
         },
         {
           "id": "gov-island-yankee-pier",
-          "arr": "16:50:00",
-          "dep": "16:50:00"
+          "arr": "16:53:00",
+          "dep": "16:53:00"
         }
       ]
     },
     {
-      "t": "2345",
+      "t": "2394",
       "s": "2",
       "r": "SB",
       "stops": [
         {
           "id": "east-34th-street",
-          "arr": "17:40:00",
-          "dep": "17:40:00"
+          "arr": "16:58:00",
+          "dep": "16:58:00"
         },
         {
           "id": "corlears-hook",
-          "arr": "17:52:00",
-          "dep": "17:52:00"
+          "arr": "17:10:00",
+          "dep": "17:10:00"
         },
         {
           "id": "wall-st-pier-11",
+          "arr": "17:21:00",
+          "dep": "17:21:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "17:29:00",
+          "dep": "17:29:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "17:39:00",
+          "dep": "17:39:00"
+        },
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "17:45:00",
+          "dep": "17:45:00"
+        }
+      ]
+    },
+    {
+      "t": "2395",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "17:49:00",
+          "dep": "17:49:00"
+        },
+        {
+          "id": "corlears-hook",
           "arr": "18:01:00",
           "dep": "18:01:00"
         },
         {
+          "id": "wall-st-pier-11",
+          "arr": "18:12:00",
+          "dep": "18:12:00"
+        },
+        {
           "id": "atlantic-ave-bbp-pier-6",
-          "arr": "18:08:00",
-          "dep": "18:08:00"
+          "arr": "18:20:00",
+          "dep": "18:20:00"
         },
         {
           "id": "red-hook-atlantic-basin",
-          "arr": "18:13:00",
-          "dep": "18:13:00"
+          "arr": "18:26:00",
+          "dep": "18:26:00"
         }
       ]
     },
     {
-      "t": "2346",
+      "t": "2396",
       "s": "2",
       "r": "SB",
       "stops": [
         {
           "id": "east-34th-street",
+          "arr": "18:41:00",
+          "dep": "18:41:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "18:53:00",
+          "dep": "18:53:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "19:04:00",
+          "dep": "19:04:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
           "arr": "19:12:00",
           "dep": "19:12:00"
         },
         {
-          "id": "corlears-hook",
-          "arr": "19:24:00",
-          "dep": "19:24:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "19:33:00",
-          "dep": "19:33:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "19:40:00",
-          "dep": "19:40:00"
-        },
-        {
           "id": "red-hook-atlantic-basin",
-          "arr": "19:45:00",
-          "dep": "19:45:00"
+          "arr": "19:18:00",
+          "dep": "19:18:00"
         }
       ]
     },
     {
-      "t": "2347",
+      "t": "2397",
       "s": "2",
       "r": "SB",
       "stops": [
         {
           "id": "east-34th-street",
-          "arr": "20:44:00",
-          "dep": "20:44:00"
+          "arr": "19:21:00",
+          "dep": "19:21:00"
         },
         {
           "id": "corlears-hook",
-          "arr": "20:56:00",
-          "dep": "20:56:00"
+          "arr": "19:33:00",
+          "dep": "19:33:00"
         },
         {
           "id": "wall-st-pier-11",
-          "arr": "21:05:00",
-          "dep": "21:05:00"
+          "arr": "19:44:00",
+          "dep": "19:44:00"
         },
         {
           "id": "atlantic-ave-bbp-pier-6",
-          "arr": "21:12:00",
-          "dep": "21:12:00"
+          "arr": "19:52:00",
+          "dep": "19:52:00"
         },
         {
           "id": "red-hook-atlantic-basin",
-          "arr": "21:17:00",
-          "dep": "21:17:00"
+          "arr": "19:58:00",
+          "dep": "19:58:00"
         }
       ]
     },
     {
-      "t": "2348",
+      "t": "2398",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "20:13:00",
+          "dep": "20:13:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "20:25:00",
+          "dep": "20:25:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "20:36:00",
+          "dep": "20:36:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "20:44:00",
+          "dep": "20:44:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "20:50:00",
+          "dep": "20:50:00"
+        }
+      ]
+    },
+    {
+      "t": "2399",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "east-34th-street",
+          "arr": "20:53:00",
+          "dep": "20:53:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "21:05:00",
+          "dep": "21:05:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "21:16:00",
+          "dep": "21:16:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "21:24:00",
+          "dep": "21:24:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "21:30:00",
+          "dep": "21:30:00"
+        }
+      ]
+    },
+    {
+      "t": "2400",
       "s": "2",
       "r": "SB",
       "stops": [
@@ -17901,277 +17546,526 @@
         },
         {
           "id": "red-hook-atlantic-basin",
-          "arr": "09:22:00",
-          "dep": "09:22:00"
+          "arr": "09:23:00",
+          "dep": "09:23:00"
         },
         {
           "id": "atlantic-ave-bbp-pier-6",
-          "arr": "09:30:00",
-          "dep": "09:30:00"
+          "arr": "09:33:00",
+          "dep": "09:33:00"
         },
         {
           "id": "wall-st-pier-11",
-          "arr": "09:38:00",
-          "dep": "09:38:00"
+          "arr": "09:43:00",
+          "dep": "09:43:00"
         },
         {
           "id": "corlears-hook",
-          "arr": "09:45:00",
-          "dep": "09:45:00"
+          "arr": "09:51:00",
+          "dep": "09:51:00"
         },
         {
           "id": "east-34th-street",
-          "arr": "09:54:00",
-          "dep": "09:54:00"
+          "arr": "10:00:00",
+          "dep": "10:00:00"
         }
       ]
     },
     {
-      "t": "2349",
+      "t": "2401",
       "s": "2",
       "r": "SB",
       "stops": [
         {
           "id": "gov-island-yankee-pier",
-          "arr": "10:47:00",
-          "dep": "10:47:00"
+          "arr": "10:06:00",
+          "dep": "10:06:00"
         },
         {
           "id": "red-hook-atlantic-basin",
-          "arr": "10:54:00",
-          "dep": "10:54:00"
+          "arr": "10:14:00",
+          "dep": "10:14:00"
         },
         {
           "id": "atlantic-ave-bbp-pier-6",
-          "arr": "11:02:00",
-          "dep": "11:02:00"
+          "arr": "10:24:00",
+          "dep": "10:24:00"
         },
         {
           "id": "wall-st-pier-11",
-          "arr": "11:10:00",
-          "dep": "11:10:00"
+          "arr": "10:34:00",
+          "dep": "10:34:00"
         },
         {
           "id": "corlears-hook",
-          "arr": "11:17:00",
-          "dep": "11:17:00"
+          "arr": "10:42:00",
+          "dep": "10:42:00"
         },
         {
           "id": "east-34th-street",
+          "arr": "10:51:00",
+          "dep": "10:51:00"
+        }
+      ]
+    },
+    {
+      "t": "2402",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "10:58:00",
+          "dep": "10:58:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "11:06:00",
+          "dep": "11:06:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "11:16:00",
+          "dep": "11:16:00"
+        },
+        {
+          "id": "wall-st-pier-11",
           "arr": "11:26:00",
           "dep": "11:26:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "11:34:00",
+          "dep": "11:34:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "11:43:00",
+          "dep": "11:43:00"
         }
       ]
     },
     {
-      "t": "2350",
+      "t": "2403",
       "s": "2",
       "r": "SB",
       "stops": [
         {
           "id": "gov-island-yankee-pier",
-          "arr": "12:19:00",
-          "dep": "12:19:00"
+          "arr": "11:49:00",
+          "dep": "11:49:00"
         },
         {
           "id": "red-hook-atlantic-basin",
-          "arr": "12:26:00",
-          "dep": "12:26:00"
+          "arr": "11:57:00",
+          "dep": "11:57:00"
         },
         {
           "id": "atlantic-ave-bbp-pier-6",
-          "arr": "12:34:00",
-          "dep": "12:34:00"
+          "arr": "12:07:00",
+          "dep": "12:07:00"
         },
         {
           "id": "wall-st-pier-11",
-          "arr": "12:42:00",
-          "dep": "12:42:00"
+          "arr": "12:17:00",
+          "dep": "12:17:00"
         },
         {
           "id": "corlears-hook",
+          "arr": "12:25:00",
+          "dep": "12:25:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "12:34:00",
+          "dep": "12:34:00"
+        }
+      ]
+    },
+    {
+      "t": "2404",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "12:41:00",
+          "dep": "12:41:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
           "arr": "12:49:00",
           "dep": "12:49:00"
         },
         {
-          "id": "east-34th-street",
-          "arr": "12:58:00",
-          "dep": "12:58:00"
-        }
-      ]
-    },
-    {
-      "t": "2351",
-      "s": "2",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "gov-island-yankee-pier",
-          "arr": "13:51:00",
-          "dep": "13:51:00"
-        },
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "13:58:00",
-          "dep": "13:58:00"
-        },
-        {
           "id": "atlantic-ave-bbp-pier-6",
-          "arr": "14:06:00",
-          "dep": "14:06:00"
+          "arr": "12:59:00",
+          "dep": "12:59:00"
         },
         {
           "id": "wall-st-pier-11",
-          "arr": "14:14:00",
-          "dep": "14:14:00"
+          "arr": "13:09:00",
+          "dep": "13:09:00"
         },
         {
           "id": "corlears-hook",
-          "arr": "14:21:00",
-          "dep": "14:21:00"
+          "arr": "13:17:00",
+          "dep": "13:17:00"
         },
         {
           "id": "east-34th-street",
-          "arr": "14:30:00",
-          "dep": "14:30:00"
+          "arr": "13:26:00",
+          "dep": "13:26:00"
         }
       ]
     },
     {
-      "t": "2352",
+      "t": "2405",
       "s": "2",
       "r": "SB",
       "stops": [
         {
           "id": "gov-island-yankee-pier",
+          "arr": "13:32:00",
+          "dep": "13:32:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "13:40:00",
+          "dep": "13:40:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "13:50:00",
+          "dep": "13:50:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "14:00:00",
+          "dep": "14:00:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "14:08:00",
+          "dep": "14:08:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "14:17:00",
+          "dep": "14:17:00"
+        }
+      ]
+    },
+    {
+      "t": "2406",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "14:24:00",
+          "dep": "14:24:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "14:32:00",
+          "dep": "14:32:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "14:42:00",
+          "dep": "14:42:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "14:52:00",
+          "dep": "14:52:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "15:00:00",
+          "dep": "15:00:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "15:09:00",
+          "dep": "15:09:00"
+        }
+      ]
+    },
+    {
+      "t": "2407",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "15:15:00",
+          "dep": "15:15:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
           "arr": "15:23:00",
           "dep": "15:23:00"
         },
         {
-          "id": "red-hook-atlantic-basin",
-          "arr": "15:30:00",
-          "dep": "15:30:00"
-        },
-        {
           "id": "atlantic-ave-bbp-pier-6",
-          "arr": "15:38:00",
-          "dep": "15:38:00"
+          "arr": "15:33:00",
+          "dep": "15:33:00"
         },
         {
           "id": "wall-st-pier-11",
-          "arr": "15:46:00",
-          "dep": "15:46:00"
+          "arr": "15:43:00",
+          "dep": "15:43:00"
         },
         {
           "id": "corlears-hook",
-          "arr": "15:53:00",
-          "dep": "15:53:00"
+          "arr": "15:51:00",
+          "dep": "15:51:00"
         },
         {
           "id": "east-34th-street",
-          "arr": "16:02:00",
-          "dep": "16:02:00"
+          "arr": "16:00:00",
+          "dep": "16:00:00"
         }
       ]
     },
     {
-      "t": "2353",
+      "t": "2408",
       "s": "2",
       "r": "SB",
       "stops": [
         {
           "id": "gov-island-yankee-pier",
-          "arr": "16:55:00",
-          "dep": "16:55:00"
+          "arr": "16:07:00",
+          "dep": "16:07:00"
         },
         {
           "id": "red-hook-atlantic-basin",
-          "arr": "17:02:00",
-          "dep": "17:02:00"
+          "arr": "16:15:00",
+          "dep": "16:15:00"
         },
         {
           "id": "atlantic-ave-bbp-pier-6",
-          "arr": "17:10:00",
-          "dep": "17:10:00"
+          "arr": "16:25:00",
+          "dep": "16:25:00"
         },
         {
           "id": "wall-st-pier-11",
-          "arr": "17:18:00",
-          "dep": "17:18:00"
+          "arr": "16:35:00",
+          "dep": "16:35:00"
         },
         {
           "id": "corlears-hook",
-          "arr": "17:25:00",
-          "dep": "17:25:00"
+          "arr": "16:43:00",
+          "dep": "16:43:00"
         },
         {
           "id": "east-34th-street",
+          "arr": "16:52:00",
+          "dep": "16:52:00"
+        }
+      ]
+    },
+    {
+      "t": "2409",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "16:58:00",
+          "dep": "16:58:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "17:06:00",
+          "dep": "17:06:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "17:16:00",
+          "dep": "17:16:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "17:26:00",
+          "dep": "17:26:00"
+        },
+        {
+          "id": "corlears-hook",
           "arr": "17:34:00",
           "dep": "17:34:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "17:43:00",
+          "dep": "17:43:00"
         }
       ]
     },
     {
-      "t": "2354",
+      "t": "2410",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "gov-island-yankee-pier",
+          "arr": "17:50:00",
+          "dep": "17:50:00"
+        },
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "17:58:00",
+          "dep": "17:58:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "18:08:00",
+          "dep": "18:08:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "18:18:00",
+          "dep": "18:18:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "18:26:00",
+          "dep": "18:26:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "18:35:00",
+          "dep": "18:35:00"
+        }
+      ]
+    },
+    {
+      "t": "2411",
       "s": "2",
       "r": "SB",
       "stops": [
         {
           "id": "red-hook-atlantic-basin",
-          "arr": "18:23:00",
-          "dep": "18:23:00"
+          "arr": "18:38:00",
+          "dep": "18:38:00"
         },
         {
           "id": "atlantic-ave-bbp-pier-6",
-          "arr": "18:31:00",
-          "dep": "18:31:00"
+          "arr": "18:48:00",
+          "dep": "18:48:00"
         },
         {
           "id": "wall-st-pier-11",
-          "arr": "18:39:00",
-          "dep": "18:39:00"
+          "arr": "18:58:00",
+          "dep": "18:58:00"
         },
         {
           "id": "corlears-hook",
-          "arr": "18:46:00",
-          "dep": "18:46:00"
+          "arr": "19:06:00",
+          "dep": "19:06:00"
         },
         {
           "id": "east-34th-street",
-          "arr": "18:55:00",
-          "dep": "18:55:00"
+          "arr": "19:15:00",
+          "dep": "19:15:00"
         }
       ]
     },
     {
-      "t": "2355",
+      "t": "2412",
       "s": "2",
       "r": "SB",
       "stops": [
         {
           "id": "red-hook-atlantic-basin",
-          "arr": "19:55:00",
-          "dep": "19:55:00"
+          "arr": "19:30:00",
+          "dep": "19:30:00"
         },
         {
           "id": "atlantic-ave-bbp-pier-6",
-          "arr": "20:03:00",
-          "dep": "20:03:00"
+          "arr": "19:40:00",
+          "dep": "19:40:00"
         },
         {
           "id": "wall-st-pier-11",
-          "arr": "20:11:00",
-          "dep": "20:11:00"
+          "arr": "19:50:00",
+          "dep": "19:50:00"
         },
         {
           "id": "corlears-hook",
-          "arr": "20:18:00",
-          "dep": "20:18:00"
+          "arr": "19:58:00",
+          "dep": "19:58:00"
         },
         {
           "id": "east-34th-street",
-          "arr": "20:27:00",
-          "dep": "20:27:00"
+          "arr": "20:07:00",
+          "dep": "20:07:00"
+        }
+      ]
+    },
+    {
+      "t": "2413",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "20:10:00",
+          "dep": "20:10:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "20:20:00",
+          "dep": "20:20:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "20:30:00",
+          "dep": "20:30:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "20:38:00",
+          "dep": "20:38:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "20:47:00",
+          "dep": "20:47:00"
+        }
+      ]
+    },
+    {
+      "t": "2414",
+      "s": "2",
+      "r": "SB",
+      "stops": [
+        {
+          "id": "red-hook-atlantic-basin",
+          "arr": "21:02:00",
+          "dep": "21:02:00"
+        },
+        {
+          "id": "atlantic-ave-bbp-pier-6",
+          "arr": "21:12:00",
+          "dep": "21:12:00"
+        },
+        {
+          "id": "wall-st-pier-11",
+          "arr": "21:22:00",
+          "dep": "21:22:00"
+        },
+        {
+          "id": "corlears-hook",
+          "arr": "21:30:00",
+          "dep": "21:30:00"
+        },
+        {
+          "id": "east-34th-street",
+          "arr": "21:39:00",
+          "dep": "21:39:00"
         }
       ]
     },
@@ -21988,38 +21882,6 @@
           "id": "gov-island-yankee-pier",
           "arr": "10:13:00",
           "dep": "10:13:00"
-        }
-      ]
-    },
-    {
-      "t": "5558",
-      "s": "1",
-      "r": "SB",
-      "stops": [
-        {
-          "id": "red-hook-atlantic-basin",
-          "arr": "07:25:00",
-          "dep": "07:25:00"
-        },
-        {
-          "id": "atlantic-ave-bbp-pier-6",
-          "arr": "07:33:00",
-          "dep": "07:33:00"
-        },
-        {
-          "id": "wall-st-pier-11",
-          "arr": "07:41:00",
-          "dep": "07:41:00"
-        },
-        {
-          "id": "corlears-hook",
-          "arr": "07:48:00",
-          "dep": "07:48:00"
-        },
-        {
-          "id": "east-34th-street",
-          "arr": "07:57:00",
-          "dep": "07:57:00"
         }
       ]
     },
