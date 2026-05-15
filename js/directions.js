@@ -102,7 +102,7 @@ export function shiftOptions(direction) {
   const ref = direction === -1 ? state.currentOptions[0] : state.currentOptions[2];
   if (!ref || !isComplete(ref)) return;
   const refTime = mode === 'arrive' ? getArrival(ref) : getDeparture(ref);
-  const newStartMin = refTime + direction;
+  const newStartMin = refTime;
   state.lastSearch.startMin = newStartMin;
   const options = findOptions(allLegs, dateStr, newStartMin, mode);
   const activeIdx = 1;
